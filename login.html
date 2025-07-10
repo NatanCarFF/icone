@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gerador de Ícones Android</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    </head>
+<body>
+    <header>
+        <h1>Acesse sua conta ou crie uma nova!</h1>
+    </header>
+
+    <main>
+        <section class="auth-container">
+            <h2>Login / Registro</h2>
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" id="loginRegisterBtn">Entrar / Registrar</button>
+                <p class="message" id="authMessage"></p>
+            </form>
+
+            <button id="googleSignInBtn" class="google-btn">Entrar com Google</button>
+
+            <p class="toggle-mode">
+                <span id="toggleText">Novo por aqui?</span>
+                <a href="#" id="toggleAuthMode">Registrar-se</a>
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Gerador de Ícones Android. Todos os direitos reservados.</p>
+    </footer>
+
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>
