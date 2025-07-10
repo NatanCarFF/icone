@@ -72,6 +72,7 @@ function hideMessage() {
 // ===========================================
 // Lógica de Autenticação na página do Editor
 // ===========================================
+
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         // Se o usuário não estiver logado, redireciona para a página de login
