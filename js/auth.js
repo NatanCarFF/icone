@@ -1,6 +1,17 @@
 // js/auth.js
 
+// Importa as instâncias de auth do seu firebase-config.js
 import { auth } from './firebase-config.js';
+
+// Importa as funções específicas de autenticação do Firebase
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    GoogleAuthProvider, // Para login com Google
+    signInWithPopup,    // Para login com Google
+    onAuthStateChanged  // Para monitorar o estado de autenticação
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
 
 // Selecionar elementos do DOM
 const authForm = document.getElementById('authForm');
@@ -47,11 +58,13 @@ authForm.addEventListener('submit', async (e) => {
     try {
         if (isRegisterMode) {
             // Modo de Registro
-            await auth.createUserWithEmailAndPassword(email, password);
+            // Usar createUserWithEmailAndPassword importado
+            await createUserWithEmailAndPassword(auth, email, password);
             showMessage('Usuário registrado com sucesso! Redirecionando...', false);
         } else {
             // Modo de Login
-            await auth.signInWithEmailAndPassword(email, password);
+            // Usar signInWithEmailAndPassword importado
+            await signInWithEmailAndPassword(auth, email, password);
             showMessage('Login bem-sucedido! Redirecionando...', false);
         }
         // Redireciona após sucesso (ex: para a página de exemplos ou editor)
@@ -88,12 +101,14 @@ authForm.addEventListener('submit', async (e) => {
 
 // Login com Google
 googleSignInBtn.addEventListener('click', async () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
+    // Usar GoogleAuthProvider importado
+    const provider = new GoogleAuthProvider();
     authMessage.textContent = 'Entrando com Google...';
     authMessage.className = 'message';
 
     try {
-        await auth.signInWithPopup(provider);
+        // Usar signInWithPopup importado
+        await signInWithPopup(auth, provider);
         showMessage('Login com Google bem-sucedido! Redirecionando...', false);
         setTimeout(() => {
             window.location.href = 'examples.html'; // Ou 'editor.html'
@@ -111,13 +126,16 @@ googleSignInBtn.addEventListener('click', async () => {
 });
 
 // Monitorar o estado de autenticação para redirecionar se já logado
-auth.onAuthStateChanged((user) => {
+// Usar onAuthStateChanged importado
+onAuthStateChanged(auth, (user) => {
     if (user) {
         // Usuário está logado
         console.log("Usuário logado:", user.email);
         // Opcional: redirecionar automaticamente se o usuário tentar acessar login.html já logado
-        // mas vamos permitir que ele veja a página de login por enquanto.
-        // Se você quiser redirecionar, adicione: window.location.href = 'examples.html';
+        // Isso é uma boa prática para evitar que usuários logados vejam a tela de login
+        if (window.location.pathname.endsWith('login.html')) {
+             window.location.href = 'examples.html';
+        }
     } else {
         // Usuário não está logado
         console.log("Usuário não logado.");
