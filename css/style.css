@@ -230,6 +230,115 @@ footer {
 }
 
 /* ===================================== */
+/* Estilos Específicos para Página de Exemplos (examples.html) */
+/* ===================================== */
+header nav {
+    margin-top: 10px;
+}
+
+header #logoutBtn {
+    background-color: #f44336; /* Cor de logout */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+header #logoutBtn:hover {
+    background-color: #da190b;
+}
+
+.examples-grid {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.examples-grid h2 {
+    color: #4CAF50;
+    margin-bottom: 25px;
+}
+
+#loadingMessage {
+    font-style: italic;
+    color: #777;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsivo, min 150px */
+    gap: 20px; /* Espaçamento entre as imagens */
+    justify-content: center;
+    padding: 20px;
+}
+
+.example-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.example-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.example-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: block; /* Remove espaço extra abaixo da imagem */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.example-item p {
+    font-size: 0.9em;
+    color: #555;
+    margin: 0;
+}
+
+.back-to-editor {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-to-editor a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-to-editor a:hover {
+    text-decoration: underline;
+}
+
+/* Garante que mensagens de erro/sucesso apareçam corretamente */
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    display: block; /* Garante que ocupe a linha toda */
+}
+.message.error {
+    background-color: #ffe0e0;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+}
+.message.success {
+    background-color: #e8f5e9;
+    color: #388e3c;
+    border: 1px solid #388e3c;
+}
+
+/* ===================================== */
 /* Responsividade Geral */
 /* ===================================== */
 @media (max-width: 768px) {
@@ -259,5 +368,11 @@ footer {
     .auth-container {
         margin: 20px auto; /* Reduz margem superior em telas pequenas */
         padding: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .image-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Reduz tamanho mínimo em telas menores */
     }
 }
