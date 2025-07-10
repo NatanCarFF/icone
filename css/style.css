@@ -339,35 +339,224 @@ header #logoutBtn:hover {
 }
 
 /* ===================================== */
-/* Responsividade Geral */
+/* Estilos Específicos para Página do Editor (editor.html) */
 /* ===================================== */
+.editor-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+    gap: 30px;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.editor-controls {
+    flex: 1; /* Ocupa espaço flexível */
+    min-width: 300px; /* Largura mínima para os controles */
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+.editor-controls h2, .editor-controls h3 {
+    color: #4CAF50;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+#imageUpload {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.editor-controls p {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.editing-tools {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.tool-group {
+    margin-bottom: 15px;
+}
+
+.tool-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.tool-group input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none; /* Remove estilos padrão do navegador */
+    appearance: none;
+    height: 8px;
+    background: #ddd;
+    outline: none;
+    border-radius: 5px;
+}
+
+.tool-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: grab;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px #4CAF50;
+}
+
+.tool-group input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: grab;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px #4CAF50;
+}
+
+
+.canvas-area {
+    flex: 2; /* Ocupa mais espaço */
+    min-width: 320px; /* Largura mínima para o canvas */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0; /* Fundo do canvas */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#iconCanvas {
+    background-color: #fff; /* Fundo branco para o canvas */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-width: 100%; /* Garante que o canvas não transborde */
+    height: auto; /* Mantém a proporção */
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.canvas-hint {
+    font-size: 0.85em;
+    color: #888;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.action-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 15px;
+    width: auto; /* Botões de ação podem ter largura variável */
+}
+
+.action-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.action-btn.primary-btn {
+    width: 100%; /* Botões principais ocupam a largura total */
+    font-size: 1.1em;
+}
+
+.download-section {
+    text-align: center;
+    margin-top: 40px;
+    padding: 30px;
+    background-color: #e8f5e9; /* Fundo claro para a seção de download */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.download-section h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.download-section p {
+    color: #555;
+    margin-bottom: 25px;
+}
+
+#generatedIconsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Ícones menores */
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.generated-icon-item {
+    text-align: center;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.generated-icon-item img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto 5px auto;
+}
+
+.generated-icon-item a {
+    display: block;
+    font-size: 0.8em;
+    color: #4CAF50;
+    text-decoration: none;
+    margin-top: 5px;
+}
+
+.generated-icon-item a:hover {
+    text-decoration: underline;
+}
+
+#downloadAllZip {
+    margin-top: 20px;
+}
+
+
+/* Responsividade para o editor */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 1.8em;
+    .editor-container {
+        flex-direction: column; /* Coluna em telas menores */
+        align-items: stretch;
     }
 
-    .hero {
-        padding: 30px 15px;
+    .editor-controls, .canvas-area {
+        min-width: unset; /* Remove largura mínima */
+        width: 100%; /* Ocupa a largura total */
     }
 
-    .actions button {
-        display: block; /* Botões de ação em bloco em telas menores */
-        width: calc(100% - 20px); /* Ocupa quase toda a largura */
-        margin: 10px auto; /* Centraliza */
-    }
-
-    main {
-        margin: 10px auto;
-        padding: 15px;
-    }
-
-    .features ul {
-        grid-template-columns: 1fr; /* Uma coluna em telas pequenas para recursos */
-    }
-
-    .auth-container {
-        margin: 20px auto; /* Reduz margem superior em telas pequenas */
-        padding: 20px;
+    .action-btn.primary-btn {
+        width: calc(100% - 20px); /* Ajusta para padding */
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 
