@@ -306,7 +306,7 @@ downloadAllZip.addEventListener('click', async () => {
         tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
         const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-        const scaledHeight = originalImage.height * originalImage.scale * scaleFactor; // Correção: originalImage.scale não existe, deve ser imageProps.scale
+        const scaledHeight = originalImage.height * imageProps.scale * scaleFactor;
         tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
         tempCtx.restore();
 
