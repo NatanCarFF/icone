@@ -1,47 +1,51 @@
 /* Importação de fonte do Google Fonts (opcional, para um visual mais moderno) */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-/* Estilos Globais */
+/* ===================================== */
+/* Estilos Globais e Layout Base */
+/* ===================================== */
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f7f6;
-    color: #333;
+    background-color: #f4f7f6; /* Fundo cinza claro */
+    color: #333; /* Cor de texto padrão */
     line-height: 1.6;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    flex-direction: column; /* Para footer fixo na parte inferior */
+    min-height: 100vh; /* Ocupa a altura total da viewport */
 }
 
 header {
-    background-color: #4CAF50; /* Verde vibrante */
-    color: white;
+    background-color: #4CAF50; /* Verde vibrante para o cabeçalho */
+    color: white; /* Texto branco no cabeçalho */
     padding: 1.5em 0;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra suave */
 }
 
 header h1 {
     margin: 0;
-    font-size: 2.2em;
+    font-size: 2.2em; /* Tamanho do título principal */
 }
 
 main {
-    flex: 1; /* Faz o main ocupar o espaço restante */
+    flex: 1; /* Faz o conteúdo principal ocupar o espaço restante */
     padding: 20px;
-    max-width: 960px;
-    margin: 20px auto;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 960px; /* Largura máxima do conteúdo */
+    margin: 20px auto; /* Centraliza o conteúdo na página */
+    background-color: #fff; /* Fundo branco para a área de conteúdo */
+    border-radius: 8px; /* Cantos arredondados */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra mais pronunciada para o conteúdo */
 }
 
-/* Seção Hero (destaque) */
+/* ===================================== */
+/* Seção Hero (destaque na index.html) */
+/* ===================================== */
 .hero {
     text-align: center;
     padding: 40px 20px;
-    background-color: #e8f5e9; /* Um verde mais claro */
+    background-color: #e8f5e9; /* Um verde bem claro */
     border-radius: 6px;
     margin-bottom: 30px;
 }
@@ -54,7 +58,7 @@ main {
 }
 
 .actions button {
-    background-color: #4CAF50;
+    background-color: #4CAF50; /* Cor de fundo dos botões de ação */
     color: white;
     border: none;
     padding: 12px 25px;
@@ -62,87 +66,66 @@ main {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
 }
 
 .actions button:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
+    background-color: #45a049; /* Escurece no hover */
+    transform: translateY(-2px); /* Efeito de "levantar" */
 }
 
 .actions button:active {
-    transform: translateY(0);
+    transform: translateY(0); /* Retorna à posição original no clique */
 }
 
-/* Seção de Recursos */
+/* ===================================== */
+/* Seção de Recursos (na index.html) */
+/* ===================================== */
 .features {
     padding: 20px 0;
 }
 
 .features h2 {
     text-align: center;
-    color: #4CAF50;
+    color: #4CAF50; /* Título verde */
     margin-bottom: 25px;
 }
 
 .features ul {
-    list-style: none;
+    list-style: none; /* Remove marcadores de lista */
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
+    display: grid; /* Layout em grid */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Colunas responsivas */
+    gap: 15px; /* Espaçamento entre os itens do grid */
 }
 
 .features li {
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Fundo levemente cinza para itens da lista */
     padding: 15px;
-    border-left: 5px solid #4CAF50;
+    border-left: 5px solid #4CAF50; /* Borda esquerda verde */
     border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Sombra sutil */
     font-size: 0.95em;
 }
 
+/* ===================================== */
 /* Rodapé */
+/* ===================================== */
 footer {
     text-align: center;
     padding: 20px;
     margin-top: 30px;
-    background-color: #333;
-    color: white;
+    background-color: #333; /* Fundo escuro */
+    color: white; /* Texto branco */
     font-size: 0.9em;
 }
 
-/* Responsividade Básica */
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 1.8em;
-    }
-
-    .hero {
-        padding: 30px 15px;
-    }
-
-    .actions button {
-        display: block;
-        width: calc(100% - 20px);
-        margin: 10px auto;
-    }
-
-    main {
-        margin: 10px auto;
-        padding: 15px;
-    }
-
-    .features ul {
-        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
-    }
-
-    /* ... (Seus estilos existentes) ... */
-
-/* Estilos para o formulário de autenticação */
+/* ===================================== */
+/* Estilos para o Formulário de Autenticação (login.html) */
+/* ===================================== */
 .auth-container {
     max-width: 400px;
-    margin: 50px auto;
+    margin: 50px auto; /* Centraliza vertical e horizontalmente */
     padding: 30px;
     background-color: #fff;
     border-radius: 8px;
@@ -158,11 +141,11 @@ footer {
 
 .form-group {
     margin-bottom: 20px;
-    text-align: left;
+    text-align: left; /* Alinha labels e inputs à esquerda */
 }
 
 .form-group label {
-    display: block;
+    display: block; /* Cada label em uma nova linha */
     margin-bottom: 8px;
     font-weight: bold;
     color: #555;
@@ -170,12 +153,12 @@ footer {
 
 .form-group input[type="email"],
 .form-group input[type="password"] {
-    width: calc(100% - 20px); /* 100% menos o padding */
+    width: calc(100% - 20px); /* Ocupa 100% da largura menos o padding */
     padding: 12px 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ddd; /* Borda clara */
     border-radius: 5px;
     font-size: 1em;
-    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
 }
 
 .auth-container button[type="submit"] {
@@ -186,7 +169,7 @@ footer {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.1em;
-    width: 100%;
+    width: 100%; /* Botão ocupa a largura total */
     margin-top: 10px;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
@@ -196,6 +179,7 @@ footer {
     transform: translateY(-2px);
 }
 
+/* Estilo específico para o botão Google */
 .google-btn {
     background-color: #DB4437; /* Vermelho Google */
     color: white;
@@ -214,17 +198,19 @@ footer {
     transform: translateY(-2px);
 }
 
+/* Mensagens de feedback (erro/sucesso) */
 .message {
     margin-top: 20px;
     font-size: 0.95em;
-    color: #f44336; /* Cor para mensagens de erro */
-    min-height: 20px; /* Garante espaço para a mensagem */
+    color: #f44336; /* Cor padrão para mensagens de erro (vermelho) */
+    min-height: 20px; /* Garante que o espaço para a mensagem seja reservado */
 }
 
 .message.success {
-    color: #4CAF50; /* Cor para mensagens de sucesso */
+    color: #4CAF50; /* Cor para mensagens de sucesso (verde) */
 }
 
+/* Toggle entre login e registro */
 .toggle-mode {
     margin-top: 25px;
     font-size: 0.9em;
@@ -242,4 +228,36 @@ footer {
     color: #388e3c;
     text-decoration: underline;
 }
+
+/* ===================================== */
+/* Responsividade Geral */
+/* ===================================== */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .hero {
+        padding: 30px 15px;
+    }
+
+    .actions button {
+        display: block; /* Botões de ação em bloco em telas menores */
+        width: calc(100% - 20px); /* Ocupa quase toda a largura */
+        margin: 10px auto; /* Centraliza */
+    }
+
+    main {
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .features ul {
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas para recursos */
+    }
+
+    .auth-container {
+        margin: 20px auto; /* Reduz margem superior em telas pequenas */
+        padding: 20px;
+    }
 }
