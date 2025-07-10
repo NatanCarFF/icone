@@ -1,0 +1,139 @@
+/* Importação de fonte do Google Fonts (opcional, para um visual mais moderno) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+/* Estilos Globais */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #4CAF50; /* Verde vibrante */
+    color: white;
+    padding: 1.5em 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.2em;
+}
+
+main {
+    flex: 1; /* Faz o main ocupar o espaço restante */
+    padding: 20px;
+    max-width: 960px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Seção Hero (destaque) */
+.hero {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #e8f5e9; /* Um verde mais claro */
+    border-radius: 6px;
+    margin-bottom: 30px;
+}
+
+.hero p {
+    font-size: 1.2em;
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+    color: #555;
+}
+
+.actions button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.actions button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.actions button:active {
+    transform: translateY(0);
+}
+
+/* Seção de Recursos */
+.features {
+    padding: 20px 0;
+}
+
+.features h2 {
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 25px;
+}
+
+.features ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.features li {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-left: 5px solid #4CAF50;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    font-size: 0.95em;
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: #333;
+    color: white;
+    font-size: 0.9em;
+}
+
+/* Responsividade Básica */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .hero {
+        padding: 30px 15px;
+    }
+
+    .actions button {
+        display: block;
+        width: calc(100% - 20px);
+        margin: 10px auto;
+    }
+
+    main {
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .features ul {
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+    }
+}
