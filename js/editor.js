@@ -15,9 +15,32 @@ let imageProps = {
     rotation: 0,
     xOffset: 0,
     yOffset: 0,
-    backgroundColor: '#ffffff' // NOVO: Cor de fundo padrão (branco)
+    backgroundColor: '#ffffff' // Cor de fundo padrão (branco)
 };
 const CANVAS_SIZE = 512; // Tamanho base do canvas para edição
+
+// ===========================================
+// Funções de Utilitário para Debounce
+// ===========================================
+/**
+ * Retorna uma função debounced que só será executada após 'delay' milissegundos
+ * desde a última vez que foi invocada.
+ * @param {Function} func A função a ser debounced.
+ * @param {number} delay O atraso em milissegundos.
+ * @returns {Function} A função debounced.
+ */
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
+// Cria uma versão debounced da função drawImage
+const debouncedDrawImage = debounce(drawImage, 100); // Executa no máximo a cada 100ms ao arrastar
+
 
 // ===========================================
 // Seleção de Elementos e Configuração (dentro de DOMContentLoaded)
@@ -30,13 +53,21 @@ let scaleSlider;
 let rotationSlider;
 let xOffsetSlider;
 let yOffsetSlider;
-let backgroundColorPicker; // NOVO: Seletor de cor
+let backgroundColorPicker;
 let resetEditorBtn;
 let generateIconsBtn;
 let editorMessage;
 let downloadSection;
 let generatedIconsContainer;
 let downloadAllZip;
+let loadingIndicator; // NOVO: Variável para o indicador de carregamento
+
+// Elementos para exibir os valores dos sliders
+let scaleValueSpan;
+let rotationValueSpan;
+let xOffsetValueSpan;
+let yOffsetValueSpan;
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // Seleção de Elementos do DOM
@@ -53,13 +84,20 @@ document.addEventListener('DOMContentLoaded', () => {
     rotationSlider = document.getElementById('rotationSlider');
     xOffsetSlider = document.getElementById('xOffsetSlider');
     yOffsetSlider = document.getElementById('yOffsetSlider');
-    backgroundColorPicker = document.getElementById('backgroundColorPicker'); // NOVO: Seleciona o input de cor
+    backgroundColorPicker = document.getElementById('backgroundColorPicker');
     resetEditorBtn = document.getElementById('resetEditorBtn');
     generateIconsBtn = document.getElementById('generateIconsBtn');
     editorMessage = document.getElementById('editorMessage');
     downloadSection = document.getElementById('downloadSection');
     generatedIconsContainer = document.getElementById('generatedIconsContainer');
     downloadAllZip = document.getElementById('downloadAllZip');
+    loadingIndicator = document.getElementById('loadingIndicator'); // NOVO: Seleciona o indicador
+
+    // Seleciona os spans de valor
+    scaleValueSpan = document.getElementById('scaleValue');
+    rotationValueSpan = document.getElementById('rotationValue');
+    xOffsetValueSpan = document.getElementById('xOffsetValue');
+    yOffsetValueSpan = document.getElementById('yOffsetValue');
 
     // ===========================================
     // Manipuladores de Eventos
@@ -74,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 originalImage = new Image();
                 originalImage.onload = () => {
                     imageLoaded = true;
-                    resetImageProperties(); // Esta função agora calculará a escala inicial e resetará a cor
+                    resetImageProperties();
                     drawImage();
                     showMessage("Imagem carregada com sucesso!", false);
                 };
@@ -92,38 +130,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Sliders de edição
+    // Sliders de edição - AGORA USAM debouncedDrawImage
     scaleSlider.addEventListener('input', (e) => {
         imageProps.scale = parseFloat(e.target.value);
-        drawImage();
+        scaleValueSpan.textContent = imageProps.scale.toFixed(2);
+        debouncedDrawImage();
     });
 
     rotationSlider.addEventListener('input', (e) => {
         imageProps.rotation = parseInt(e.target.value);
-        drawImage();
+        rotationValueSpan.textContent = `${imageProps.rotation}°`;
+        debouncedDrawImage();
     });
 
     xOffsetSlider.addEventListener('input', (e) => {
         imageProps.xOffset = parseInt(e.target.value);
-        drawImage();
+        xOffsetValueSpan.textContent = `${imageProps.xOffset}px`;
+        debouncedDrawImage();
     });
 
     yOffsetSlider.addEventListener('input', (e) => {
         imageProps.yOffset = parseInt(e.target.value);
-        drawImage();
+        yOffsetValueSpan.textContent = `${imageProps.yOffset}px`;
+        debouncedDrawImage();
     });
 
-    // NOVO: Evento para o seletor de cor
+    // Evento para o seletor de cor - Chama drawImage diretamente, pois não é um evento de arrastar
     backgroundColorPicker.addEventListener('input', (e) => {
         imageProps.backgroundColor = e.target.value;
         drawImage();
     });
-    // FIM NOVO
 
     // Botão de reset
     resetEditorBtn.addEventListener('click', () => {
         if (imageLoaded) {
-            resetImageProperties(); // Esta função agora calculará a escala inicial e resetará a cor
+            resetImageProperties();
+            drawImage();
             showMessage("Edição resetada.", false);
         } else {
             showMessage("Nenhuma imagem para resetar.", true);
@@ -138,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         hideMessage();
+        showLoadingIndicator("Gerando ícones..."); // NOVO: Mostra o carregamento
         generatedIconsContainer.innerHTML = ''; // Limpa ícones anteriores
         downloadSection.style.display = 'block'; // Mostra a seção de download
 
@@ -154,12 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 tempCtx.clearRect(0, 0, size, size); // Limpa o canvas temporário
 
-                // NOVO: Preenche o fundo do ícone gerado com a cor selecionada
+                // Preenche o fundo do ícone gerado com a cor selecionada
                 if (imageProps.backgroundColor) {
                     tempCtx.fillStyle = imageProps.backgroundColor;
                     tempCtx.fillRect(0, 0, size, size);
                 }
-                // FIM NOVO
 
                 tempCtx.save();
                 const scaleFactor = size / CANVAS_SIZE;
@@ -185,10 +227,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 generatedIconsContainer.appendChild(iconItem);
             }
+            hideLoadingIndicator(); // NOVO: Esconde o carregamento
             showMessage("Ícones gerados com sucesso! Role para baixo para baixar.", false);
 
         } catch (error) {
             console.error("Erro ao gerar ícones:", error);
+            hideLoadingIndicator(); // NOVO: Esconde o carregamento em caso de erro
             if (error.name === "SecurityError") {
                 showMessage("Erro de segurança: Imagem de outra origem não pode ser usada no canvas. Verifique as configurações CORS do Firebase Storage e se 'originalImage.crossOrigin = \"anonymous\"' está no código.", true);
             } else {
@@ -204,7 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        showMessage("Gerando ZIP... Aguarde.", false);
+        hideMessage();
+        showLoadingIndicator("Gerando ZIP..."); // NOVO: Mostra o carregamento
         const zip = new JSZip();
 
         try {
@@ -217,12 +262,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 tempCtx.clearRect(0, 0, size, size); // Limpa o canvas temporário
 
-                // NOVO: Preenche o fundo do ícone do ZIP com a cor selecionada
+                // Preenche o fundo do ícone do ZIP com a cor selecionada
                 if (imageProps.backgroundColor) {
                     tempCtx.fillStyle = imageProps.backgroundColor;
                     tempCtx.fillRect(0, 0, size, size);
                 }
-                // FIM NOVO
 
                 tempCtx.save();
                 const scaleFactor = size / CANVAS_SIZE;
@@ -247,15 +291,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.body.appendChild(downloadLink);
                     downloadLink.click();
                     document.body.removeChild(downloadLink);
+                    hideLoadingIndicator(); // NOVO: Esconde o carregamento
                     showMessage("ZIP gerado com sucesso! Baixe o arquivo.", false);
                 })
                 .catch(error => {
                     console.error("Erro ao gerar ZIP:", error);
+                    hideLoadingIndicator(); // NOVO: Esconde o carregamento em caso de erro
                     showMessage("Erro ao gerar ZIP: " + error.message, true);
                 });
 
         } catch (error) {
             console.error("Erro inesperado ao preparar ZIP:", error);
+            hideLoadingIndicator(); // NOVO: Esconde o carregamento em caso de erro
             if (error.name === "SecurityError") {
                 showMessage("Erro de segurança ao gerar ZIP: Imagem de outra origem não pode ser usada. Verifique CORS e crossOrigin.", true);
             } else {
@@ -290,7 +337,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Chama drawImage inicialmente para desenhar o placeholder
+    // Chama updateSliderValuesDisplay inicialmente para exibir os valores padrão
+    updateSliderValuesDisplay();
+    // Chama drawImage inicialmente para desenhar o placeholder ou imagem de exemplo
     drawImage();
 }); // Fim de DOMContentLoaded
 
@@ -301,27 +350,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Função principal para desenhar a imagem no canvas
 function drawImage() {
-    console.log("drawImage chamado. imageLoaded:", imageLoaded);
-    console.log("Contexto ctx:", ctx);
-    console.log("originalImage:", originalImage);
-    console.log("imageProps:", imageProps);
-
     if (!ctx) {
         console.error("Contexto do canvas não disponível.");
         return;
     }
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE); // Sempre limpa o canvas primeiro
 
-    // NOVO: Preenche o fundo do canvas com a cor selecionada, se houver
+    // Preenche o fundo do canvas com a cor selecionada, se houver
     if (imageProps.backgroundColor) {
         ctx.fillStyle = imageProps.backgroundColor;
         ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     }
-    // FIM NOVO
 
     if (imageLoaded) {
-        console.log("originalImage dimensões:", originalImage.width, "x", originalImage.height);
-
         ctx.save();
         const centerX = CANVAS_SIZE / 2 + imageProps.xOffset;
         const centerY = CANVAS_SIZE / 2 + imageProps.yOffset;
@@ -330,10 +371,6 @@ function drawImage() {
 
         const scaledWidth = originalImage.width * imageProps.scale;
         const scaledHeight = originalImage.height * imageProps.scale;
-
-        console.log(`Desenho: escala=${imageProps.scale}, rot=${imageProps.rotation}, xOff=${imageProps.xOffset}, yOff=${imageProps.yOffset}`);
-        console.log(`Dimensões desenhadas: ${scaledWidth.toFixed(0)}x${scaledHeight.toFixed(0)}`);
-        console.log(`Posição de desenho (após translate): X=${(-scaledWidth / 2).toFixed(0)}, Y=${(-scaledHeight / 2).toFixed(0)}`);
 
         ctx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
         ctx.restore();
@@ -348,7 +385,7 @@ function drawImage() {
 
 // Exibe mensagens para o usuário
 function showMessage(message, isError = false) {
-    if (editorMessage) { // Garante que o elemento existe
+    if (editorMessage) {
         editorMessage.textContent = message;
         editorMessage.className = `message ${isError ? 'error' : 'success'}`;
         editorMessage.style.display = 'block';
@@ -361,6 +398,23 @@ function showMessage(message, isError = false) {
 function hideMessage() {
     if (editorMessage) {
         editorMessage.style.display = 'none';
+    }
+}
+
+// NOVO: Exibe o indicador de carregamento
+function showLoadingIndicator(message = "Carregando...") {
+    if (loadingIndicator) {
+        loadingIndicator.textContent = message;
+        loadingIndicator.style.display = 'block';
+        loadingIndicator.classList.add('loading'); // Adiciona classe para estilização do spinner
+    }
+}
+
+// NOVO: Oculta o indicador de carregamento
+function hideLoadingIndicator() {
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+        loadingIndicator.classList.remove('loading');
     }
 }
 
@@ -377,14 +431,23 @@ function resetImageProperties() {
         rotation: 0,
         xOffset: 0,
         yOffset: 0,
-        backgroundColor: '#ffffff' // NOVO: Reseta a cor de fundo para branco
+        backgroundColor: '#ffffff' // Reseta a cor de fundo para branco
     };
     if (scaleSlider) scaleSlider.value = imageProps.scale;
     if (rotationSlider) rotationSlider.value = imageProps.rotation;
     if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
     if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
-    if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor; // NOVO: Atualiza o seletor de cor
-    drawImage();
+    if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
+    
+    updateSliderValuesDisplay();
+}
+
+// Função para atualizar a exibição dos valores dos sliders
+function updateSliderValuesDisplay() {
+    if (scaleValueSpan) scaleValueSpan.textContent = imageProps.scale.toFixed(2);
+    if (rotationValueSpan) rotationValueSpan.textContent = `${imageProps.rotation}°`;
+    if (xOffsetValueSpan) xOffsetValueSpan.textContent = `${imageProps.xOffset}px`;
+    if (yOffsetValueSpan) yOffsetValueSpan.textContent = `${imageProps.yOffset}px`;
 }
 
 // Carrega imagem via URL (usado para exemplos do Firebase Storage)
@@ -396,7 +459,7 @@ function loadImageFromUrl(url) {
     originalImage.onload = () => {
         imageLoaded = true;
         console.log("Imagem carregada com SUCESSO. Dimensões:", originalImage.width, "x", originalImage.height);
-        resetImageProperties(); // Esta função agora calculará a escala inicial e resetará a cor
+        resetImageProperties();
         drawImage();
         showMessage("Imagem carregada com sucesso!", false);
     };

@@ -33,14 +33,14 @@ header h1 {
 header nav {
     position: absolute;
     top: 1.5em;
-    right: 20px;
+    right: 1.5em;
 }
 
 header nav button {
-    background-color: #f44336; /* Vermelho para o botão de sair */
+    background-color: #d9534f; /* Vermelho para logout */
     color: white;
-    border: none;
     padding: 8px 15px;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.9em;
@@ -48,242 +48,391 @@ header nav button {
 }
 
 header nav button:hover {
-    background-color: #d32f2f;
+    background-color: #c9302c;
 }
 
 main {
-    flex: 1; /* Faz o conteúdo principal ocupar o espaço restante */
+    flex: 1; /* Ocupa o espaço restante para empurrar o footer para baixo */
     padding: 20px;
-    max-width: 960px; /* Largura máxima do conteúdo */
-    margin: 20px auto; /* Centraliza o conteúdo e adiciona margem */
-    background-color: #fff; /* Fundo branco para a área principal */
-    border-radius: 8px; /* Bordas arredondadas */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 footer {
-    background-color: #333; /* Fundo escuro para o rodapé */
+    background-color: #333;
     color: white;
     text-align: center;
     padding: 1em 0;
-    margin-top: auto; /* Empurra o rodapé para a parte inferior */
-}
-
-h2 {
-    color: #4CAF50; /* Cor de destaque para títulos de seção */
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-
-p {
-    margin-bottom: 15px;
-    line-height: 1.8;
-}
-
-a {
-    color: #4CAF50;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: #388e3c;
-    text-decoration: underline;
+    margin-top: 20px;
 }
 
 /* ===================================== */
-/* Estilos para Páginas Específicas */
+/* Estilos para Páginas de Autenticação (Login/Cadastro) */
 /* ===================================== */
-
-/* Index.html (Página Inicial) */
-.hero {
-    text-align: center;
-    padding: 50px 20px;
-    background-color: #e8f5e9; /* Verde muito claro */
-    border-radius: 8px;
-    margin-bottom: 30px;
-}
-
-.hero h2 {
-    font-size: 2.5em;
-    color: #2e7d32; /* Verde mais escuro */
-    margin-bottom: 15px;
-    border-bottom: none;
-}
-
-.hero p {
-    font-size: 1.1em;
-    color: #555;
-    margin-bottom: 25px;
-}
-
-.hero .action-btn {
-    display: inline-block;
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px 25px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 1.1em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.hero .action-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-}
-
-.features ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.features li {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    text-align: center;
-}
-
-.features li h3 {
-    color: #4CAF50;
-    margin-top: 0;
-}
-
-/* Login/Register Page */
 .auth-container {
     max-width: 400px;
     margin: 50px auto;
     padding: 30px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     text-align: center;
 }
 
 .auth-container h2 {
     color: #4CAF50;
-    margin-bottom: 25px;
-}
-
-.auth-container form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .auth-container input[type="email"],
 .auth-container input[type="password"] {
+    width: calc(100% - 20px);
     padding: 12px;
+    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1em;
-    box-sizing: border-box; /* Inclui padding e borda na largura total */
 }
 
-.auth-container button[type="submit"] {
+.auth-container button {
+    width: 100%;
+    padding: 12px;
     background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 12px 25px;
     border-radius: 5px;
-    cursor: pointer;
     font-size: 1.1em;
-    width: 100%;
-    margin-top: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px; /* Espaço entre botões */
 }
 
-.auth-container button[type="submit"]:hover {
+.auth-container button:hover {
     background-color: #45a049;
-    transform: translateY(-2px);
 }
 
-.google-btn {
-    background-color: #DB4437; /* Vermelho Google */
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1em;
-    width: 100%;
-    margin-top: 15px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+.auth-container .google-signin-btn {
+    background-color: #db4437; /* Cor do Google */
 }
 
-.google-btn:hover {
+.auth-container .google-signin-btn:hover {
     background-color: #c23321;
-    transform: translateY(-2px);
 }
 
-/* Mensagens de feedback (erro/sucesso) */
-.message {
+.auth-container p {
     margin-top: 20px;
-    font-size: 0.95em;
-    color: #f44336; /* Cor padrão para mensagens de erro (vermelho) */
-    min-height: 20px; /* Garante que o espaço para a mensagem seja reservado */
-}
-
-.message.success {
-    color: #4CAF50; /* Cor para mensagens de sucesso (verde) */
-}
-
-/* Toggle entre login e registro */
-.toggle-mode {
-    margin-top: 25px;
     font-size: 0.9em;
-    color: #666;
 }
 
-.toggle-mode a {
+.auth-container p a {
     color: #4CAF50;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.3s ease;
 }
 
-.toggle-mode a:hover {
-    color: #388e3c;
+.auth-container p a:hover {
     text-decoration: underline;
 }
 
 /* ===================================== */
-/* Responsividade Geral */
+/* Estilos para a Página do Editor */
+/* ===================================== */
+.editor-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap; /* Permite quebrar em linhas em telas menores */
+    justify-content: center;
+}
+
+.editor-controls {
+    flex: 1;
+    min-width: 300px; /* Garante largura mínima */
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.editor-controls h2, .editor-controls h3 {
+    color: #4CAF50;
+    margin-bottom: 15px;
+}
+
+.editor-controls input[type="file"] {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.editor-controls .tool-group {
+    margin-bottom: 15px;
+    display: flex; /* Para alinhar label, slider e valor */
+    align-items: center; /* Alinha verticalmente */
+    gap: 10px; /* Espaçamento entre elementos */
+}
+
+.editor-controls .tool-group label {
+    flex-basis: 80px; /* Largura fixa para labels */
+    min-width: 80px;
+    font-weight: bold;
+}
+
+.editor-controls .tool-group input[type="range"],
+.editor-controls .tool-group input[type="color"] {
+    flex-grow: 1; /* Ocupa o espaço restante */
+}
+
+/* Estilo para exibir os valores dos sliders */
+.slider-value {
+    min-width: 50px; /* Garante espaço para o texto */
+    text-align: right; /* Alinha o texto à direita */
+    font-weight: bold;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.editor-controls .action-btn {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.editor-controls .action-btn:hover {
+    background-color: #0056b3;
+}
+
+.canvas-area {
+    flex: 2;
+    min-width: 400px; /* Garante largura mínima para o canvas */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+#iconCanvas {
+    border: 1px solid #ccc;
+    background-color: #eee; /* Fundo cinza para o canvas, visível se a imagem for transparente */
+    max-width: 100%; /* Garante que não transborde em telas menores */
+    height: auto; /* Mantém a proporção */
+    display: block;
+    margin-bottom: 20px;
+}
+
+.canvas-hint {
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.primary-btn {
+    background-color: #28a745; /* Verde mais escuro para o botão principal */
+}
+
+.primary-btn:hover {
+    background-color: #218838;
+}
+
+/* Seção de Download */
+.download-section {
+    margin-top: 40px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.download-section h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05); /* Sombra interna suave */
+}
+
+.generated-icon-item, .example-item {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.generated-icon-item:hover, .example-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.generated-icon-item img, .example-item img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+    margin: 0 auto 10px auto;
+    border: 1px solid #eee; /* Borda leve para distinguir */
+}
+
+.generated-icon-item p, .example-item p {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.generated-icon-item a {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.85em;
+    transition: background-color 0.3s ease;
+}
+
+.generated-icon-item a:hover {
+    background-color: #0056b3;
+}
+
+/* Mensagens de feedback */
+.message {
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* NOVO: Estilos para o indicador de carregamento e spinner */
+#loadingIndicator {
+    background-color: #e0f7fa; /* Fundo azul claro para carregamento */
+    color: #00796b; /* Texto verde escuro */
+    border: 1px solid #b2ebf2;
+    text-align: center;
+    display: flex; /* Para alinhar o texto e o spinner */
+    align-items: center; /* Alinha verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+    gap: 10px; /* Espaçamento entre texto e spinner */
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #4CAF50; /* Cor do spinner (verde) */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite; /* Animação de rotação */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* FIM NOVO */
+
+/* Estilos para a página de exemplos */
+.examples-grid {
+    text-align: center;
+}
+
+.examples-grid h2 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+#loadingMessage {
+    font-style: italic;
+    color: #777;
+}
+
+.back-to-editor {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.back-to-editor a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-to-editor a:hover {
+    text-decoration: underline;
+}
+
+
+/* ===================================== */
+/* Responsividade */
 /* ===================================== */
 @media (max-width: 768px) {
     header h1 {
         font-size: 1.8em;
     }
 
-    .hero {
-        padding: 30px 15px;
+    header nav {
+        position: static; /* Remove posicionamento absoluto em telas pequenas */
+        margin-top: 10px;
     }
 
-    .hero h2 {
-        font-size: 2em;
+    main {
+        margin: 10px auto; /* Centraliza */
     }
 
-    .editor-container, .examples-grid {
-        padding: 15px;
-        flex-direction: column; /* Empilha colunas em telas pequenas */
-        gap: 20px; /* Espaço entre os itens empilhados */
+    .features ul {
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas para recursos */
+    }
+
+    .auth-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .editor-container {
+        flex-direction: column;
+        gap: 20px;
     }
 
     .editor-controls, .canvas-area {
         min-width: unset; /* Remove min-width em telas pequenas */
     }
 
-    /* Ajustes específicos para o canvas em telas menores */
     #iconCanvas {
         width: 95%; /* Ajusta para não transbordar em telas pequenas */
-        height: auto; /* Garante que mantém a proporção */
     }
 
     .image-grid {
@@ -303,231 +452,29 @@ a:hover {
     }
 
     .auth-container input[type="email"],
-    .auth-container input[type="password"],
-    .auth-container button {
-        font-size: 0.9em;
+    .auth-container input[type="password"] {
         padding: 10px;
     }
-}
 
-/* Editor Specific Styles */
-.editor-container {
-    display: flex;
-    gap: 30px; /* Espaço entre os controles e o canvas */
-    flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha em telas pequenas */
-    justify-content: center;
-}
+    .auth-container button {
+        padding: 10px;
+        font-size: 1em;
+    }
 
-.editor-controls {
-    flex: 1; /* Ocupa o espaço disponível */
-    min-width: 300px; /* Garante uma largura mínima para os controles */
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+    .editor-controls {
+        padding: 15px;
+    }
 
-.editor-controls h2, .editor-controls h3 {
-    color: #4CAF50;
-    margin-top: 0;
-}
+    .editor-controls .tool-group label {
+        flex-basis: 60px; /* Reduz largura da label em telas muito pequenas */
+        min-width: 60px;
+    }
 
-.editor-controls input[type="file"] {
-    display: block;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    width: calc(100% - 22px); /* Ajusta para padding */
-}
+    .slider-value {
+        min-width: 40px; /* Ajusta espaço para o texto */
+    }
 
-.tool-group {
-    margin-bottom: 15px;
-}
-
-.tool-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-}
-
-.tool-group input[type="range"] {
-    width: 100%;
-    -webkit-appearance: none; /* Remove estilo padrão do navegador */
-    appearance: none;
-    height: 8px;
-    background: #ddd;
-    border-radius: 5px;
-    outline: none;
-    opacity: 0.7;
-    transition: opacity .2s;
-}
-
-.tool-group input[type="range"]:hover {
-    opacity: 1;
-}
-
-.tool-group input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 2px rgba(0,0,0,0.2);
-}
-
-.tool-group input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 2px rgba(0,0,0,0.2);
-}
-
-.canvas-area {
-    flex: 2; /* Ocupa mais espaço que os controles */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    min-width: 300px; /* Garante uma largura mínima para a área do canvas */
-}
-
-#iconCanvas {
-    width: 512px; /* Define a largura visual do canvas */
-    height: 512px; /* Define a altura visual do canvas */
-    border: 2px dashed #4CAF50; /* Borda para destacar */
-    margin-bottom: 20px;
-    background-color: #f0f0f0; /* Fundo para o canvas */
-}
-
-.canvas-hint {
-    font-size: 0.9em;
-    color: #777;
-    text-align: center;
-    margin-top: -10px; /* Ajusta a margem superior */
-    margin-bottom: 20px;
-}
-
-.action-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    margin-top: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.action-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-}
-
-.action-btn.primary-btn {
-    background-color: #2196F3; /* Azul para ações primárias */
-}
-
-.action-btn.primary-btn:hover {
-    background-color: #1976D2;
-}
-
-
-/* Download Section */
-.download-section {
-    margin-top: 30px;
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    text-align: center;
-}
-
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
-    justify-content: center;
-}
-
-.generated-icon-item {
-    text-align: center;
-    background-color: #fff;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.generated-icon-item img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-.generated-icon-item p {
-    font-weight: bold;
-    color: #333;
-    margin: 0 0 10px 0;
-}
-
-.generated-icon-item a {
-    background-color: #2196F3;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-}
-
-.generated-icon-item a:hover {
-    background-color: #1976D2;
-}
-
-/* Examples Page */
-.examples-grid {
-    text-align: center;
-}
-
-.examples-grid h2 {
-    color: #4CAF50;
-    margin-bottom: 20px;
-}
-
-.example-item {
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.example-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.example-item img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-.back-to-editor {
-    text-align: center;
-    margin-top: 30px;
+    .canvas-area {
+        padding: 15px;
+    }
 }
