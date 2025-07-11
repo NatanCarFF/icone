@@ -6,7 +6,6 @@
     <title>Editor de Ícones - Gerador de Ícones Android</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
@@ -24,78 +23,96 @@
                 <p>Ou, você pode voltar para <a href="examples.html">escolher um exemplo</a>.</p>
 
                 <div class="editing-tools">
-                    <h3>Ferramentas de Edição</h3>
+                    <h3>Ferramentas de Imagem</h3>
                     <div class="tool-group">
                         <label for="scaleSlider">Escala:</label>
                         <input type="range" id="scaleSlider" min="0.1" max="2" value="1" step="0.01">
-                        <span id="scaleValue" class="slider-value">1.00</span>
-                        <button class="reset-slider-btn" data-target="scale"><i class="fas fa-undo"></i></button>
+                        <span class="slider-value" id="scaleValue">100%</span>
+                        <button class="reset-slider-btn" data-target="scaleSlider" aria-label="Redefinir escala">⟳</button>
                     </div>
                     <div class="tool-group">
                         <label for="rotationSlider">Rotação:</label>
                         <input type="range" id="rotationSlider" min="0" max="360" value="0" step="1">
-                        <span id="rotationValue" class="slider-value">0°</span>
-                        <button class="reset-slider-btn" data-target="rotation"><i class="fas fa-undo"></i></button>
+                        <span class="slider-value" id="rotationValue">0°</span>
+                        <button class="reset-slider-btn" data-target="rotationSlider" aria-label="Redefinir rotação">⟳</button>
                     </div>
                     <div class="tool-group">
                         <label for="xOffsetSlider">Offset X:</label>
                         <input type="range" id="xOffsetSlider" min="-200" max="200" value="0" step="1">
-                        <span id="xOffsetValue" class="slider-value">0px</span>
-                        <button class="reset-slider-btn" data-target="xOffset"><i class="fas fa-undo"></i></button>
+                        <span class="slider-value" id="xOffsetValue">0px</span>
+                        <button class="reset-slider-btn" data-target="xOffsetSlider" aria-label="Redefinir offset X">⟳</button>
                     </div>
                     <div class="tool-group">
                         <label for="yOffsetSlider">Offset Y:</label>
                         <input type="range" id="yOffsetSlider" min="-200" max="200" value="0" step="1">
-                        <span id="yOffsetValue" class="slider-value">0px</span>
-                        <button class="reset-slider-btn" data-target="yOffset"><i class="fas fa-undo"></i></button>
+                        <span class="slider-value" id="yOffsetValue">0px</span>
+                        <button class="reset-slider-btn" data-target="yOffsetSlider" aria-label="Redefinir offset Y">⟳</button>
                     </div>
-                    <div class="tool-group">
+
+                    <div class="tool-group-color">
                         <label for="backgroundColorPicker">Cor de Fundo:</label>
-                        <input type="color" id="backgroundColorPicker" value="#ffffff">
-                        <button class="reset-slider-btn" data-target="backgroundColor"><i class="fas fa-undo"></i></button>
+                        <input type="color" id="backgroundColorPicker" value="#FFFFFF">
+                        <button class="reset-slider-btn" data-target="backgroundColorPicker" aria-label="Redefinir cor de fundo">⟳</button>
                     </div>
+                </div>
 
-                    <h3>Borda e Padding</h3>
+                <div class="editing-tools">
+                    <h3>Filtros de Imagem</h3>
                     <div class="tool-group">
-                        <label for="paddingSlider">Padding:</label>
-                        <input type="range" id="paddingSlider" min="0" max="100" value="0" step="1">
-                        <span id="paddingValue" class="slider-value">0px</span>
-                        <button class="reset-slider-btn" data-target="padding"><i class="fas fa-undo"></i></button>
+                        <label for="filterSelect">Aplicar Filtro:</label>
+                        <select id="filterSelect">
+                            <option value="none">Nenhum</option>
+                            <option value="grayscale">Escala de Cinza</option>
+                            <option value="sepia">Sépia</option>
+                            <option value="invert">Inverter Cores</option>
+                            <option value="blur">Desfoque (5px)</option>
+                        </select>
                     </div>
-                    <div class="tool-group">
-                        <label for="borderWidthSlider">Largura Borda:</label>
-                        <input type="range" id="borderWidthSlider" min="0" max="50" value="0" step="1">
-                        <span id="borderWidthValue" class="slider-value">0px</span>
-                        <button class="reset-slider-btn" data-target="borderWidth"><i class="fas fa-undo"></i></button>
-                    </div>
-                    <div class="tool-group">
-                        <label for="borderColorPicker">Cor da Borda:</label>
-                        <input type="color" id="borderColorPicker" value="#000000">
-                        <button class="reset-slider-btn" data-target="borderColor"><i class="fas fa-undo"></i></button>
-                    </div>
+                </div>
 
-                    <h3>Formato do Ícone</h3>
-                    <div class="tool-group-radio">
-                        <label>
-                            <input type="radio" name="iconShape" value="none" checked> Original
-                        </label>
-                        <label>
-                            <input type="radio" name="iconShape" value="circle"> Círculo
-                        </label>
-                        <label>
-                            <input type="radio" name="iconShape" value="rounded-square"> Quadrado Arredondado
-                        </label>
+                <div class="editing-tools">
+                    <h3>Ferramentas de Texto</h3>
+                    <div class="tool-group">
+                        <label for="textInput">Texto:</label>
+                        <input type="text" id="textInput" placeholder="Digite seu texto">
                     </div>
-                    <button id="resetEditorBtn" class="action-btn">Resetar Tudo</button>
+                    <div class="tool-group">
+                        <label for="fontSizeSlider">Tamanho:</label>
+                        <input type="range" id="fontSizeSlider" min="10" max="200" value="40" step="1">
+                        <span class="slider-value" id="fontSizeValue">40px</span>
+                        <button class="reset-slider-btn" data-target="fontSizeSlider" aria-label="Redefinir tamanho da fonte">⟳</button>
+                    </div>
+                    <div class="tool-group">
+                        <label for="fontColorPicker">Cor do Texto:</label>
+                        <input type="color" id="fontColorPicker" value="#000000">
+                        <button class="reset-slider-btn" data-target="fontColorPicker" aria-label="Redefinir cor do texto">⟳</button>
+                    </div>
+                    <div class="tool-group">
+                        <label for="textXOffsetSlider">Posição X:</label>
+                        <input type="range" id="textXOffsetSlider" min="-256" max="256" value="0" step="1">
+                        <span class="slider-value" id="textXOffsetValue">0px</span>
+                        <button class="reset-slider-btn" data-target="textXOffsetSlider" aria-label="Redefinir posição X do texto">⟳</button>
+                    </div>
+                    <div class="tool-group">
+                        <label for="textYOffsetSlider">Posição Y:</label>
+                        <input type="range" id="textYOffsetSlider" min="-256" max="256" value="0" step="1">
+                        <span class="slider-value" id="textYOffsetValue">0px</span>
+                        <button class="reset-slider-btn" data-target="textYOffsetSlider" aria-label="Redefinir posição Y do texto">⟳</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons-group">
+                    <button id="undoBtn" class="action-btn secondary-btn">Desfazer</button>
+                    <button id="redoBtn" class="action-btn secondary-btn">Refazer</button>
+                    <button id="resetEditorBtn" class="action-btn">Resetar Edição</button>
                 </div>
             </div>
 
             <div class="canvas-area">
                 <canvas id="iconCanvas"></canvas>
-                <p class="canvas-hint">Ajuste a imagem para preencher o espaço do ícone. O fundo será transparente ou preenchido conforme configurado no Android.</p>
+                <p class="canvas-hint">Ajuste a imagem para preencher o espaço do ícone. O fundo será transparente ou preenchido conforme configurado.</p>
                 <button id="generateIconsBtn" class="action-btn primary-btn">Gerar Ícones!</button>
                 <p id="editorMessage" class="message" style="display: none;"></p>
-                <p id="loadingIndicator" class="message" style="display: none;">Processando... <span class="spinner"></span></p>
             </div>
         </section>
 
@@ -103,7 +120,7 @@
             <h2>Ícones Gerados</h2>
             <p>Clique para baixar cada versão do ícone.</p>
             <div id="generatedIconsContainer" class="image-grid">
-                </div>
+            </div>
             <button id="downloadAllZip" class="action-btn primary-btn">Baixar Todos (ZIP)</button>
         </section>
     </main>
@@ -113,7 +130,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-    <script type="module" src="js/firebase-config.js"></script>
-    <script type="module" src="js/editor.js"></script>
+    <script src="js/firebase-config.js" type="module"></script>
+    <script src="js/editor.js" type="module"></script>
 </body>
 </html>

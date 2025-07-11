@@ -10,41 +10,30 @@ import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 // ===========================================
 let originalImage = new Image();
 let imageLoaded = false;
+const CANVAS_SIZE = 512; // Tamanho base do canvas para edição
+
+// Propriedades da imagem e do texto
 let imageProps = {
     scale: 1,
     rotation: 0,
     xOffset: 0,
     yOffset: 0,
-    backgroundColor: '#ffffff', // Cor de fundo padrão (branco)
-    padding: 0, // Padding padrão
-    borderWidth: 0, // Largura da borda padrão
-    borderColor: '#000000', // Cor da borda padrão (preto)
-    iconShape: 'none' // NOVO: Formato do ícone padrão ('none', 'circle', 'rounded-square')
+    backgroundColor: '#FFFFFF',
+    filter: 'none' // Novo: para filtros
 };
-const CANVAS_SIZE = 512; // Tamanho base do canvas para edição
 
-// ===========================================
-// Funções de Utilitário para Debounce
-// ===========================================
-/**
- * Retorna uma função debounced que só será executada após 'delay' milissegundos
- * desde a última vez que foi invocada.
- * @param {Function} func A função a ser debounced.
- * @param {number} delay O atraso em milissegundos.
- * @returns {Function} A função debounced.
- */
-function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-        const context = this;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(context, args), delay);
-    };
-}
+let textProps = { // Novo: propriedades do texto
+    content: '',
+    fontSize: 40,
+    fontColor: '#000000',
+    xOffset: 0,
+    yOffset: 0
+};
 
-// Cria uma versão debounced da função drawImage
-const debouncedDrawImage = debounce(drawImage, 100); // Executa no máximo a cada 100ms ao arrastar
-
+// Histórico de estados para Undo/Redo
+let history = [];
+let historyIndex = -1;
+const MAX_HISTORY_SIZE = 20; // Limite para o histórico
 
 // ===========================================
 // Seleção de Elementos e Configuração (dentro de DOMContentLoaded)
@@ -57,27 +46,21 @@ let scaleSlider;
 let rotationSlider;
 let xOffsetSlider;
 let yOffsetSlider;
-let backgroundColorPicker;
-let paddingSlider;
-let borderWidthSlider;
-let borderColorPicker;
-let iconShapeRadios; // NOVO
+let backgroundColorPicker; // Novo: Color Picker
+let filterSelect; // Novo: Filtro
+let textInput; // Novo: Texto
+let fontSizeSlider; // Novo: Tamanho da Fonte
+let fontColorPicker; // Novo: Cor da Fonte
+let textXOffsetSlider; // Novo: Posição X do Texto
+let textYOffsetSlider; // Novo: Posição Y do Texto
 let resetEditorBtn;
 let generateIconsBtn;
 let editorMessage;
 let downloadSection;
 let generatedIconsContainer;
 let downloadAllZip;
-let loadingIndicator;
-let resetSliderButtons;
-
-// Elementos para exibir os valores dos sliders
-let scaleValueSpan;
-let rotationValueSpan;
-let xOffsetValueSpan;
-let yOffsetValueSpan;
-let paddingValueSpan;
-let borderWidthValueSpan;
+let undoBtn; // Novo: Undo
+let redoBtn; // Novo: Redo
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -86,594 +69,663 @@ document.addEventListener('DOMContentLoaded', () => {
     imageUpload = document.getElementById('imageUpload');
     iconCanvas = document.getElementById('iconCanvas');
     ctx = iconCanvas.getContext('2d');
-
-    // Garante a resolução interna do canvas
-    iconCanvas.width = CANVAS_SIZE;
-    iconCanvas.height = CANVAS_SIZE;
-
     scaleSlider = document.getElementById('scaleSlider');
     rotationSlider = document.getElementById('rotationSlider');
     xOffsetSlider = document.getElementById('xOffsetSlider');
     yOffsetSlider = document.getElementById('yOffsetSlider');
-    backgroundColorPicker = document.getElementById('backgroundColorPicker');
-    paddingSlider = document.getElementById('paddingSlider');
-    borderWidthSlider = document.getElementById('borderWidthSlider');
-    borderColorPicker = document.getElementById('borderColorPicker');
-    iconShapeRadios = document.querySelectorAll('input[name="iconShape"]'); // NOVO
+    backgroundColorPicker = document.getElementById('backgroundColorPicker'); // Novo
+    filterSelect = document.getElementById('filterSelect'); // Novo
+    textInput = document.getElementById('textInput'); // Novo
+    fontSizeSlider = document.getElementById('fontSizeSlider'); // Novo
+    fontColorPicker = document.getElementById('fontColorPicker'); // Novo
+    textXOffsetSlider = document.getElementById('textXOffsetSlider'); // Novo
+    textYOffsetSlider = document.getElementById('textYOffsetSlider'); // Novo
     resetEditorBtn = document.getElementById('resetEditorBtn');
     generateIconsBtn = document.getElementById('generateIconsBtn');
     editorMessage = document.getElementById('editorMessage');
     downloadSection = document.getElementById('downloadSection');
     generatedIconsContainer = document.getElementById('generatedIconsContainer');
     downloadAllZip = document.getElementById('downloadAllZip');
-    loadingIndicator = document.getElementById('loadingIndicator');
-    resetSliderButtons = document.querySelectorAll('.reset-slider-btn');
+    undoBtn = document.getElementById('undoBtn'); // Novo
+    redoBtn = document.getElementById('redoBtn'); // Novo
 
-
-    // Seleciona os spans de valor
-    scaleValueSpan = document.getElementById('scaleValue');
-    rotationValueSpan = document.getElementById('rotationValue');
-    xOffsetValueSpan = document.getElementById('xOffsetValue');
-    yOffsetValueSpan = document.getElementById('yOffsetValue');
-    paddingValueSpan = document.getElementById('paddingValue');
-    borderWidthValueSpan = document.getElementById('borderWidthValue');
-
+    // Configurações Iniciais do Canvas
+    iconCanvas.width = CANVAS_SIZE;
+    iconCanvas.height = CANVAS_SIZE;
+    drawImage(); // Desenha o canvas inicial (vazio)
 
     // ===========================================
-    // Manipuladores de Eventos
+    // Autenticação Firebase
+    // ===========================================
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            // Se o usuário não estiver logado, redireciona para a página de login
+            window.location.href = 'login.html';
+        } else {
+            // Usuário logado, pode carregar dados ou exibir interface
+            console.log("Usuário logado:", user.email);
+            checkSelectedExampleImage(); // Verifica se veio de uma imagem de exemplo
+        }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        } catch (error) {
+            console.error("Erro ao fazer logout:", error);
+            showMessage("Erro ao fazer logout. Tente novamente.", true);
+        }
+    });
+
+    // ===========================================
+    // Event Listeners
     // ===========================================
 
-    // Carrega imagem do input de arquivo
+    // Upload de Imagem
     imageUpload.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                originalImage = new Image();
+                originalImage.src = e.target.result;
                 originalImage.onload = () => {
                     imageLoaded = true;
-                    resetImageProperties(); // Reseta todas as propriedades
+                    console.log("Imagem carregada. Dimensões:", originalImage.width, "x", originalImage.height);
+                    resetImageProperties(false); // Não reseta o histórico ao carregar nova imagem
+                    saveState(); // Salva o estado inicial da nova imagem
                     drawImage();
                     showMessage("Imagem carregada com sucesso!", false);
                 };
                 originalImage.onerror = () => {
-                    showMessage("Não foi possível carregar a imagem do arquivo.", true);
                     imageLoaded = false;
+                    console.error("Erro ao carregar imagem.");
+                    showMessage("Erro ao carregar imagem. Verifique o formato.", true);
                     drawImage();
                 };
-                originalImage.src = e.target.result;
-            };
-            reader.onerror = () => {
-                showMessage("Erro ao ler o arquivo de imagem.", true);
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // Sliders de edição - AGORA USAM debouncedDrawImage
-    scaleSlider.addEventListener('input', (e) => {
-        imageProps.scale = parseFloat(e.target.value);
-        scaleValueSpan.textContent = imageProps.scale.toFixed(2);
-        debouncedDrawImage();
+    // Eventos dos Sliders da Imagem
+    scaleSlider.addEventListener('input', (event) => {
+        imageProps.scale = parseFloat(event.target.value);
+        updateSliderValue('scaleSlider', 'scaleValue', 'float', '%', 100);
+        drawImage();
     });
+    scaleSlider.addEventListener('change', saveState); // Salva estado após mudança completa
 
-    rotationSlider.addEventListener('input', (e) => {
-        imageProps.rotation = parseInt(e.target.value);
-        rotationValueSpan.textContent = `${imageProps.rotation}°`;
-        debouncedDrawImage();
+    rotationSlider.addEventListener('input', (event) => {
+        imageProps.rotation = parseFloat(event.target.value);
+        updateSliderValue('rotationSlider', 'rotationValue', 'int', '°');
+        drawImage();
     });
+    rotationSlider.addEventListener('change', saveState);
 
-    xOffsetSlider.addEventListener('input', (e) => {
-        imageProps.xOffset = parseInt(e.target.value);
-        xOffsetValueSpan.textContent = `${imageProps.xOffset}px`;
-        debouncedDrawImage();
+    xOffsetSlider.addEventListener('input', (event) => {
+        imageProps.xOffset = parseInt(event.target.value);
+        updateSliderValue('xOffsetSlider', 'xOffsetValue', 'int', 'px');
+        drawImage();
     });
+    xOffsetSlider.addEventListener('change', saveState);
 
-    yOffsetSlider.addEventListener('input', (e) => {
-        imageProps.yOffset = parseInt(e.target.value);
-        yOffsetValueSpan.textContent = `${imageProps.yOffset}px`;
-        debouncedDrawImage();
+    yOffsetSlider.addEventListener('input', (event) => {
+        imageProps.yOffset = parseInt(event.target.value);
+        updateSliderValue('yOffsetSlider', 'yOffsetValue', 'int', 'px');
+        drawImage();
     });
+    yOffsetSlider.addEventListener('change', saveState);
 
-    // Evento para o seletor de cor de fundo
-    backgroundColorPicker.addEventListener('input', (e) => {
-        imageProps.backgroundColor = e.target.value;
+    // Evento do Color Picker de Fundo
+    backgroundColorPicker.addEventListener('input', (event) => {
+        imageProps.backgroundColor = event.target.value;
+        drawImage();
+    });
+    backgroundColorPicker.addEventListener('change', saveState);
+
+    // Evento do Filtro (NOVO)
+    filterSelect.addEventListener('change', (event) => {
+        imageProps.filter = event.target.value;
+        saveState();
         drawImage();
     });
 
-    // Eventos para os sliders de padding e borda
-    paddingSlider.addEventListener('input', (e) => {
-        imageProps.padding = parseInt(e.target.value);
-        paddingValueSpan.textContent = `${imageProps.padding}px`;
-        debouncedDrawImage();
-    });
-
-    borderWidthSlider.addEventListener('input', (e) => {
-        imageProps.borderWidth = parseInt(e.target.value);
-        borderWidthValueSpan.textContent = `${imageProps.borderWidth}px`;
-        debouncedDrawImage();
-    });
-
-    borderColorPicker.addEventListener('input', (e) => {
-        imageProps.borderColor = e.target.value;
+    // Eventos dos Controles de Texto (NOVOS)
+    textInput.addEventListener('input', (event) => {
+        textProps.content = event.target.value;
+        saveState(); // Salva o estado ao digitar
         drawImage();
     });
 
-    // NOVO: Eventos para os botões de rádio do formato do ícone
-    iconShapeRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            imageProps.iconShape = e.target.value;
-            drawImage(); // Redesenha imediatamente para mostrar a forma
+    fontSizeSlider.addEventListener('input', (event) => {
+        textProps.fontSize = parseInt(event.target.value);
+        updateSliderValue('fontSizeSlider', 'fontSizeValue', 'int', 'px');
+        drawImage();
+    });
+    fontSizeSlider.addEventListener('change', saveState);
+
+    fontColorPicker.addEventListener('input', (event) => {
+        textProps.fontColor = event.target.value;
+        drawImage();
+    });
+    fontColorPicker.addEventListener('change', saveState);
+
+    textXOffsetSlider.addEventListener('input', (event) => {
+        textProps.xOffset = parseInt(event.target.value);
+        updateSliderValue('textXOffsetSlider', 'textXOffsetValue', 'int', 'px');
+        drawImage();
+    });
+    textXOffsetSlider.addEventListener('change', saveState);
+
+    textYOffsetSlider.addEventListener('input', (event) => {
+        textProps.yOffset = parseInt(event.target.value);
+        updateSliderValue('textYOffsetSlider', 'textYOffsetValue', 'int', 'px');
+        drawImage();
+    });
+    textYOffsetSlider.addEventListener('change', saveState);
+
+
+    // Botões de Reset
+    document.querySelectorAll('.reset-slider-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const targetId = event.target.dataset.target;
+            const targetElement = document.getElementById(targetId);
+
+            let valueToSet;
+            let propToReset;
+            let valueSpanId;
+
+            switch (targetId) {
+                case 'scaleSlider':
+                    valueToSet = 1;
+                    propToReset = 'scale';
+                    valueSpanId = 'scaleValue';
+                    break;
+                case 'rotationSlider':
+                    valueToSet = 0;
+                    propToReset = 'rotation';
+                    valueSpanId = 'rotationValue';
+                    break;
+                case 'xOffsetSlider':
+                    valueToSet = 0;
+                    propToReset = 'xOffset';
+                    valueSpanId = 'xOffsetValue';
+                    break;
+                case 'yOffsetSlider':
+                    valueToSet = 0;
+                    propToReset = 'yOffset';
+                    valueSpanId = 'yOffsetValue';
+                    break;
+                case 'backgroundColorPicker': // Novo
+                    valueToSet = '#FFFFFF';
+                    propToReset = 'backgroundColor';
+                    break;
+                case 'fontSizeSlider': // Novo
+                    valueToSet = 40;
+                    propToReset = 'fontSize';
+                    valueSpanId = 'fontSizeValue';
+                    break;
+                case 'fontColorPicker': // Novo
+                    valueToSet = '#000000';
+                    propToReset = 'fontColor';
+                    break;
+                case 'textXOffsetSlider': // Novo
+                    valueToSet = 0;
+                    propToReset = 'xOffset';
+                    valueSpanId = 'textXOffsetValue';
+                    break;
+                case 'textYOffsetSlider': // Novo
+                    valueToSet = 0;
+                    propToReset = 'yOffset';
+                    valueSpanId = 'textYOffsetValue';
+                    break;
+                default:
+                    return;
+            }
+
+            targetElement.value = valueToSet;
+            if (imageProps.hasOwnProperty(propToReset)) {
+                imageProps[propToReset] = valueToSet;
+            } else if (textProps.hasOwnProperty(propToReset)) {
+                textProps[propToReset] = valueToSet;
+            }
+
+            if (valueSpanId) {
+                if (targetId.includes('scale')) updateSliderValue('scaleSlider', 'scaleValue', 'float', '%', 100);
+                else if (targetId.includes('rotation')) updateSliderValue('rotationSlider', 'rotationValue', 'int', '°');
+                else updateSliderValue(targetId, valueSpanId, 'int', 'px');
+            }
+            saveState(); // Salva o estado após o reset
+            drawImage();
         });
     });
 
-
-    // Botão de resetar TUDO
+    // Resetar Editor Completo
     resetEditorBtn.addEventListener('click', () => {
-        if (imageLoaded) {
-            resetImageProperties(); // Reseta todas as propriedades para o padrão
-            drawImage();
-            showMessage("Edição resetada para o padrão.", false);
-        } else {
-            showMessage("Nenhuma imagem carregada para resetar.", true);
-        }
+        resetImageProperties(true); // Reseta todo o histórico também
+        drawImage();
+        showMessage("Edição resetada para o estado inicial.", false);
+        downloadSection.style.display = 'none'; // Esconde a seção de download
     });
 
-    // Adiciona manipuladores de evento para os botões de reset individuais
-    resetSliderButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            if (!imageLoaded) {
-                showMessage("Carregue uma imagem antes de resetar propriedades individuais.", true);
-                return;
-            }
-            const targetProperty = e.currentTarget.dataset.target; // Obtém o nome da propriedade do atributo data-target
-            resetIndividualProperty(targetProperty);
-            drawImage();
-            showMessage(`Propriedade '${targetProperty}' resetada.`, false);
-        });
-    });
+    // Desfazer/Refazer (NOVOS)
+    undoBtn.addEventListener('click', undo);
+    redoBtn.addEventListener('click', redo);
 
 
-    // Botão de Gerar Ícones
-    generateIconsBtn.addEventListener('click', async () => {
+    // Gerar Ícones
+    generateIconsBtn.addEventListener('click', () => {
         if (!imageLoaded) {
-            showMessage("Por favor, carregue ou escolha uma imagem primeiro.", true);
+            showMessage("Por favor, carregue uma imagem primeiro!", true);
             return;
         }
-
-        hideMessage();
-        showLoadingIndicator("Gerando ícones...");
+        showMessage("Gerando ícones...", false);
         generatedIconsContainer.innerHTML = ''; // Limpa ícones anteriores
-        downloadSection.style.display = 'block'; // Mostra a seção de download
+        downloadSection.style.display = 'block';
 
-        try {
-            const generatedIcons = [];
+        const zip = new JSZip(); // Cria uma nova instância de JSZip
 
-            // Para cada densidade, gera o ícone
-            for (const density in ANDROID_DENSITIES) {
-                const size = ANDROID_DENSITIES[density];
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = size;
-                tempCanvas.height = size;
-                const tempCtx = tempCanvas.getContext('2d');
+        // Função para desenhar e adicionar ao zip
+        const drawAndAddIcon = (densityName, size) => {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = size;
+            tempCanvas.height = size;
+            const tempCtx = tempCanvas.getContext('2d');
 
-                // Chama a função de desenho para o canvas temporário
-                drawIconToCanvas(tempCtx, size);
+            // Preenche o fundo
+            tempCtx.fillStyle = imageProps.backgroundColor;
+            tempCtx.fillRect(0, 0, size, size);
 
-                const imageUrl = tempCanvas.toDataURL('image/png');
+            // Desenha a imagem centralizada e com as transformações
+            // Calcula o centro da imagem original
+            const imgCenterX = originalImage.width / 2;
+            const imgCenterY = originalImage.height / 2;
 
-                generatedIcons.push({ density, imageUrl, size });
+            // Calcula o ponto de origem para o desenho considerando rotação e escala
+            // Transfere o contexto para o centro do canvas temporário
+            tempCtx.translate(size / 2, size / 2);
+            tempCtx.rotate(imageProps.rotation * Math.PI / 180); // Aplica rotação
+            tempCtx.scale(imageProps.scale, imageProps.scale); // Aplica escala
 
-                const iconItem = document.createElement('div');
-                iconItem.classList.add('generated-icon-item');
-                iconItem.innerHTML = `
-                    <img src="${imageUrl}" alt="Icon ${density}">
-                    <p>${density}</p>
-                    <a href="${imageUrl}" download="ic_launcher_${density}.png">Baixar (.png)</a>
-                `;
-                generatedIconsContainer.appendChild(iconItem);
-            }
-            hideLoadingIndicator();
-            showMessage("Ícones gerados com sucesso! Role para baixo para baixar.", false);
+            // Desenha a imagem com offset, considerando o centro do canvas temporário
+            tempCtx.drawImage(
+                originalImage,
+                -imgCenterX + (imageProps.xOffset / CANVAS_SIZE * size),
+                -imgCenterY + (imageProps.yOffset / CANVAS_SIZE * size),
+                originalImage.width,
+                originalImage.height
+            );
 
-        } catch (error) {
-            console.error("Erro ao gerar ícones:", error);
-            hideLoadingIndicator();
-            if (error.name === "SecurityError") {
-                showMessage("Erro de segurança: Imagem de outra origem não pode ser usada no canvas. Verifique as configurações CORS do Firebase Storage e se 'originalImage.crossOrigin = \"anonymous\"' está no código.", true);
-            } else {
-                showMessage("Erro ao gerar ícones: " + error.message, true);
-            }
-        }
-    });
+            // Reseta as transformações para desenhar o texto
+            tempCtx.setTransform(1, 0, 0, 1, 0, 0);
 
-    // Botão Baixar Todos (ZIP)
-    downloadAllZip.addEventListener('click', async () => {
-        if (!imageLoaded) {
-            showMessage("Nenhuma imagem carregada para gerar o ZIP.", true);
-            return;
-        }
-
-        hideMessage();
-        showLoadingIndicator("Gerando ZIP...");
-        const zip = new JSZip();
-
-        try {
-            for (const density in ANDROID_DENSITIES) {
-                const size = ANDROID_DENSITIES[density];
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = size;
-                tempCanvas.height = size;
-                const tempCtx = tempCanvas.getContext('2d');
-
-                // Chama a função de desenho para o canvas temporário do ZIP
-                drawIconToCanvas(tempCtx, size);
-
-                const blob = await new Promise(resolve => tempCanvas.toBlob(resolve, 'image/png'));
-
-                zip.file(`res/drawable-${density}/ic_launcher.png`, blob);
+            // Aplica filtro à imagem no canvas temporário ANTES de desenhar o texto
+            if (imageProps.filter !== 'none') {
+                applyFilterToCanvas(tempCtx, tempCanvas.width, tempCanvas.height, imageProps.filter);
             }
 
-            zip.generateAsync({ type: "blob" })
-                .then(function(content) {
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = URL.createObjectURL(content);
-                    downloadLink.download = "android_icons.zip";
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
-                    hideLoadingIndicator();
-                    showMessage("ZIP gerado com sucesso! Baixe o arquivo.", false);
-                })
-                .catch(error => {
-                    console.error("Erro ao gerar ZIP:", error);
-                    hideLoadingIndicator();
-                    showMessage("Erro ao gerar ZIP: " + error.message, true);
-                });
-
-        } catch (error) {
-            console.error("Erro inesperado ao preparar ZIP:", error);
-            hideLoadingIndicator();
-            if (error.name === "SecurityError") {
-                showMessage("Erro de segurança ao gerar ZIP: Imagem de outra origem não pode ser usada. Verifique CORS e crossOrigin.", true);
-            } else {
-                showMessage("Erro inesperado ao gerar ZIP: " + error.message, true);
+            // Desenha o texto (após a imagem e o filtro)
+            if (textProps.content) {
+                tempCtx.font = `${textProps.fontSize / CANVAS_SIZE * size}px Inter, sans-serif`; // Escala a fonte
+                tempCtx.fillStyle = textProps.fontColor;
+                tempCtx.textAlign = 'center';
+                tempCtx.textBaseline = 'middle';
+                const textX = size / 2 + (textProps.xOffset / CANVAS_SIZE * size);
+                const textY = size / 2 + (textProps.yOffset / CANVAS_SIZE * size);
+                tempCtx.fillText(textProps.content, textX, textY);
             }
+
+            // Converte para Base64 e cria o elemento de imagem
+            const imageDataUrl = tempCanvas.toDataURL('image/png');
+            const iconItem = document.createElement('div');
+            iconItem.classList.add('generated-icon-item');
+            iconItem.innerHTML = `
+                <img src="${imageDataUrl}" alt="${densityName} icon">
+                <p>${densityName} (${size}x${size}px)</p>
+                <a href="${imageDataUrl}" download="icon_${densityName}.png">Download</a>
+            `;
+            generatedIconsContainer.appendChild(iconItem);
+
+            // Adiciona ao ZIP
+            const base64Data = imageDataUrl.replace(/^data:image\/(png|jpg);base64,/, "");
+            zip.file(`android/mipmap-${densityName}/ic_launcher.png`, base64Data, { base64: true });
+        };
+
+        // Gerar ícones para cada densidade
+        for (const density in ANDROID_DENSITIES) {
+            drawAndAddIcon(density, ANDROID_DENSITIES[density]);
         }
+
+        // Gera o arquivo ZIP
+        zip.generateAsync({ type: "blob" })
+            .then(function (content) {
+                const url = URL.createObjectURL(content);
+                downloadAllZip.href = url;
+                downloadAllZip.download = 'android_icons.zip';
+                showMessage("Ícones gerados e prontos para download!", false);
+            })
+            .catch(error => {
+                console.error("Erro ao gerar ZIP:", error);
+                showMessage("Erro ao gerar ZIP dos ícones.", true);
+            });
     });
 
-    // ===========================================
-    // Inicialização e Autenticação
-    // ===========================================
-
-    // Gerencia o estado de autenticação do usuário
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log("Usuário logado no editor:", user.email);
-            checkSelectedExampleImage(); // Tenta carregar imagem de exemplo
-        } else {
-            console.log("Nenhum usuário logado. Redirecionando para login.");
-            window.location.href = 'login.html';
+    // Funções de atualização dos valores dos sliders
+    function updateSliderValue(sliderId, valueSpanId, type, unit, multiplier = 1) {
+        const slider = document.getElementById(sliderId);
+        const valueSpan = document.getElementById(valueSpanId);
+        let value = parseFloat(slider.value) * multiplier;
+        if (type === 'int') {
+            value = parseInt(value);
         }
-    });
+        valueSpan.textContent = `${value}${unit}`;
+    }
 
-    // Evento de clique para o botão de logout
-    logoutBtn.addEventListener('click', () => {
-        signOut(auth).then(() => {
-            console.log("Usuário deslogado.");
-            window.location.href = 'login.html';
-        }).catch((error) => {
-            console.error("Erro ao fazer logout:", error);
-            showMessage("Erro ao fazer logout. Tente novamente.", true);
-        });
-    });
+    // Inicializa valores exibidos
+    updateSliderValue('scaleSlider', 'scaleValue', 'float', '%', 100);
+    updateSliderValue('rotationSlider', 'rotationValue', 'int', '°');
+    updateSliderValue('xOffsetSlider', 'xOffsetValue', 'int', 'px');
+    updateSliderValue('yOffsetSlider', 'yOffsetValue', 'int', 'px');
+    updateSliderValue('fontSizeSlider', 'fontSizeValue', 'int', 'px'); // Novo
+    updateSliderValue('textXOffsetSlider', 'textXOffsetValue', 'int', 'px'); // Novo
+    updateSliderValue('textYOffsetSlider', 'textYOffsetValue', 'int', 'px'); // Novo
 
-    // Chama updateSliderValuesDisplay inicialmente para exibir os valores padrão
-    updateSliderValuesDisplay();
-    // Chama drawImage inicialmente para desenhar o placeholder ou imagem de exemplo
-    drawImage();
-}); // Fim de DOMContentLoaded
+}); // Fim DOMContentLoaded
 
 
 // ===========================================
-// Funções de Utilitário (fora de DOMContentLoaded, pois são chamadas)
+// Funções de Desenho e Edição
 // ===========================================
 
-/**
- * Desenha a imagem no canvas principal.
- */
 function drawImage() {
-    if (!ctx) {
-        console.error("Contexto do canvas principal não disponível.");
-        return;
-    }
-    drawIconToCanvas(ctx, CANVAS_SIZE);
-}
+    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE); // Limpa o canvas
 
-/**
- * Função genérica para desenhar o ícone em qualquer canvas dado.
- * Reutilizada para o canvas de visualização e para os canvases de geração.
- * @param {CanvasRenderingContext2D} targetCtx O contexto do canvas alvo.
- * @param {number} targetSize O tamanho (largura/altura) do canvas alvo.
- */
-function drawIconToCanvas(targetCtx, targetSize) {
-    targetCtx.clearRect(0, 0, targetSize, targetSize); // Sempre limpa o canvas primeiro
-
-    // Salva o estado atual do contexto
-    targetCtx.save();
-
-    // Aplica a máscara da forma, se não for 'none'
-    if (imageProps.iconShape !== 'none') {
-        targetCtx.beginPath();
-        const borderRadius = targetSize * 0.15; // Raio de 15% para o quadrado arredondado
-        const centerX = targetSize / 2;
-        const centerY = targetSize / 2;
-        const rectSize = targetSize; // A forma ocupa todo o canvas para o recorte
-
-        if (imageProps.iconShape === 'circle') {
-            targetCtx.arc(centerX, centerY, targetSize / 2, 0, Math.PI * 2);
-        } else if (imageProps.iconShape === 'rounded-square') {
-            // Desenha um quadrado arredondado
-            drawRoundedRect(targetCtx, 0, 0, rectSize, rectSize, borderRadius);
-        }
-        targetCtx.closePath();
-        targetCtx.clip(); // Tudo que for desenhado depois será recortado por esta forma
-    }
-
-    // Preenche o fundo do canvas com a cor selecionada, se houver
-    if (imageProps.backgroundColor) {
-        targetCtx.fillStyle = imageProps.backgroundColor;
-        targetCtx.fillRect(0, 0, targetSize, targetSize);
-    }
-
-    // Calcula a área efetiva para desenho da imagem após considerar padding e borda
-    const borderOffset = imageProps.borderWidth;
-    const paddingOffset = imageProps.padding + borderOffset; // Padding se soma à borda
-    const imageDrawableArea = targetSize - (paddingOffset * 2);
-
-    if (imageDrawableArea <= 0) {
-        console.warn("Área de desenho da imagem é muito pequena devido a padding/borda. Ícone pode não ser visível.");
-        // Se a área for <= 0, pode-se desenhar apenas a borda/fundo e não a imagem.
-    }
-    
-    // Desenha a borda se a largura for maior que 0
-    // A borda é desenhada DENTRO da área clipada se a forma estiver ativa
-    // Se não houver forma, ela é desenhada normalmente.
-    if (borderOffset > 0) {
-        targetCtx.beginPath();
-        // A borda é desenhada no meio da linha, então subtraímos 1/2 da largura da borda de cada lado
-        // e ajustamos a posição para que a borda fique dentro do effectiveSize.
-        // É importante que o path da borda não seja clipado pela máscara, então a borda é desenhada primeiro.
-        // Mas com o clip, ela será desenhada *dentro* da forma.
-        
-        // Novo cálculo para a borda para que ela se alinhe corretamente *dentro* da forma/canvas
-        targetCtx.rect(borderOffset / 2, borderOffset / 2, targetSize - borderOffset, targetSize - borderOffset);
-        targetCtx.lineWidth = borderOffset;
-        targetCtx.strokeStyle = imageProps.borderColor;
-        targetCtx.stroke();
-    }
-
+    // Preenche o fundo com a cor selecionada
+    ctx.fillStyle = imageProps.backgroundColor;
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     if (imageLoaded) {
-        // Salva o estado ANTES das transformações da imagem
-        targetCtx.save();
-        
-        // Ajusta a translação e escala para o tamanho efetivo da área de desenho da imagem
-        // A escala aqui é a proporção do tamanho da área de desenho para o CANVAS_SIZE original
-        const scaleFactorForDrawableArea = imageDrawableArea / CANVAS_SIZE; 
-        
-        // O centro da imagem deve ser o centro da 'imageDrawableArea'
-        // que é offset + (imageDrawableArea / 2)
-        const centerX = paddingOffset + (imageDrawableArea / 2) + (imageProps.xOffset * scaleFactorForDrawableArea);
-        const centerY = paddingOffset + (imageDrawableArea / 2) + (imageProps.yOffset * scaleFactorForDrawableArea);
+        ctx.save(); // Salva o estado atual do contexto
 
-        targetCtx.translate(centerX, centerY);
-        targetCtx.rotate(imageProps.rotation * Math.PI / 180);
+        // Move a origem para o centro do canvas
+        ctx.translate(CANVAS_SIZE / 2, CANVAS_SIZE / 2);
 
-        // A largura e altura escaladas da imagem original são multiplicadas pela escala do usuário
-        // E também pelo fator de escala da área de desenho para que se encaixem corretamente
-        const scaledWidth = originalImage.width * imageProps.scale * scaleFactorForDrawableArea;
-        const scaledHeight = originalImage.height * imageProps.scale * scaleFactorForDrawableArea;
+        // Aplica rotação
+        ctx.rotate(imageProps.rotation * Math.PI / 180);
 
-        targetCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
-        targetCtx.restore(); // Restaura o estado APÓS desenhar a imagem
-    } else {
-        // Desenha texto placeholder (o fundo já foi preenchido acima, se aplicável)
-        targetCtx.fillStyle = '#ccc'; // Cor do texto
-        targetCtx.font = '24px Arial';
-        targetCtx.textAlign = 'center';
-        // Ajusta a posição do texto placeholder para o centro da 'imageDrawableArea'
-        targetCtx.fillText('Carregue ou escolha uma imagem', paddingOffset + imageDrawableArea / 2, paddingOffset + imageDrawableArea / 2);
+        // Aplica escala
+        ctx.scale(imageProps.scale, imageProps.scale);
+
+        // Desenha a imagem centralizada no novo sistema de coordenadas com offsets
+        const imgCenterX = originalImage.width / 2;
+        const imgCenterY = originalImage.height / 2;
+        ctx.drawImage(
+            originalImage,
+            -imgCenterX + imageProps.xOffset,
+            -imgCenterY + imageProps.yOffset,
+            originalImage.width,
+            originalImage.height
+        );
+
+        ctx.restore(); // Restaura o estado anterior do contexto (removendo transformações)
+
+        // Aplica filtro ao canvas principal (APÓS desenhar a imagem)
+        if (imageProps.filter !== 'none') {
+            applyFilterToCanvas(ctx, CANVAS_SIZE, CANVAS_SIZE, imageProps.filter);
+        }
     }
 
-    targetCtx.restore(); // Restaura o estado original do contexto (remove o clip, se houver)
-}
-
-/**
- * Helper para desenhar um retângulo arredondado.
- * @param {CanvasRenderingContext2D} ctx O contexto do canvas.
- * @param {number} x A coordenada X do canto superior esquerdo.
- * @param {number} y A coordenada Y do canto superior esquerdo.
- * @param {number} width A largura do retângulo.
- * @param {number} height A altura do retângulo.
- * @param {number} radius O raio dos cantos.
- */
-function drawRoundedRect(ctx, x, y, width, height, radius) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-}
-
-
-// Exibe mensagens para o usuário
-function showMessage(message, isError = false) {
-    if (editorMessage) {
-        editorMessage.textContent = message;
-        editorMessage.className = `message ${isError ? 'error' : 'success'}`;
-        editorMessage.style.display = 'block';
-    } else {
-        console.warn("Elemento editorMessage não encontrado para exibir mensagem:", message);
+    // Desenha o texto (SEMPRE depois da imagem e dos filtros para estar no topo)
+    if (textProps.content) {
+        ctx.save();
+        ctx.font = `${textProps.fontSize}px 'Inter', sans-serif`; // Usar 'Inter' ou outra fonte segura
+        ctx.fillStyle = textProps.fontColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // Calcular posição central no canvas + offset
+        const textX = CANVAS_SIZE / 2 + textProps.xOffset;
+        const textY = CANVAS_SIZE / 2 + textProps.yOffset;
+        ctx.fillText(textProps.content, textX, textY);
+        ctx.restore();
     }
 }
 
-// Oculta mensagens
-function hideMessage() {
-    if (editorMessage) {
+// NOVO: Aplica um filtro ao contexto do canvas
+function applyFilterToCanvas(context, width, height, filter) {
+    const imageData = context.getImageData(0, 0, width, height);
+    const pixels = imageData.data; // Array de pixels [R, G, B, A, R, G, B, A, ...]
+
+    for (let i = 0; i < pixels.length; i += 4) {
+        let r = pixels[i];
+        let g = pixels[i + 1];
+        let b = pixels[i + 2];
+
+        switch (filter) {
+            case 'grayscale':
+                const gray = (r + g + b) / 3;
+                pixels[i] = gray;
+                pixels[i + 1] = gray;
+                pixels[i + 2] = gray;
+                break;
+            case 'sepia':
+                pixels[i] = (r * 0.393) + (g * 0.769) + (b * 0.189);
+                pixels[i + 1] = (r * 0.349) + (g * 0.686) + (b * 0.168);
+                pixels[i + 2] = (r * 0.272) + (g * 0.534) + (b * 0.131);
+                break;
+            case 'invert':
+                pixels[i] = 255 - r;
+                pixels[i + 1] = 255 - g;
+                pixels[i + 2] = 255 - b;
+                break;
+            case 'blur':
+                // Implementar um blur simples (box blur)
+                // Isso é complexo para fazer pixel a pixel eficientemente aqui.
+                // Para um blur real, ctx.filter = 'blur(5px)'; é preferível,
+                // mas isso requer que o navegador suporte a propriedade filter em canvas.
+                // Como alternativa, vou deixar um placeholder e recomendar uma lib se necessário.
+                // Por simplicidade, vou usar a propriedade CSS filter no canvas se suportado,
+                // ou apenas passar por isso se não for a abordagem principal.
+                // Para este exemplo, o blur é mais conceitual no pixel a pixel.
+                // É melhor usar ctx.filter = 'blur(Xpx)' ou uma biblioteca externa para blur real.
+                // Para uma implementação de filtro de verdade, o ideal é usar `ctx.filter` ou uma biblioteca de manipulação de imagem.
+                // Para um exemplo simples de pixel, o blur é muito custoso.
+                // Vou deixar um 'no-op' para blur em manipulação de pixel
+                break;
+        }
+    }
+
+    // Se o filtro for 'blur', usamos a propriedade de estilo do canvas (mais fácil)
+    if (filter === 'blur') {
+        // Verifica se a propriedade filter é suportada e aplica
+        if (typeof context.filter !== 'undefined') {
+            context.filter = 'blur(5px)'; // Aplica blur diretamente via CSS filter no canvas
+            context.drawImage(context.canvas, 0, 0); // Redesenha para aplicar o filtro
+            context.filter = 'none'; // Reseta para não afetar futuros desenhos
+        } else {
+            console.warn("Filtro 'blur' não suportado nativamente no canvas ou implementado via pixel. Usando fallback.");
+            // Você pode adicionar um algoritmo de blur pixel a pixel aqui, mas é computacionalmente caro.
+            // Para este exemplo, a implementação de blur pixel a pixel não será detalhada.
+        }
+    } else {
+        context.putImageData(imageData, 0, 0);
+    }
+}
+
+
+function showMessage(message, isError) {
+    editorMessage.textContent = message;
+    editorMessage.className = `message ${isError ? 'error' : 'success'}`;
+    editorMessage.style.display = 'block';
+    setTimeout(() => {
         editorMessage.style.display = 'none';
-    }
+    }, 5000);
 }
 
-// Exibe o indicador de carregamento
-function showLoadingIndicator(message = "Carregando...") {
-    if (loadingIndicator) {
-        loadingIndicator.textContent = message;
-        loadingIndicator.style.display = 'block';
-        loadingIndicator.classList.add('loading');
-    }
-}
-
-// Oculta o indicador de carregamento
-function hideLoadingIndicator() {
-    if (loadingIndicator) {
-        loadingIndicator.style.display = 'none';
-        loadingIndicator.classList.remove('loading');
-    }
-}
-
-// Função para resetar as propriedades de edição da imagem para o estado inicial
-function resetImageProperties() {
-    let initialScale = 1;
-    // Calcule a escala inicial para fazer a imagem caber se ela for maior que o CANVAS_SIZE
-    if (imageLoaded && (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE)) {
-        initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
-    }
-
+function resetImageProperties(resetHistory = true) {
+    // Resetar propriedades da imagem
     imageProps = {
-        scale: initialScale,
+        scale: 1,
         rotation: 0,
         xOffset: 0,
         yOffset: 0,
-        backgroundColor: '#ffffff', // Reseta a cor de fundo para branco
-        padding: 0, // Reseta padding
-        borderWidth: 0, // Reseta largura da borda
-        borderColor: '#000000', // Reseta cor da borda
-        iconShape: 'none' // NOVO: Reseta formato do ícone
+        backgroundColor: '#FFFFFF',
+        filter: 'none'
     };
-    // Atualiza os sliders e seus valores exibidos
-    if (scaleSlider) scaleSlider.value = imageProps.scale;
-    if (rotationSlider) rotationSlider.value = imageProps.rotation;
-    if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
-    if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
-    if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
-    if (paddingSlider) paddingSlider.value = imageProps.padding;
-    if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth;
-    if (borderColorPicker) borderColorPicker.value = imageProps.borderColor;
-    
-    // NOVO: Atualiza os radio buttons
-    if (iconShapeRadios) {
-        iconShapeRadios.forEach(radio => {
-            if (radio.value === imageProps.iconShape) {
-                radio.checked = true;
-            } else {
-                radio.checked = false;
-            }
-        });
+    // Resetar propriedades do texto
+    textProps = {
+        content: '',
+        fontSize: 40,
+        fontColor: '#000000',
+        xOffset: 0,
+        yOffset: 0
+    };
+
+    // Resetar sliders e pickers para seus valores padrão
+    scaleSlider.value = imageProps.scale;
+    rotationSlider.value = imageProps.rotation;
+    xOffsetSlider.value = imageProps.xOffset;
+    yOffsetSlider.value = imageProps.yOffset;
+    backgroundColorPicker.value = imageProps.backgroundColor;
+    filterSelect.value = imageProps.filter;
+
+    textInput.value = textProps.content;
+    fontSizeSlider.value = textProps.fontSize;
+    fontColorPicker.value = textProps.fontColor;
+    textXOffsetSlider.value = textProps.xOffset;
+    textYOffsetSlider.value = textProps.yOffset;
+
+
+    // Atualizar os valores exibidos nos spans
+    updateSliderValue('scaleSlider', 'scaleValue', 'float', '%', 100);
+    updateSliderValue('rotationSlider', 'rotationValue', 'int', '°');
+    updateSliderValue('xOffsetSlider', 'xOffsetValue', 'int', 'px');
+    updateSliderValue('yOffsetSlider', 'yOffsetValue', 'int', 'px');
+    updateSliderValue('fontSizeSlider', 'fontSizeValue', 'int', 'px');
+    updateSliderValue('textXOffsetSlider', 'textXOffsetValue', 'int', 'px');
+    updateSliderValue('textYOffsetSlider', 'textYOffsetValue', 'int', 'px');
+
+
+    // Limpar a imagem se for um reset completo
+    if (resetHistory) {
+        imageLoaded = false;
+        originalImage.src = ''; // Limpa a fonte da imagem
+        history = [];
+        historyIndex = -1;
+        updateUndoRedoButtons();
     }
-    
-    updateSliderValuesDisplay();
+    saveState(); // Salva o estado inicial após o reset
 }
 
-// Função para resetar uma propriedade individualmente
-function resetIndividualProperty(property) {
-    let initialScale = 1;
-    if (imageLoaded && (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE)) {
-        initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
+// NOVO: Salva o estado atual das propriedades no histórico
+function saveState() {
+    // Se o historyIndex não estiver no final, descarta os "redos"
+    if (historyIndex < history.length - 1) {
+        history = history.slice(0, historyIndex + 1);
     }
 
-    switch (property) {
-        case 'scale':
-            imageProps.scale = initialScale;
-            if (scaleSlider) scaleSlider.value = imageProps.scale;
-            break;
-        case 'rotation':
-            imageProps.rotation = 0;
-            if (rotationSlider) rotationSlider.value = imageProps.rotation;
-            break;
-        case 'xOffset':
-            imageProps.xOffset = 0;
-            if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
-            break;
-        case 'yOffset':
-            imageProps.yOffset = 0;
-            if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
-            break;
-        case 'backgroundColor':
-            imageProps.backgroundColor = '#ffffff';
-            if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
-            break;
-        case 'padding':
-            imageProps.padding = 0;
-            if (paddingSlider) paddingSlider.value = imageProps.padding;
-            break;
-        case 'borderWidth':
-            imageProps.borderWidth = 0;
-            if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth;
-            break;
-        case 'borderColor':
-            imageProps.borderColor = '#000000';
-            if (borderColorPicker) borderColorPicker.value = imageProps.borderColor;
-            break;
-        // NOVO: Reset para iconShape
-        case 'iconShape':
-            imageProps.iconShape = 'none';
-            if (iconShapeRadios) {
-                iconShapeRadios.forEach(radio => {
-                    if (radio.value === 'none') {
-                        radio.checked = true;
-                    } else {
-                        radio.checked = false;
-                    }
-                });
-            }
-            break;
-        default:
-            console.warn(`Propriedade desconhecida para reset: ${property}`);
-            return;
+    const currentState = {
+        image: { ...imageProps }, // Cópia profunda das propriedades da imagem
+        text: { ...textProps },   // Cópia profunda das propriedades do texto
+        imageDataUrl: imageLoaded ? originalImage.src : null // Salva a imagem base64/URL
+    };
+    history.push(currentState);
+
+    // Limita o tamanho do histórico
+    if (history.length > MAX_HISTORY_SIZE) {
+        history.shift(); // Remove o item mais antigo
+    } else {
+        historyIndex++;
     }
-    updateSliderValuesDisplay(); // Garante que o valor exibido seja atualizado
+    updateUndoRedoButtons();
+    console.log("Estado salvo. Histórico:", history.length, "Index:", historyIndex);
+}
+
+// NOVO: Desfaz a última ação
+function undo() {
+    if (historyIndex > 0) {
+        historyIndex--;
+        applyState(history[historyIndex]);
+        console.log("Undo. Histórico:", history.length, "Index:", historyIndex);
+    }
+    updateUndoRedoButtons();
+}
+
+// NOVO: Refaz a última ação desfeita
+function redo() {
+    if (historyIndex < history.length - 1) {
+        historyIndex++;
+        applyState(history[historyIndex]);
+        console.log("Redo. Histórico:", history.length, "Index:", historyIndex);
+    }
+    updateUndoRedoButtons();
+}
+
+// NOVO: Aplica um estado salvo
+function applyState(state) {
+    // Aplica propriedades da imagem
+    imageProps = { ...state.image };
+    scaleSlider.value = imageProps.scale;
+    rotationSlider.value = imageProps.rotation;
+    xOffsetSlider.value = imageProps.xOffset;
+    yOffsetSlider.value = imageProps.yOffset;
+    backgroundColorPicker.value = imageProps.backgroundColor;
+    filterSelect.value = imageProps.filter;
+
+    // Aplica propriedades do texto
+    textProps = { ...state.text };
+    textInput.value = textProps.content;
+    fontSizeSlider.value = textProps.fontSize;
+    fontColorPicker.value = textProps.fontColor;
+    textXOffsetSlider.value = textProps.xOffset;
+    textYOffsetSlider.value = textProps.yOffset;
+
+    // Se houver uma imagem no estado, carrega-a
+    if (state.imageDataUrl && state.imageDataUrl !== originalImage.src) {
+        originalImage.src = state.imageDataUrl;
+        originalImage.onload = () => {
+            imageLoaded = true;
+            drawImage();
+        };
+    } else if (!state.imageDataUrl) { // Se não houver imagem, reseta
+        imageLoaded = false;
+        originalImage.src = '';
+        drawImage();
+    } else { // Se a imagem for a mesma, apenas redesenha
+        drawImage();
+    }
+
+
+    // Atualiza os valores exibidos nos sliders
+    updateSliderValue('scaleSlider', 'scaleValue', 'float', '%', 100);
+    updateSliderValue('rotationSlider', 'rotationValue', 'int', '°');
+    updateSliderValue('xOffsetSlider', 'xOffsetValue', 'int', 'px');
+    updateSliderValue('yOffsetSlider', 'yOffsetValue', 'int', 'px');
+    updateSliderValue('fontSizeSlider', 'fontSizeValue', 'int', 'px');
+    updateSliderValue('textXOffsetSlider', 'textXOffsetValue', 'int', 'px');
+    updateSliderValue('textYOffsetSlider', 'textYOffsetValue', 'int', 'px');
+
+    updateUndoRedoButtons(); // Garante que o estado dos botões esteja correto
+}
+
+// NOVO: Atualiza o estado dos botões Undo/Redo
+function updateUndoRedoButtons() {
+    undoBtn.disabled = historyIndex <= 0;
+    redoBtn.disabled = historyIndex >= history.length - 1;
 }
 
 
-// Função para atualizar a exibição dos valores dos sliders
-function updateSliderValuesDisplay() {
-    if (scaleValueSpan) scaleValueSpan.textContent = imageProps.scale.toFixed(2);
-    if (rotationValueSpan) rotationValueSpan.textContent = `${imageProps.rotation}°`;
-    if (xOffsetValueSpan) xOffsetValueSpan.textContent = `${imageProps.xOffset}px`;
-    if (yOffsetValueSpan) yOffsetValueSpan.textContent = `${imageProps.yOffset}px`;
-    if (paddingValueSpan) paddingValueSpan.textContent = `${imageProps.padding}px`;
-    if (borderWidthValueSpan) borderWidthValueSpan.textContent = `${imageProps.borderWidth}px`;
-}
-
-// Carrega imagem via URL (usado para exemplos do Firebase Storage)
+// Carrega imagem de URL (para exemplos)
 function loadImageFromUrl(url) {
-    console.log("loadImageFromUrl chamado com URL:", url.substring(0, 100) + "...");
-    originalImage = new Image();
-    originalImage.crossOrigin = "anonymous"; // *** ESSENCIAL para CORS em canvas ***
+    originalImage.crossOrigin = 'Anonymous'; // Importante para CORS em canvas ***
 
     originalImage.onload = () => {
         imageLoaded = true;
-        console.log("Imagem carregada com SUCESSO. Dimensões:", originalImage.width, "x", originalImage.height);
-        resetImageProperties(); // Reseta todas as propriedades para a imagem nova
+        console.log("Imagem carregada com SUCESSO do URL. Dimensões:", originalImage.width, "x", originalImage.height);
+        resetImageProperties(false); // Não reseta o histórico ao carregar nova imagem (vindo de exemplo)
+        saveState(); // Salva o estado inicial da nova imagem
         drawImage();
-        showMessage("Imagem carregada com sucesso!", false);
+        showMessage("Imagem de exemplo carregada com sucesso!", false);
     };
     originalImage.onerror = (e) => {
         imageLoaded = false;
@@ -700,5 +752,18 @@ function checkSelectedExampleImage() {
         console.log("URL de imagem de exemplo encontrada no localStorage:", selectedImageUrl.substring(0,100) + "...");
         loadImageFromUrl(selectedImageUrl);
         localStorage.removeItem('selectedExampleImageUrl'); // Limpa após o uso
+    } else {
+        // Se não houver imagem pré-selecionada, apenas salva o estado inicial para undo/redo
+        saveState();
     }
+}
+
+// Função para centralizar a imagem no canvas após o carregamento
+// Não é mais chamada automaticamente no onload, pois resetImageProperties e drawImage cuidam disso.
+// Permanece aqui apenas para referência, se necessário para outra lógica.
+function centerImage() {
+    // Calculos de offset para centralizar
+    imageProps.xOffset = (CANVAS_SIZE - originalImage.width * imageProps.scale) / 2;
+    imageProps.yOffset = (CANVAS_SIZE - originalImage.height * imageProps.scale) / 2;
+    drawImage();
 }
