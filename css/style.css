@@ -5,7 +5,7 @@
 /* Variáveis CSS (Melhora a manutenção e consistência) */
 /* ===================================== */
 :root {
-    --primary-color: #4CAF50; /* Verde principal, mantido mas usado de forma mais estratégica */
+    --primary-color: #28a745; /* Verde mais profundo e profissional */
     --accent-color: #007bff; /* Azul vibrante para ações */
     --text-color: #333333;
     --light-text-color: #555555;
@@ -147,7 +147,7 @@ footer {
 }
 
 .auth-container button:hover {
-    background-color: #3b8e40; /* Verde ligeiramente mais escuro */
+    background-color: #218838; /* Verde ligeiramente mais escuro */
     box-shadow: var(--shadow-hover);
 }
 
@@ -173,8 +173,91 @@ footer {
 }
 
 .auth-container p a:hover {
-    color: #3b8e40;
+    color: #218838;
     text-decoration: underline;
+}
+
+/* ===================================== */
+/* Estilos para a Página Inicial (index.html) - ATUALIZADOS */
+/* ===================================== */
+.hero {
+    text-align: center;
+    padding: 60px 30px; /* Mais padding para espaçamento */
+    background: linear-gradient(135deg, var(--primary-color) 0%, #4CAF50 100%); /* Gradiente suave */
+    color: white; /* Texto branco no hero */
+    border-radius: var(--border-radius-base);
+    margin-bottom: 40px; /* Mais espaço */
+    box-shadow: var(--shadow-light); /* Sombra para o hero */
+}
+
+.hero h1 {
+    font-size: 3em; /* Título maior e mais impactante */
+    margin-bottom: 15px;
+    font-weight: 700; /* Mais forte */
+}
+
+.hero p {
+    font-size: 1.3em; /* Texto maior */
+    max-width: 800px;
+    margin: 0 auto 40px auto; /* Mais espaço antes dos botões */
+    color: rgba(255, 255, 255, 0.9); /* Branco ligeiramente transparente */
+    font-weight: 300; /* Mais leve para o corpo do texto */
+}
+
+.hero .actions button {
+    background-color: rgba(255, 255, 255, 0.2); /* Fundo transparente no hero */
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Borda branca sutil */
+    padding: 15px 30px; /* Mais padding para botões */
+    margin: 0 15px; /* Mais espaço entre botões */
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600; /* Mais forte */
+    transition: var(--transition-speed);
+}
+
+.hero .actions button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-color: white;
+    transform: translateY(-3px); /* Efeito de elevação sutil */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.features {
+    padding: 30px 0; /* Mais padding */
+}
+
+.features h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 30px; /* Mais espaço */
+    font-size: 2.2em; /* Título maior */
+    font-weight: 600;
+}
+
+.features ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colunas com largura mínima maior */
+    gap: 25px; /* Mais espaçamento entre itens */
+}
+
+.features li {
+    background-color: var(--background-card); /* Fundo branco */
+    padding: 20px; /* Mais padding */
+    border-left: 5px solid var(--primary-color); /* Borda esquerda verde */
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light); /* Sombra mais visível */
+    font-size: 1em;
+    color: var(--light-text-color);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.features li:hover {
+    transform: translateY(-5px); /* Efeito de elevação */
+    box-shadow: var(--shadow-hover);
 }
 
 /* ===================================== */
@@ -208,6 +291,17 @@ footer {
     margin-bottom: 20px;
     padding: 8px 0; /* Padding para o input de arquivo */
     font-size: 1em;
+}
+
+.editor-controls p a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color var(--transition-speed);
+}
+.editor-controls p a:hover {
+    color: #218838;
+    text-decoration: underline;
 }
 
 .editor-controls .tool-group {
@@ -391,7 +485,7 @@ footer {
 }
 
 .primary-btn:hover {
-    background-color: #3b8e40;
+    background-color: #218838;
 }
 
 /* Seção de Download */
@@ -429,7 +523,7 @@ footer {
     padding: 15px; /* Mais padding */
     background-color: var(--background-card);
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: var(--transition-speed);
+    transition: transform var(--transition-speed);
 }
 
 .generated-icon-item:hover, .example-item:hover {
@@ -577,6 +671,27 @@ footer {
         transform: none;
         margin-top: 10px;
     }
+    /* Ajuste para hero e features em telas menores */
+    .hero {
+        padding: 40px 20px;
+    }
+    .hero h1 {
+        font-size: 2.5em;
+    }
+    .hero p {
+        font-size: 1.1em;
+    }
+    .hero .actions button {
+        margin: 0 8px;
+        padding: 12px 20px;
+    }
+    .features h2 {
+        font-size: 2em;
+    }
+    .features ul {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -604,6 +719,27 @@ footer {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 15px;
         padding: 20px;
+    }
+    /* Ajuste para hero e features em telas menores */
+    .hero {
+        padding: 30px 15px;
+    }
+    .hero h1 {
+        font-size: 2em;
+    }
+    .hero p {
+        font-size: 1em;
+    }
+    .hero .actions button {
+        display: block; /* Botões de ação em bloco */
+        width: calc(100% - 30px); /* Ocupa quase toda a largura */
+        margin: 10px auto; /* Centraliza */
+    }
+    .features h2 {
+        font-size: 1.8em;
+    }
+    .features ul {
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
     }
 }
 
@@ -641,5 +777,26 @@ footer {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 10px;
         padding: 10px;
+    }
+    /* Ajuste para hero e features em telas muito pequenas */
+    .hero {
+        padding: 25px 10px;
+    }
+    .hero h1 {
+        font-size: 1.7em;
+    }
+    .hero p {
+        font-size: 0.9em;
+        margin-bottom: 25px;
+    }
+    .hero .actions button {
+        font-size: 0.9em;
+        padding: 10px 15px;
+    }
+    .features h2 {
+        font-size: 1.6em;
+    }
+    .features li {
+        padding: 15px;
     }
 }
