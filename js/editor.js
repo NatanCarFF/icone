@@ -83,8 +83,12 @@ onAuthStateChanged(auth, (user) => {
         // Tenta carregar a imagem selecionada da página de exemplos, se houver
         const selectedImageUrl = localStorage.getItem('selectedExampleImageUrl');
         if (selectedImageUrl) {
-            loadImageFromUrl(selectedImageUrl);
+            console.log("URL de imagem de exemplo encontrada no localStorage:", selectedImageUrl);
+            loadImageFromUrl(selectedImageUrl); // Esta é a função que carrega a imagem
             localStorage.removeItem('selectedExampleImageUrl'); // Limpa após usar
+        } else {
+            console.log("Nenhuma imagem de exemplo encontrada no localStorage. Aguardando upload.");
+            drawImage(); // Desenha o placeholder se nenhuma imagem for carregada inicialmente
         }
     }
 });
@@ -106,6 +110,7 @@ logoutBtn.addEventListener('click', async () => {
 
 // Desenha a imagem no canvas com as propriedades atuais
 function drawImage() {
+    console.log("drawImage chamado. imageLoaded:", imageLoaded);
     ctx.clearRect(0, 0, iconCanvas.width, iconCanvas.height); // Limpa o canvas
 
     if (!imageLoaded) {
@@ -117,6 +122,18 @@ function drawImage() {
     }
 
     const img = originalImage;
+    console.log("originalImage dimensões:", img.width, "x", img.height);
+    if (img.width === 0 || img.height === 0) {
+        console.warn("Imagem original tem largura ou altura zero. Não pode ser desenhada.");
+        // Desenha o placeholder novamente se a imagem não tiver dimensões válidas
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#888';
+        ctx.textAlign = 'center';
+        ctx.fillText('Erro: Imagem inválida ou dimensões zero.', iconCanvas.width / 2, iconCanvas.height / 2);
+        return;
+    }
+
+
     const canvasWidth = iconCanvas.width;
     const canvasHeight = iconCanvas.height;
 
@@ -141,6 +158,9 @@ function drawImage() {
     const scaledWidth = initialImgWidth * imageProps.scale;
     const scaledHeight = initialImgHeight * imageProps.scale;
 
+    console.log(`Desenho: escala=${imageProps.scale}, rot=${imageProps.rotation}, xOff=${imageProps.xOffset}, yOff=${imageProps.yOffset}`);
+    console.log(`Dimensões desenhadas: ${scaledWidth}x${scaledHeight}`);
+
     // Salva o estado atual do canvas antes de aplicar transformações
     ctx.save();
 
@@ -155,17 +175,20 @@ function drawImage() {
     ctx.restore();
 }
 
-// Carrega imagem via URL (usado para exemplos do Firebase Storage)
+// Carrega imagem via URL (usado para exemplos do Firebase Storage e Data URLs de upload)
 function loadImageFromUrl(url) {
+    console.log("loadImageFromUrl chamado com URL:", url.substring(0, 100) + "..."); // Log parcial da URL
     originalImage.onload = () => {
         imageLoaded = true;
+        console.log("Imagem carregada com SUCESSO. Dimensões:", originalImage.width, "x", originalImage.height);
         // Reinicia as propriedades ao carregar nova imagem
         resetImageProperties();
         drawImage();
         showMessage("Imagem carregada com sucesso!", false);
     };
-    originalImage.onerror = () => {
+    originalImage.onerror = (e) => {
         imageLoaded = false;
+        console.error("Erro ao carregar imagem do URL:", e);
         showMessage("Erro ao carregar imagem do URL. Verifique a URL ou sua conexão.", true);
         drawImage(); // Desenha o texto de placeholder
     };
@@ -176,11 +199,17 @@ function loadImageFromUrl(url) {
 imageUpload.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
+        if (!file.type.startsWith('image/')) {
+            showMessage("Por favor, selecione um arquivo de imagem válido.", true);
+            return;
+        }
         const reader = new FileReader();
         reader.onload = (e) => {
+            console.log("FileReader concluiu o carregamento do arquivo.");
             loadImageFromUrl(e.target.result); // Reutiliza a função de carregar por URL (data URL)
         };
-        reader.onerror = () => {
+        reader.onerror = (e) => {
+            console.error("Erro ao ler o arquivo de imagem pelo FileReader:", e);
             showMessage("Erro ao ler o arquivo de imagem.", true);
         };
         reader.readAsDataURL(file);
@@ -223,7 +252,7 @@ function resetImageProperties() {
 
 resetEditorBtn.addEventListener('click', resetImageProperties);
 
-// Desenha a imagem inicial no canvas
+// Desenha a imagem inicial no canvas (placeholder)
 drawImage();
 
 // ===========================================
