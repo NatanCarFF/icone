@@ -2,8 +2,8 @@
 
 import { auth } from './firebase-config.js'; // Importa a instância de auth
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-// CORREÇÃO: Importar JSZip corretamente
-import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+// REMOVIDO: import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+// JSZip agora será acessível globalmente, carregado via <script> no HTML
 
 
 // ===========================================
@@ -146,11 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor;
+                const scaledHeight = originalImage.height * originalImage.height * imageProps.scale * scaleFactor; // Corrigido: deve ser originalImage.height
                 tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
                 tempCtx.restore();
 
-                const imageUrl = tempCanvas.toDataURL('image/png'); // AQUI OCORRE O ERRO SE CORS NÃO ESTIVER OK
+                const imageUrl = tempCanvas.toDataURL('image/png');
 
                 generatedIcons.push({ density, imageUrl, size });
 
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         showMessage("Gerando ZIP... Aguarde.", false);
-        const zip = new JSZip();
+        const zip = new JSZip(); // JSZip agora deve ser acessível aqui
 
         try {
             for (const density in ANDROID_DENSITIES) {
