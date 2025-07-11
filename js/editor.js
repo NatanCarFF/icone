@@ -16,9 +16,10 @@ let imageProps = {
     xOffset: 0,
     yOffset: 0,
     backgroundColor: '#ffffff', // Cor de fundo padrão (branco)
-    padding: 0, // NOVO: Padding padrão
-    borderWidth: 0, // NOVO: Largura da borda padrão
-    borderColor: '#000000' // NOVO: Cor da borda padrão (preto)
+    padding: 0, // Padding padrão
+    borderWidth: 0, // Largura da borda padrão
+    borderColor: '#000000', // Cor da borda padrão (preto)
+    iconShape: 'none' // NOVO: Formato do ícone padrão ('none', 'circle', 'rounded-square')
 };
 const CANVAS_SIZE = 512; // Tamanho base do canvas para edição
 
@@ -57,9 +58,10 @@ let rotationSlider;
 let xOffsetSlider;
 let yOffsetSlider;
 let backgroundColorPicker;
-let paddingSlider; // NOVO
-let borderWidthSlider; // NOVO
-let borderColorPicker; // NOVO
+let paddingSlider;
+let borderWidthSlider;
+let borderColorPicker;
+let iconShapeRadios; // NOVO
 let resetEditorBtn;
 let generateIconsBtn;
 let editorMessage;
@@ -74,8 +76,8 @@ let scaleValueSpan;
 let rotationValueSpan;
 let xOffsetValueSpan;
 let yOffsetValueSpan;
-let paddingValueSpan; // NOVO
-let borderWidthValueSpan; // NOVO
+let paddingValueSpan;
+let borderWidthValueSpan;
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -94,9 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
     xOffsetSlider = document.getElementById('xOffsetSlider');
     yOffsetSlider = document.getElementById('yOffsetSlider');
     backgroundColorPicker = document.getElementById('backgroundColorPicker');
-    paddingSlider = document.getElementById('paddingSlider'); // NOVO
-    borderWidthSlider = document.getElementById('borderWidthSlider'); // NOVO
-    borderColorPicker = document.getElementById('borderColorPicker'); // NOVO
+    paddingSlider = document.getElementById('paddingSlider');
+    borderWidthSlider = document.getElementById('borderWidthSlider');
+    borderColorPicker = document.getElementById('borderColorPicker');
+    iconShapeRadios = document.querySelectorAll('input[name="iconShape"]'); // NOVO
     resetEditorBtn = document.getElementById('resetEditorBtn');
     generateIconsBtn = document.getElementById('generateIconsBtn');
     editorMessage = document.getElementById('editorMessage');
@@ -112,8 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
     rotationValueSpan = document.getElementById('rotationValue');
     xOffsetValueSpan = document.getElementById('xOffsetValue');
     yOffsetValueSpan = document.getElementById('yOffsetValue');
-    paddingValueSpan = document.getElementById('paddingValue'); // NOVO
-    borderWidthValueSpan = document.getElementById('borderWidthValue'); // NOVO
+    paddingValueSpan = document.getElementById('paddingValue');
+    borderWidthValueSpan = document.getElementById('borderWidthValue');
 
 
     // ===========================================
@@ -178,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         drawImage();
     });
 
-    // NOVO: Eventos para os sliders de padding e borda
+    // Eventos para os sliders de padding e borda
     paddingSlider.addEventListener('input', (e) => {
         imageProps.padding = parseInt(e.target.value);
         paddingValueSpan.textContent = `${imageProps.padding}px`;
@@ -194,6 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
     borderColorPicker.addEventListener('input', (e) => {
         imageProps.borderColor = e.target.value;
         drawImage();
+    });
+
+    // NOVO: Eventos para os botões de rádio do formato do ícone
+    iconShapeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            imageProps.iconShape = e.target.value;
+            drawImage(); // Redesenha imediatamente para mostrar a forma
+        });
     });
 
 
@@ -246,48 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCanvas.height = size;
                 const tempCtx = tempCanvas.getContext('2d');
 
-                tempCtx.clearRect(0, 0, size, size); // Limpa o canvas temporário
-
-                // Preenche o fundo do ícone gerado com a cor selecionada
-                if (imageProps.backgroundColor) {
-                    tempCtx.fillStyle = imageProps.backgroundColor;
-                    tempCtx.fillRect(0, 0, size, size);
-                }
-
-                // Calcula as dimensões e posições considerando padding e borda
-                const effectiveSize = size;
-                const borderOffset = imageProps.borderWidth;
-                const paddingOffset = imageProps.padding + borderOffset; // Padding se soma à borda
-                const imageDrawableArea = effectiveSize - (paddingOffset * 2);
-
-                if (imageDrawableArea <= 0) { // Garante que a área para a imagem não seja negativa/zero
-                    console.warn("Área de desenho da imagem é muito pequena devido a padding/borda. Ícone pode não ser visível.");
-                    // Pode desenhar um X ou apenas a borda/fundo se a imagem não couber
-                }
-                
-                // Desenha a borda se a largura for maior que 0
-                if (borderOffset > 0) {
-                    tempCtx.beginPath();
-                    tempCtx.rect(borderOffset / 2, borderOffset / 2, effectiveSize - borderOffset, effectiveSize - borderOffset);
-                    tempCtx.lineWidth = borderOffset;
-                    tempCtx.strokeStyle = imageProps.borderColor;
-                    tempCtx.stroke();
-                }
-
-                tempCtx.save();
-                // Ajusta a translação e escala para o tamanho efetivo da área de desenho da imagem
-                const scaleFactor = imageDrawableArea / CANVAS_SIZE; // Nova escala baseada na área de desenho disponível
-                
-                tempCtx.translate(
-                    paddingOffset + (imageDrawableArea / 2) + (imageProps.xOffset * scaleFactor),
-                    paddingOffset + (imageDrawableArea / 2) + (imageProps.yOffset * scaleFactor)
-                );
-                tempCtx.rotate(imageProps.rotation * Math.PI / 180);
-
-                const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor;
-                tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
-                tempCtx.restore();
+                // Chama a função de desenho para o canvas temporário
+                drawIconToCanvas(tempCtx, size);
 
                 const imageUrl = tempCanvas.toDataURL('image/png');
 
@@ -335,45 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCanvas.height = size;
                 const tempCtx = tempCanvas.getContext('2d');
 
-                tempCtx.clearRect(0, 0, size, size); // Limpa o canvas temporário
-
-                // Preenche o fundo do ícone do ZIP com a cor selecionada
-                if (imageProps.backgroundColor) {
-                    tempCtx.fillStyle = imageProps.backgroundColor;
-                    tempCtx.fillRect(0, 0, size, size);
-                }
-                
-                // Calcula as dimensões e posições considerando padding e borda (repetido da geração individual)
-                const effectiveSize = size;
-                const borderOffset = imageProps.borderWidth;
-                const paddingOffset = imageProps.padding + borderOffset;
-                const imageDrawableArea = effectiveSize - (paddingOffset * 2);
-
-                if (imageDrawableArea <= 0) {
-                    console.warn("Área de desenho da imagem para ZIP é muito pequena devido a padding/borda.");
-                }
-
-                if (borderOffset > 0) {
-                    tempCtx.beginPath();
-                    tempCtx.rect(borderOffset / 2, borderOffset / 2, effectiveSize - borderOffset, effectiveSize - borderOffset);
-                    tempCtx.lineWidth = borderOffset;
-                    tempCtx.strokeStyle = imageProps.borderColor;
-                    tempCtx.stroke();
-                }
-
-                tempCtx.save();
-                const scaleFactor = imageDrawableArea / CANVAS_SIZE; // Nova escala baseada na área de desenho disponível
-
-                tempCtx.translate(
-                    paddingOffset + (imageDrawableArea / 2) + (imageProps.xOffset * scaleFactor),
-                    paddingOffset + (imageDrawableArea / 2) + (imageProps.yOffset * scaleFactor)
-                );
-                tempCtx.rotate(imageProps.rotation * Math.PI / 180);
-
-                const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor;
-                tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
-                tempCtx.restore();
+                // Chama a função de desenho para o canvas temporário do ZIP
+                drawIconToCanvas(tempCtx, size);
 
                 const blob = await new Promise(resolve => tempCanvas.toBlob(resolve, 'image/png'));
 
@@ -445,24 +379,57 @@ document.addEventListener('DOMContentLoaded', () => {
 // Funções de Utilitário (fora de DOMContentLoaded, pois são chamadas)
 // ===========================================
 
-// Função principal para desenhar a imagem no canvas
+/**
+ * Desenha a imagem no canvas principal.
+ */
 function drawImage() {
     if (!ctx) {
-        console.error("Contexto do canvas não disponível.");
+        console.error("Contexto do canvas principal não disponível.");
         return;
     }
-    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE); // Sempre limpa o canvas primeiro
+    drawIconToCanvas(ctx, CANVAS_SIZE);
+}
+
+/**
+ * Função genérica para desenhar o ícone em qualquer canvas dado.
+ * Reutilizada para o canvas de visualização e para os canvases de geração.
+ * @param {CanvasRenderingContext2D} targetCtx O contexto do canvas alvo.
+ * @param {number} targetSize O tamanho (largura/altura) do canvas alvo.
+ */
+function drawIconToCanvas(targetCtx, targetSize) {
+    targetCtx.clearRect(0, 0, targetSize, targetSize); // Sempre limpa o canvas primeiro
+
+    // Salva o estado atual do contexto
+    targetCtx.save();
+
+    // Aplica a máscara da forma, se não for 'none'
+    if (imageProps.iconShape !== 'none') {
+        targetCtx.beginPath();
+        const borderRadius = targetSize * 0.15; // Raio de 15% para o quadrado arredondado
+        const centerX = targetSize / 2;
+        const centerY = targetSize / 2;
+        const rectSize = targetSize; // A forma ocupa todo o canvas para o recorte
+
+        if (imageProps.iconShape === 'circle') {
+            targetCtx.arc(centerX, centerY, targetSize / 2, 0, Math.PI * 2);
+        } else if (imageProps.iconShape === 'rounded-square') {
+            // Desenha um quadrado arredondado
+            drawRoundedRect(targetCtx, 0, 0, rectSize, rectSize, borderRadius);
+        }
+        targetCtx.closePath();
+        targetCtx.clip(); // Tudo que for desenhado depois será recortado por esta forma
+    }
 
     // Preenche o fundo do canvas com a cor selecionada, se houver
     if (imageProps.backgroundColor) {
-        ctx.fillStyle = imageProps.backgroundColor;
-        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        targetCtx.fillStyle = imageProps.backgroundColor;
+        targetCtx.fillRect(0, 0, targetSize, targetSize);
     }
 
     // Calcula a área efetiva para desenho da imagem após considerar padding e borda
     const borderOffset = imageProps.borderWidth;
     const paddingOffset = imageProps.padding + borderOffset; // Padding se soma à borda
-    const imageDrawableArea = CANVAS_SIZE - (paddingOffset * 2);
+    const imageDrawableArea = targetSize - (paddingOffset * 2);
 
     if (imageDrawableArea <= 0) {
         console.warn("Área de desenho da imagem é muito pequena devido a padding/borda. Ícone pode não ser visível.");
@@ -470,18 +437,26 @@ function drawImage() {
     }
     
     // Desenha a borda se a largura for maior que 0
+    // A borda é desenhada DENTRO da área clipada se a forma estiver ativa
+    // Se não houver forma, ela é desenhada normalmente.
     if (borderOffset > 0) {
-        ctx.beginPath();
+        targetCtx.beginPath();
         // A borda é desenhada no meio da linha, então subtraímos 1/2 da largura da borda de cada lado
-        ctx.rect(borderOffset / 2, borderOffset / 2, CANVAS_SIZE - borderOffset, CANVAS_SIZE - borderOffset);
-        ctx.lineWidth = borderOffset;
-        ctx.strokeStyle = imageProps.borderColor;
-        ctx.stroke();
+        // e ajustamos a posição para que a borda fique dentro do effectiveSize.
+        // É importante que o path da borda não seja clipado pela máscara, então a borda é desenhada primeiro.
+        // Mas com o clip, ela será desenhada *dentro* da forma.
+        
+        // Novo cálculo para a borda para que ela se alinhe corretamente *dentro* da forma/canvas
+        targetCtx.rect(borderOffset / 2, borderOffset / 2, targetSize - borderOffset, targetSize - borderOffset);
+        targetCtx.lineWidth = borderOffset;
+        targetCtx.strokeStyle = imageProps.borderColor;
+        targetCtx.stroke();
     }
 
 
     if (imageLoaded) {
-        ctx.save();
+        // Salva o estado ANTES das transformações da imagem
+        targetCtx.save();
         
         // Ajusta a translação e escala para o tamanho efetivo da área de desenho da imagem
         // A escala aqui é a proporção do tamanho da área de desenho para o CANVAS_SIZE original
@@ -492,25 +467,51 @@ function drawImage() {
         const centerX = paddingOffset + (imageDrawableArea / 2) + (imageProps.xOffset * scaleFactorForDrawableArea);
         const centerY = paddingOffset + (imageDrawableArea / 2) + (imageProps.yOffset * scaleFactorForDrawableArea);
 
-        ctx.translate(centerX, centerY);
-        ctx.rotate(imageProps.rotation * Math.PI / 180);
+        targetCtx.translate(centerX, centerY);
+        targetCtx.rotate(imageProps.rotation * Math.PI / 180);
 
         // A largura e altura escaladas da imagem original são multiplicadas pela escala do usuário
         // E também pelo fator de escala da área de desenho para que se encaixem corretamente
         const scaledWidth = originalImage.width * imageProps.scale * scaleFactorForDrawableArea;
         const scaledHeight = originalImage.height * imageProps.scale * scaleFactorForDrawableArea;
 
-        ctx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
-        ctx.restore();
+        targetCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
+        targetCtx.restore(); // Restaura o estado APÓS desenhar a imagem
     } else {
         // Desenha texto placeholder (o fundo já foi preenchido acima, se aplicável)
-        ctx.fillStyle = '#ccc'; // Cor do texto
-        ctx.font = '24px Arial';
-        ctx.textAlign = 'center';
+        targetCtx.fillStyle = '#ccc'; // Cor do texto
+        targetCtx.font = '24px Arial';
+        targetCtx.textAlign = 'center';
         // Ajusta a posição do texto placeholder para o centro da 'imageDrawableArea'
-        ctx.fillText('Carregue ou escolha uma imagem', paddingOffset + imageDrawableArea / 2, paddingOffset + imageDrawableArea / 2);
+        targetCtx.fillText('Carregue ou escolha uma imagem', paddingOffset + imageDrawableArea / 2, paddingOffset + imageDrawableArea / 2);
     }
+
+    targetCtx.restore(); // Restaura o estado original do contexto (remove o clip, se houver)
 }
+
+/**
+ * Helper para desenhar um retângulo arredondado.
+ * @param {CanvasRenderingContext2D} ctx O contexto do canvas.
+ * @param {number} x A coordenada X do canto superior esquerdo.
+ * @param {number} y A coordenada Y do canto superior esquerdo.
+ * @param {number} width A largura do retângulo.
+ * @param {number} height A altura do retângulo.
+ * @param {number} radius O raio dos cantos.
+ */
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+}
+
 
 // Exibe mensagens para o usuário
 function showMessage(message, isError = false) {
@@ -561,9 +562,10 @@ function resetImageProperties() {
         xOffset: 0,
         yOffset: 0,
         backgroundColor: '#ffffff', // Reseta a cor de fundo para branco
-        padding: 0, // NOVO: Reseta padding
-        borderWidth: 0, // NOVO: Reseta largura da borda
-        borderColor: '#000000' // NOVO: Reseta cor da borda
+        padding: 0, // Reseta padding
+        borderWidth: 0, // Reseta largura da borda
+        borderColor: '#000000', // Reseta cor da borda
+        iconShape: 'none' // NOVO: Reseta formato do ícone
     };
     // Atualiza os sliders e seus valores exibidos
     if (scaleSlider) scaleSlider.value = imageProps.scale;
@@ -571,9 +573,20 @@ function resetImageProperties() {
     if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
     if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
     if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
-    if (paddingSlider) paddingSlider.value = imageProps.padding; // NOVO
-    if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth; // NOVO
-    if (borderColorPicker) borderColorPicker.value = imageProps.borderColor; // NOVO
+    if (paddingSlider) paddingSlider.value = imageProps.padding;
+    if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth;
+    if (borderColorPicker) borderColorPicker.value = imageProps.borderColor;
+    
+    // NOVO: Atualiza os radio buttons
+    if (iconShapeRadios) {
+        iconShapeRadios.forEach(radio => {
+            if (radio.value === imageProps.iconShape) {
+                radio.checked = true;
+            } else {
+                radio.checked = false;
+            }
+        });
+    }
     
     updateSliderValuesDisplay();
 }
@@ -606,17 +619,30 @@ function resetIndividualProperty(property) {
             imageProps.backgroundColor = '#ffffff';
             if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
             break;
-        case 'padding': // NOVO
+        case 'padding':
             imageProps.padding = 0;
             if (paddingSlider) paddingSlider.value = imageProps.padding;
             break;
-        case 'borderWidth': // NOVO
+        case 'borderWidth':
             imageProps.borderWidth = 0;
             if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth;
             break;
-        case 'borderColor': // NOVO
+        case 'borderColor':
             imageProps.borderColor = '#000000';
             if (borderColorPicker) borderColorPicker.value = imageProps.borderColor;
+            break;
+        // NOVO: Reset para iconShape
+        case 'iconShape':
+            imageProps.iconShape = 'none';
+            if (iconShapeRadios) {
+                iconShapeRadios.forEach(radio => {
+                    if (radio.value === 'none') {
+                        radio.checked = true;
+                    } else {
+                        radio.checked = false;
+                    }
+                });
+            }
             break;
         default:
             console.warn(`Propriedade desconhecida para reset: ${property}`);
@@ -632,8 +658,8 @@ function updateSliderValuesDisplay() {
     if (rotationValueSpan) rotationValueSpan.textContent = `${imageProps.rotation}°`;
     if (xOffsetValueSpan) xOffsetValueSpan.textContent = `${imageProps.xOffset}px`;
     if (yOffsetValueSpan) yOffsetValueSpan.textContent = `${imageProps.yOffset}px`;
-    if (paddingValueSpan) paddingValueSpan.textContent = `${imageProps.padding}px`; // NOVO
-    if (borderWidthValueSpan) borderWidthValueSpan.textContent = `${imageProps.borderWidth}px`; // NOVO
+    if (paddingValueSpan) paddingValueSpan.textContent = `${imageProps.padding}px`;
+    if (borderWidthValueSpan) borderWidthValueSpan.textContent = `${imageProps.borderWidth}px`;
 }
 
 // Carrega imagem via URL (usado para exemplos do Firebase Storage)

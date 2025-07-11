@@ -209,6 +209,26 @@ footer {
     transform: scale(1.1);
 }
 
+/* NOVO: Estilos para o grupo de rádio de formato do ícone */
+.editor-controls .tool-group-radio {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column; /* Organiza os rádios em coluna */
+    gap: 8px; /* Espaçamento entre as opções de rádio */
+    padding-left: 5px; /* Pequeno recuo */
+}
+
+.editor-controls .tool-group-radio label {
+    display: flex; /* Alinha o input e o texto na mesma linha */
+    align-items: center;
+    font-weight: normal; /* Labels de rádio não precisam ser bold por padrão */
+    cursor: pointer;
+}
+
+.editor-controls .tool-group-radio input[type="radio"] {
+    margin-right: 8px; /* Espaçamento entre o rádio e o texto */
+    /* Você pode adicionar estilos customizados para o rádio aqui se quiser */
+}
 
 .editor-controls .action-btn {
     display: block;
