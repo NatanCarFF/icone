@@ -20,72 +20,78 @@
         <section class="editor-container">
             <div class="editor-controls">
                 <h2>Selecione e Edite Sua Imagem</h2>
+                <label for="imageUpload" class="custom-file-upload">
+                    <i class="fas fa-upload"></i> Carregar Imagem
+                </label>
                 <input type="file" id="imageUpload" accept="image/*">
                 <p>Ou, você pode voltar para <a href="examples.html">escolher um exemplo</a>.</p>
 
                 <div class="editing-tools">
                     <h3>Ferramentas de Edição</h3>
+                    
                     <div class="tool-group">
                         <label for="scaleSlider">Escala:</label>
                         <input type="range" id="scaleSlider" min="0.1" max="2" value="1" step="0.01">
-                        <span id="scaleValue" class="slider-value">1.00</span>
-                        <button class="reset-slider-btn" data-target="scale"><i class="fas fa-undo"></i></button>
+                        <span id="scaleValue" class="slider-value">1.00x</span>
+                        <button class="reset-slider-btn" data-target="scale">Reset</button>
                     </div>
+
                     <div class="tool-group">
                         <label for="rotationSlider">Rotação:</label>
                         <input type="range" id="rotationSlider" min="0" max="360" value="0" step="1">
                         <span id="rotationValue" class="slider-value">0°</span>
-                        <button class="reset-slider-btn" data-target="rotation"><i class="fas fa-undo"></i></button>
+                        <button class="reset-slider-btn" data-target="rotation">Reset</button>
                     </div>
+
                     <div class="tool-group">
                         <label for="xOffsetSlider">Offset X:</label>
                         <input type="range" id="xOffsetSlider" min="-200" max="200" value="0" step="1">
                         <span id="xOffsetValue" class="slider-value">0px</span>
-                        <button class="reset-slider-btn" data-target="xOffset"><i class="fas fa-undo"></i></button>
+                        <button class="reset-slider-btn" data-target="xOffset">Reset</button>
                     </div>
+
                     <div class="tool-group">
                         <label for="yOffsetSlider">Offset Y:</label>
                         <input type="range" id="yOffsetSlider" min="-200" max="200" value="0" step="1">
                         <span id="yOffsetValue" class="slider-value">0px</span>
-                        <button class="reset-slider-btn" data-target="yOffset"><i class="fas fa-undo"></i></button>
-                    </div>
-                    <div class="tool-group">
-                        <label for="backgroundColorPicker">Cor de Fundo:</label>
-                        <input type="color" id="backgroundColorPicker" value="#ffffff">
-                        <button class="reset-slider-btn" data-target="backgroundColor"><i class="fas fa-undo"></i></button>
+                        <button class="reset-slider-btn" data-target="yOffset">Reset</button>
                     </div>
 
-                    <h3>Borda e Padding</h3>
+                    <div class="tool-group">
+                        <label for="backgroundColorPicker">Cor Fundo:</label>
+                        <input type="color" id="backgroundColorPicker" value="#ffffff">
+                    </div>
+
                     <div class="tool-group">
                         <label for="paddingSlider">Padding:</label>
                         <input type="range" id="paddingSlider" min="0" max="100" value="0" step="1">
                         <span id="paddingValue" class="slider-value">0px</span>
-                        <button class="reset-slider-btn" data-target="padding"><i class="fas fa-undo"></i></button>
-                    </div>
-                    <div class="tool-group">
-                        <label for="borderWidthSlider">Largura Borda:</label>
-                        <input type="range" id="borderWidthSlider" min="0" max="50" value="0" step="1">
-                        <span id="borderWidthValue" class="slider-value">0px</span>
-                        <button class="reset-slider-btn" data-target="borderWidth"><i class="fas fa-undo"></i></button>
-                    </div>
-                    <div class="tool-group">
-                        <label for="borderColorPicker">Cor da Borda:</label>
-                        <input type="color" id="borderColorPicker" value="#000000">
-                        <button class="reset-slider-btn" data-target="borderColor"><i class="fas fa-undo"></i></button>
+                        <button class="reset-slider-btn" data-target="padding">Reset</button>
                     </div>
 
-                    <h3>Formato do Ícone</h3>
-                    <div class="tool-group-radio">
-                        <label>
-                            <input type="radio" name="iconShape" value="none" checked> Original
-                        </label>
-                        <label>
-                            <input type="radio" name="iconShape" value="circle"> Círculo
-                        </label>
-                        <label>
-                            <input type="radio" name="iconShape" value="rounded-square"> Quadrado Arredondado
-                        </label>
+                    <div class="tool-group">
+                        <label for="borderWidthSlider">Borda:</label>
+                        <input type="range" id="borderWidthSlider" min="0" max="50" value="0" step="1">
+                        <span id="borderWidthValue" class="slider-value">0px</span>
+                        <button class="reset-slider-btn" data-target="borderWidth">Reset</button>
                     </div>
+
+                    <div class="tool-group">
+                        <label for="borderColorPicker">Cor Borda:</label>
+                        <input type="color" id="borderColorPicker" value="#000000">
+                    </div>
+
+                    <div class="tool-group">
+                        <label for="iconShapeSelect">Forma:</label>
+                        <select id="iconShapeSelect">
+                            <option value="none">Nenhum</option>
+                            <option value="circle">Círculo</option>
+                            <option value="rounded-square">Quadrado Arredondado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
                     <button id="resetEditorBtn" class="action-btn">Resetar Tudo</button>
                 </div>
             </div>
@@ -93,7 +99,7 @@
             <div class="canvas-area">
                 <canvas id="iconCanvas"></canvas>
                 <p class="canvas-hint">Ajuste a imagem para preencher o espaço do ícone. O fundo será transparente ou preenchido conforme configurado no Android.</p>
-                <button id="generateIconsBtn" class="action-btn primary-btn">Gerar Ícones!</button>
+                <button id="generateIconsBtn" class="action-btn primary-btn"><i class="fas fa-magic"></i> Gerar Ícones!</button>
                 <p id="editorMessage" class="message" style="display: none;"></p>
                 <p id="loadingIndicator" class="message" style="display: none;">Processando... <span class="spinner"></span></p>
             </div>
@@ -104,7 +110,7 @@
             <p>Clique para baixar cada versão do ícone.</p>
             <div id="generatedIconsContainer" class="image-grid">
                 </div>
-            <button id="downloadAllZip" class="action-btn primary-btn">Baixar Todos (ZIP)</button>
+            <button id="downloadAllZip" class="action-btn primary-btn"><i class="fas fa-download"></i> Baixar Todos (ZIP)</button>
         </section>
     </main>
 

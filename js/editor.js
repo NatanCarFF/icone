@@ -4,7 +4,6 @@ import { auth } from './firebase-config.js'; // Importa a instância de auth
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 // JSZip agora será acessível globalmente, carregado via <script> no HTML
 
-
 // ===========================================
 // Variáveis Globais (não dependem do DOM)
 // ===========================================
@@ -30,7 +29,7 @@ const CANVAS_SIZE = 512; // Tamanho base do canvas para edição
  * Retorna uma função debounced que só será executada após 'delay' milissegundos
  * desde a última vez que foi invocada.
  * @param {Function} func A função a ser debounced.
- * @param {number} delay O atraso em milissegundos.
+ * @param {number} delay O tempo de atraso em milissegundos.
  * @returns {Function} A função debounced.
  */
 function debounce(func, delay) {
@@ -42,647 +41,359 @@ function debounce(func, delay) {
     };
 }
 
-// Cria uma versão debounced da função drawImage
-const debouncedDrawImage = debounce(drawImage, 100); // Executa no máximo a cada 100ms ao arrastar
+// ===========================================
+// Seleção de Elementos do DOM
+// ===========================================
+const logoutBtn = document.getElementById('logoutBtn');
+const imageUploadInput = document.getElementById('imageUpload');
+const iconCanvas = document.getElementById('iconCanvas');
+const ctx = iconCanvas.getContext('2d');
+const scaleSlider = document.getElementById('scaleSlider');
+const scaleValueSpan = document.getElementById('scaleValue');
+const rotationSlider = document.getElementById('rotationSlider');
+const rotationValueSpan = document.getElementById('rotationValue');
+const xOffsetSlider = document.getElementById('xOffsetSlider');
+const xOffsetValueSpan = document.getElementById('xOffsetValue');
+const yOffsetSlider = document.getElementById('yOffsetSlider');
+const yOffsetValueSpan = document.getElementById('yOffsetValue');
+const backgroundColorPicker = document.getElementById('backgroundColorPicker');
+const paddingSlider = document.getElementById('paddingSlider');
+const paddingValueSpan = document.getElementById('paddingValue');
+const borderWidthSlider = document.getElementById('borderWidthSlider');
+const borderWidthValueSpan = document.getElementById('borderWidthValue');
+const borderColorPicker = document.getElementById('borderColorPicker');
+const iconShapeSelect = document.getElementById('iconShapeSelect');
+const generateIconsBtn = document.getElementById('generateIconsBtn');
+const downloadAllZipBtn = document.getElementById('downloadAllZip');
+const generatedIconsContainer = document.getElementById('generatedIconsContainer');
+const editorMessage = document.getElementById('editorMessage');
+const downloadSection = document.getElementById('downloadSection');
+const resetEditorBtn = document.getElementById('resetEditorBtn'); // Novo botão reset
+const loadingIndicator = document.getElementById('loadingIndicator'); // Elemento para spinner
+
+// Coleção de botões de reset de slider
+const resetSliderBtns = document.querySelectorAll('.reset-slider-btn');
 
 
 // ===========================================
-// Seleção de Elementos e Configuração (dentro de DOMContentLoaded)
-// ===========================================
-let logoutBtn;
-let imageUpload;
-let iconCanvas;
-let ctx; // Contexto do canvas inicializado após o canvas estar disponível
-let scaleSlider;
-let rotationSlider;
-let xOffsetSlider;
-let yOffsetSlider;
-let backgroundColorPicker;
-let paddingSlider;
-let borderWidthSlider;
-let borderColorPicker;
-let iconShapeRadios; // NOVO
-let resetEditorBtn;
-let generateIconsBtn;
-let editorMessage;
-let downloadSection;
-let generatedIconsContainer;
-let downloadAllZip;
-let loadingIndicator;
-let resetSliderButtons;
-
-// Elementos para exibir os valores dos sliders
-let scaleValueSpan;
-let rotationValueSpan;
-let xOffsetValueSpan;
-let yOffsetValueSpan;
-let paddingValueSpan;
-let borderWidthValueSpan;
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Seleção de Elementos do DOM
-    logoutBtn = document.getElementById('logoutBtn');
-    imageUpload = document.getElementById('imageUpload');
-    iconCanvas = document.getElementById('iconCanvas');
-    ctx = iconCanvas.getContext('2d');
-
-    // Garante a resolução interna do canvas
-    iconCanvas.width = CANVAS_SIZE;
-    iconCanvas.height = CANVAS_SIZE;
-
-    scaleSlider = document.getElementById('scaleSlider');
-    rotationSlider = document.getElementById('rotationSlider');
-    xOffsetSlider = document.getElementById('xOffsetSlider');
-    yOffsetSlider = document.getElementById('yOffsetSlider');
-    backgroundColorPicker = document.getElementById('backgroundColorPicker');
-    paddingSlider = document.getElementById('paddingSlider');
-    borderWidthSlider = document.getElementById('borderWidthSlider');
-    borderColorPicker = document.getElementById('borderColorPicker');
-    iconShapeRadios = document.querySelectorAll('input[name="iconShape"]'); // NOVO
-    resetEditorBtn = document.getElementById('resetEditorBtn');
-    generateIconsBtn = document.getElementById('generateIconsBtn');
-    editorMessage = document.getElementById('editorMessage');
-    downloadSection = document.getElementById('downloadSection');
-    generatedIconsContainer = document.getElementById('generatedIconsContainer');
-    downloadAllZip = document.getElementById('downloadAllZip');
-    loadingIndicator = document.getElementById('loadingIndicator');
-    resetSliderButtons = document.querySelectorAll('.reset-slider-btn');
-
-
-    // Seleciona os spans de valor
-    scaleValueSpan = document.getElementById('scaleValue');
-    rotationValueSpan = document.getElementById('rotationValue');
-    xOffsetValueSpan = document.getElementById('xOffsetValue');
-    yOffsetValueSpan = document.getElementById('yOffsetValue');
-    paddingValueSpan = document.getElementById('paddingValue');
-    borderWidthValueSpan = document.getElementById('borderWidthValue');
-
-
-    // ===========================================
-    // Manipuladores de Eventos
-    // ===========================================
-
-    // Carrega imagem do input de arquivo
-    imageUpload.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                originalImage = new Image();
-                originalImage.onload = () => {
-                    imageLoaded = true;
-                    resetImageProperties(); // Reseta todas as propriedades
-                    drawImage();
-                    showMessage("Imagem carregada com sucesso!", false);
-                };
-                originalImage.onerror = () => {
-                    showMessage("Não foi possível carregar a imagem do arquivo.", true);
-                    imageLoaded = false;
-                    drawImage();
-                };
-                originalImage.src = e.target.result;
-            };
-            reader.onerror = () => {
-                showMessage("Erro ao ler o arquivo de imagem.", true);
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Sliders de edição - AGORA USAM debouncedDrawImage
-    scaleSlider.addEventListener('input', (e) => {
-        imageProps.scale = parseFloat(e.target.value);
-        scaleValueSpan.textContent = imageProps.scale.toFixed(2);
-        debouncedDrawImage();
-    });
-
-    rotationSlider.addEventListener('input', (e) => {
-        imageProps.rotation = parseInt(e.target.value);
-        rotationValueSpan.textContent = `${imageProps.rotation}°`;
-        debouncedDrawImage();
-    });
-
-    xOffsetSlider.addEventListener('input', (e) => {
-        imageProps.xOffset = parseInt(e.target.value);
-        xOffsetValueSpan.textContent = `${imageProps.xOffset}px`;
-        debouncedDrawImage();
-    });
-
-    yOffsetSlider.addEventListener('input', (e) => {
-        imageProps.yOffset = parseInt(e.target.value);
-        yOffsetValueSpan.textContent = `${imageProps.yOffset}px`;
-        debouncedDrawImage();
-    });
-
-    // Evento para o seletor de cor de fundo
-    backgroundColorPicker.addEventListener('input', (e) => {
-        imageProps.backgroundColor = e.target.value;
-        drawImage();
-    });
-
-    // Eventos para os sliders de padding e borda
-    paddingSlider.addEventListener('input', (e) => {
-        imageProps.padding = parseInt(e.target.value);
-        paddingValueSpan.textContent = `${imageProps.padding}px`;
-        debouncedDrawImage();
-    });
-
-    borderWidthSlider.addEventListener('input', (e) => {
-        imageProps.borderWidth = parseInt(e.target.value);
-        borderWidthValueSpan.textContent = `${imageProps.borderWidth}px`;
-        debouncedDrawImage();
-    });
-
-    borderColorPicker.addEventListener('input', (e) => {
-        imageProps.borderColor = e.target.value;
-        drawImage();
-    });
-
-    // NOVO: Eventos para os botões de rádio do formato do ícone
-    iconShapeRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            imageProps.iconShape = e.target.value;
-            drawImage(); // Redesenha imediatamente para mostrar a forma
-        });
-    });
-
-
-    // Botão de resetar TUDO
-    resetEditorBtn.addEventListener('click', () => {
-        if (imageLoaded) {
-            resetImageProperties(); // Reseta todas as propriedades para o padrão
-            drawImage();
-            showMessage("Edição resetada para o padrão.", false);
-        } else {
-            showMessage("Nenhuma imagem carregada para resetar.", true);
-        }
-    });
-
-    // Adiciona manipuladores de evento para os botões de reset individuais
-    resetSliderButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            if (!imageLoaded) {
-                showMessage("Carregue uma imagem antes de resetar propriedades individuais.", true);
-                return;
-            }
-            const targetProperty = e.currentTarget.dataset.target; // Obtém o nome da propriedade do atributo data-target
-            resetIndividualProperty(targetProperty);
-            drawImage();
-            showMessage(`Propriedade '${targetProperty}' resetada.`, false);
-        });
-    });
-
-
-    // Botão de Gerar Ícones
-    generateIconsBtn.addEventListener('click', async () => {
-        if (!imageLoaded) {
-            showMessage("Por favor, carregue ou escolha uma imagem primeiro.", true);
-            return;
-        }
-
-        hideMessage();
-        showLoadingIndicator("Gerando ícones...");
-        generatedIconsContainer.innerHTML = ''; // Limpa ícones anteriores
-        downloadSection.style.display = 'block'; // Mostra a seção de download
-
-        try {
-            const generatedIcons = [];
-
-            // Para cada densidade, gera o ícone
-            for (const density in ANDROID_DENSITIES) {
-                const size = ANDROID_DENSITIES[density];
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = size;
-                tempCanvas.height = size;
-                const tempCtx = tempCanvas.getContext('2d');
-
-                // Chama a função de desenho para o canvas temporário
-                drawIconToCanvas(tempCtx, size);
-
-                const imageUrl = tempCanvas.toDataURL('image/png');
-
-                generatedIcons.push({ density, imageUrl, size });
-
-                const iconItem = document.createElement('div');
-                iconItem.classList.add('generated-icon-item');
-                iconItem.innerHTML = `
-                    <img src="${imageUrl}" alt="Icon ${density}">
-                    <p>${density}</p>
-                    <a href="${imageUrl}" download="ic_launcher_${density}.png">Baixar (.png)</a>
-                `;
-                generatedIconsContainer.appendChild(iconItem);
-            }
-            hideLoadingIndicator();
-            showMessage("Ícones gerados com sucesso! Role para baixo para baixar.", false);
-
-        } catch (error) {
-            console.error("Erro ao gerar ícones:", error);
-            hideLoadingIndicator();
-            if (error.name === "SecurityError") {
-                showMessage("Erro de segurança: Imagem de outra origem não pode ser usada no canvas. Verifique as configurações CORS do Firebase Storage e se 'originalImage.crossOrigin = \"anonymous\"' está no código.", true);
-            } else {
-                showMessage("Erro ao gerar ícones: " + error.message, true);
-            }
-        }
-    });
-
-    // Botão Baixar Todos (ZIP)
-    downloadAllZip.addEventListener('click', async () => {
-        if (!imageLoaded) {
-            showMessage("Nenhuma imagem carregada para gerar o ZIP.", true);
-            return;
-        }
-
-        hideMessage();
-        showLoadingIndicator("Gerando ZIP...");
-        const zip = new JSZip();
-
-        try {
-            for (const density in ANDROID_DENSITIES) {
-                const size = ANDROID_DENSITIES[density];
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = size;
-                tempCanvas.height = size;
-                const tempCtx = tempCanvas.getContext('2d');
-
-                // Chama a função de desenho para o canvas temporário do ZIP
-                drawIconToCanvas(tempCtx, size);
-
-                const blob = await new Promise(resolve => tempCanvas.toBlob(resolve, 'image/png'));
-
-                zip.file(`res/drawable-${density}/ic_launcher.png`, blob);
-            }
-
-            zip.generateAsync({ type: "blob" })
-                .then(function(content) {
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = URL.createObjectURL(content);
-                    downloadLink.download = "android_icons.zip";
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
-                    hideLoadingIndicator();
-                    showMessage("ZIP gerado com sucesso! Baixe o arquivo.", false);
-                })
-                .catch(error => {
-                    console.error("Erro ao gerar ZIP:", error);
-                    hideLoadingIndicator();
-                    showMessage("Erro ao gerar ZIP: " + error.message, true);
-                });
-
-        } catch (error) {
-            console.error("Erro inesperado ao preparar ZIP:", error);
-            hideLoadingIndicator();
-            if (error.name === "SecurityError") {
-                showMessage("Erro de segurança ao gerar ZIP: Imagem de outra origem não pode ser usada. Verifique CORS e crossOrigin.", true);
-            } else {
-                showMessage("Erro inesperado ao gerar ZIP: " + error.message, true);
-            }
-        }
-    });
-
-    // ===========================================
-    // Inicialização e Autenticação
-    // ===========================================
-
-    // Gerencia o estado de autenticação do usuário
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log("Usuário logado no editor:", user.email);
-            checkSelectedExampleImage(); // Tenta carregar imagem de exemplo
-        } else {
-            console.log("Nenhum usuário logado. Redirecionando para login.");
-            window.location.href = 'login.html';
-        }
-    });
-
-    // Evento de clique para o botão de logout
-    logoutBtn.addEventListener('click', () => {
-        signOut(auth).then(() => {
-            console.log("Usuário deslogado.");
-            window.location.href = 'login.html';
-        }).catch((error) => {
-            console.error("Erro ao fazer logout:", error);
-            showMessage("Erro ao fazer logout. Tente novamente.", true);
-        });
-    });
-
-    // Chama updateSliderValuesDisplay inicialmente para exibir os valores padrão
-    updateSliderValuesDisplay();
-    // Chama drawImage inicialmente para desenhar o placeholder ou imagem de exemplo
-    drawImage();
-}); // Fim de DOMContentLoaded
-
-
-// ===========================================
-// Funções de Utilitário (fora de DOMContentLoaded, pois são chamadas)
+// Funções de Mensagem e Carregamento
 // ===========================================
 
 /**
- * Desenha a imagem no canvas principal.
+ * Exibe uma mensagem na interface do editor.
+ * @param {string} message O texto da mensagem.
+ * @param {boolean} isError Se a mensagem é de erro (true) ou sucesso (false).
  */
+function showMessage(message, isError = true) {
+    editorMessage.textContent = message;
+    editorMessage.className = `message ${isError ? 'error' : 'success'}`;
+    editorMessage.style.display = 'block';
+}
+
+function hideMessage() {
+    editorMessage.textContent = '';
+    editorMessage.style.display = 'none';
+}
+
+/**
+ * Exibe ou oculta o indicador de carregamento (spinner).
+ * @param {boolean} show True para mostrar, false para ocultar.
+ */
+function toggleLoading(show) {
+    if (show) {
+        loadingIndicator.style.display = 'block';
+    } else {
+        loadingIndicator.style.display = 'none';
+    }
+}
+
+
+// ===========================================
+// Funções de Desenho do Canvas
+// ===========================================
+
+// Define o tamanho fixo do canvas
+iconCanvas.width = CANVAS_SIZE;
+iconCanvas.height = CANVAS_SIZE;
+
 function drawImage() {
-    if (!ctx) {
-        console.error("Contexto do canvas principal não disponível.");
+    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE); // Limpa o canvas
+
+    // Desenha o fundo (sempre presente, mesmo se transparente)
+    ctx.fillStyle = imageProps.backgroundColor;
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    if (!imageLoaded) {
+        // Exibe uma mensagem no canvas se nenhuma imagem for carregada
+        ctx.fillStyle = '#999';
+        ctx.font = '20px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Nenhuma imagem carregada', CANVAS_SIZE / 2, CANVAS_SIZE / 2 - 10);
+        ctx.fillText('Clique em "Carregar Imagem"', CANVAS_SIZE / 2, CANVAS_SIZE / 2 + 20);
         return;
     }
-    drawIconToCanvas(ctx, CANVAS_SIZE);
-}
 
-/**
- * Função genérica para desenhar o ícone em qualquer canvas dado.
- * Reutilizada para o canvas de visualização e para os canvases de geração.
- * @param {CanvasRenderingContext2D} targetCtx O contexto do canvas alvo.
- * @param {number} targetSize O tamanho (largura/altura) do canvas alvo.
- */
-function drawIconToCanvas(targetCtx, targetSize) {
-    targetCtx.clearRect(0, 0, targetSize, targetSize); // Sempre limpa o canvas primeiro
+    // Calcula as dimensões da imagem ajustadas pela escala
+    const scaledWidth = originalImage.width * imageProps.scale;
+    const scaledHeight = originalImage.height * imageProps.scale;
 
-    // Salva o estado atual do contexto
-    targetCtx.save();
+    // Calcula a posição para centralizar a imagem antes das transformações e offset
+    const centerX = CANVAS_SIZE / 2;
+    const centerY = CANVAS_SIZE / 2;
 
-    // Aplica a máscara da forma, se não for 'none'
-    if (imageProps.iconShape !== 'none') {
-        targetCtx.beginPath();
-        const borderRadius = targetSize * 0.15; // Raio de 15% para o quadrado arredondado
-        const centerX = targetSize / 2;
-        const centerY = targetSize / 2;
-        const rectSize = targetSize; // A forma ocupa todo o canvas para o recorte
+    // Aplica as transformações ao contexto do canvas
+    ctx.save(); // Salva o estado atual do contexto
 
+    ctx.translate(centerX + imageProps.xOffset, centerY + imageProps.yOffset); // Transladar para o centro + offset
+    ctx.rotate(imageProps.rotation * Math.PI / 180); // Rotacionar (graus para radianos)
+
+    // Ajusta o padding, que diminui o tamanho efetivo da área de desenho da imagem
+    const effectiveCanvasSize = CANVAS_SIZE - (imageProps.padding * 2);
+    const effectivePaddingOffset = imageProps.padding;
+
+    // Define o caminho de recorte (para formas do ícone)
+    if (imageProps.iconShape === 'circle') {
+        const radius = effectiveCanvasSize / 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.clip(); // Recorta tudo fora do círculo
+    } else if (imageProps.iconShape === 'rounded-square') {
+        const borderRadius = 24; // Valor de arredondamento para o quadrado
+        const rectSize = effectiveCanvasSize;
+        ctx.beginPath();
+        ctx.roundRect(-rectSize / 2, -rectSize / 2, rectSize, rectSize, borderRadius);
+        ctx.clip(); // Recorta tudo fora do quadrado arredondado
+    }
+
+    // Desenha a imagem (agora centralizada em 0,0 do contexto transformado)
+    ctx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
+
+    // Desenha a borda se houver
+    if (imageProps.borderWidth > 0) {
+        ctx.strokeStyle = imageProps.borderColor;
+        ctx.lineWidth = imageProps.borderWidth;
+        // Desenha a borda conforme a forma
         if (imageProps.iconShape === 'circle') {
-            targetCtx.arc(centerX, centerY, targetSize / 2, 0, Math.PI * 2);
+            const radius = (effectiveCanvasSize / 2) - (imageProps.borderWidth / 2);
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.stroke();
         } else if (imageProps.iconShape === 'rounded-square') {
-            // Desenha um quadrado arredondado
-            drawRoundedRect(targetCtx, 0, 0, rectSize, rectSize, borderRadius);
+            const borderRadius = 24;
+            const rectSize = effectiveCanvasSize - imageProps.borderWidth;
+            ctx.beginPath();
+            ctx.roundRect(-rectSize / 2, -rectSize / 2, rectSize, rectSize, borderRadius);
+            ctx.stroke();
+        } else {
+            // Se não houver forma específica, desenha a borda ao redor do canvas inteiro
+            // Considerando o padding
+            ctx.strokeRect(-effectiveCanvasSize / 2, -effectiveCanvasSize / 2, effectiveCanvasSize, effectiveCanvasSize);
         }
-        targetCtx.closePath();
-        targetCtx.clip(); // Tudo que for desenhado depois será recortado por esta forma
     }
 
-    // Preenche o fundo do canvas com a cor selecionada, se houver
-    if (imageProps.backgroundColor) {
-        targetCtx.fillStyle = imageProps.backgroundColor;
-        targetCtx.fillRect(0, 0, targetSize, targetSize);
-    }
-
-    // Calcula a área efetiva para desenho da imagem após considerar padding e borda
-    const borderOffset = imageProps.borderWidth;
-    const paddingOffset = imageProps.padding + borderOffset; // Padding se soma à borda
-    const imageDrawableArea = targetSize - (paddingOffset * 2);
-
-    if (imageDrawableArea <= 0) {
-        console.warn("Área de desenho da imagem é muito pequena devido a padding/borda. Ícone pode não ser visível.");
-        // Se a área for <= 0, pode-se desenhar apenas a borda/fundo e não a imagem.
-    }
-    
-    // Desenha a borda se a largura for maior que 0
-    // A borda é desenhada DENTRO da área clipada se a forma estiver ativa
-    // Se não houver forma, ela é desenhada normalmente.
-    if (borderOffset > 0) {
-        targetCtx.beginPath();
-        // A borda é desenhada no meio da linha, então subtraímos 1/2 da largura da borda de cada lado
-        // e ajustamos a posição para que a borda fique dentro do effectiveSize.
-        // É importante que o path da borda não seja clipado pela máscara, então a borda é desenhada primeiro.
-        // Mas com o clip, ela será desenhada *dentro* da forma.
-        
-        // Novo cálculo para a borda para que ela se alinhe corretamente *dentro* da forma/canvas
-        targetCtx.rect(borderOffset / 2, borderOffset / 2, targetSize - borderOffset, targetSize - borderOffset);
-        targetCtx.lineWidth = borderOffset;
-        targetCtx.strokeStyle = imageProps.borderColor;
-        targetCtx.stroke();
-    }
-
-
-    if (imageLoaded) {
-        // Salva o estado ANTES das transformações da imagem
-        targetCtx.save();
-        
-        // Ajusta a translação e escala para o tamanho efetivo da área de desenho da imagem
-        // A escala aqui é a proporção do tamanho da área de desenho para o CANVAS_SIZE original
-        const scaleFactorForDrawableArea = imageDrawableArea / CANVAS_SIZE; 
-        
-        // O centro da imagem deve ser o centro da 'imageDrawableArea'
-        // que é offset + (imageDrawableArea / 2)
-        const centerX = paddingOffset + (imageDrawableArea / 2) + (imageProps.xOffset * scaleFactorForDrawableArea);
-        const centerY = paddingOffset + (imageDrawableArea / 2) + (imageProps.yOffset * scaleFactorForDrawableArea);
-
-        targetCtx.translate(centerX, centerY);
-        targetCtx.rotate(imageProps.rotation * Math.PI / 180);
-
-        // A largura e altura escaladas da imagem original são multiplicadas pela escala do usuário
-        // E também pelo fator de escala da área de desenho para que se encaixem corretamente
-        const scaledWidth = originalImage.width * imageProps.scale * scaleFactorForDrawableArea;
-        const scaledHeight = originalImage.height * imageProps.scale * scaleFactorForDrawableArea;
-
-        targetCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
-        targetCtx.restore(); // Restaura o estado APÓS desenhar a imagem
-    } else {
-        // Desenha texto placeholder (o fundo já foi preenchido acima, se aplicável)
-        targetCtx.fillStyle = '#ccc'; // Cor do texto
-        targetCtx.font = '24px Arial';
-        targetCtx.textAlign = 'center';
-        // Ajusta a posição do texto placeholder para o centro da 'imageDrawableArea'
-        targetCtx.fillText('Carregue ou escolha uma imagem', paddingOffset + imageDrawableArea / 2, paddingOffset + imageDrawableArea / 2);
-    }
-
-    targetCtx.restore(); // Restaura o estado original do contexto (remove o clip, se houver)
-}
-
-/**
- * Helper para desenhar um retângulo arredondado.
- * @param {CanvasRenderingContext2D} ctx O contexto do canvas.
- * @param {number} x A coordenada X do canto superior esquerdo.
- * @param {number} y A coordenada Y do canto superior esquerdo.
- * @param {number} width A largura do retângulo.
- * @param {number} height A altura do retângulo.
- * @param {number} radius O raio dos cantos.
- */
-function drawRoundedRect(ctx, x, y, width, height, radius) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
+    ctx.restore(); // Restaura o estado original do contexto (remove transformações)
 }
 
 
-// Exibe mensagens para o usuário
-function showMessage(message, isError = false) {
-    if (editorMessage) {
-        editorMessage.textContent = message;
-        editorMessage.className = `message ${isError ? 'error' : 'success'}`;
-        editorMessage.style.display = 'block';
-    } else {
-        console.warn("Elemento editorMessage não encontrado para exibir mensagem:", message);
-    }
-}
+// ===========================================
+// Manipuladores de Evento
+// ===========================================
 
-// Oculta mensagens
-function hideMessage() {
-    if (editorMessage) {
-        editorMessage.style.display = 'none';
+// Logout
+logoutBtn.addEventListener('click', async () => {
+    try {
+        await signOut(auth);
+        console.log("Usuário deslogado.");
+        localStorage.removeItem('selectedExampleImageUrl'); // Limpa a imagem de exemplo
+        window.location.href = 'index.html'; // Redireciona para a página inicial
+    } catch (error) {
+        console.error("Erro ao fazer logout:", error);
+        showMessage("Erro ao fazer logout.", true);
     }
-}
+});
 
-// Exibe o indicador de carregamento
-function showLoadingIndicator(message = "Carregando...") {
-    if (loadingIndicator) {
-        loadingIndicator.textContent = message;
-        loadingIndicator.style.display = 'block';
-        loadingIndicator.classList.add('loading');
+// Carregar imagem via input de arquivo
+imageUploadInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            originalImage.src = event.target.result;
+            originalImage.onload = () => {
+                imageLoaded = true;
+                resetImageProperties(); // Reseta as propriedades para a nova imagem
+                drawImage();
+                hideMessage(); // Oculta qualquer mensagem anterior
+            };
+            originalImage.onerror = () => {
+                imageLoaded = false;
+                showMessage("Erro ao carregar a imagem. Certifique-se de que é um formato válido.", true);
+                drawImage(); // Desenha o canvas vazio ou com mensagem
+            };
+        };
+        reader.readAsDataURL(file);
     }
-}
+});
 
-// Oculta o indicador de carregamento
-function hideLoadingIndicator() {
-    if (loadingIndicator) {
-        loadingIndicator.style.display = 'none';
-        loadingIndicator.classList.remove('loading');
-    }
-}
-
-// Função para resetar as propriedades de edição da imagem para o estado inicial
+// Resetar todas as propriedades da imagem para o padrão
 function resetImageProperties() {
-    let initialScale = 1;
-    // Calcule a escala inicial para fazer a imagem caber se ela for maior que o CANVAS_SIZE
-    if (imageLoaded && (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE)) {
-        initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
-    }
-
     imageProps = {
-        scale: initialScale,
+        scale: 1,
         rotation: 0,
         xOffset: 0,
         yOffset: 0,
-        backgroundColor: '#ffffff', // Reseta a cor de fundo para branco
-        padding: 0, // Reseta padding
-        borderWidth: 0, // Reseta largura da borda
-        borderColor: '#000000', // Reseta cor da borda
-        iconShape: 'none' // NOVO: Reseta formato do ícone
+        backgroundColor: '#ffffff',
+        padding: 0,
+        borderWidth: 0,
+        borderColor: '#000000',
+        iconShape: 'none'
     };
-    // Atualiza os sliders e seus valores exibidos
-    if (scaleSlider) scaleSlider.value = imageProps.scale;
-    if (rotationSlider) rotationSlider.value = imageProps.rotation;
-    if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
-    if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
-    if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
-    if (paddingSlider) paddingSlider.value = imageProps.padding;
-    if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth;
-    if (borderColorPicker) borderColorPicker.value = imageProps.borderColor;
-    
-    // NOVO: Atualiza os radio buttons
-    if (iconShapeRadios) {
-        iconShapeRadios.forEach(radio => {
-            if (radio.value === imageProps.iconShape) {
-                radio.checked = true;
-            } else {
-                radio.checked = false;
-            }
-        });
-    }
-    
-    updateSliderValuesDisplay();
+    // Atualizar os controles da UI para refletir os valores resetados
+    scaleSlider.value = imageProps.scale;
+    scaleValueSpan.textContent = imageProps.scale.toFixed(2) + 'x';
+    rotationSlider.value = imageProps.rotation;
+    rotationValueSpan.textContent = imageProps.rotation + '°';
+    xOffsetSlider.value = imageProps.xOffset;
+    xOffsetValueSpan.textContent = imageProps.xOffset + 'px';
+    yOffsetSlider.value = imageProps.yOffset;
+    yOffsetValueSpan.textContent = imageProps.yOffset + 'px';
+    backgroundColorPicker.value = imageProps.backgroundColor;
+    paddingSlider.value = imageProps.padding;
+    paddingValueSpan.textContent = imageProps.padding + 'px';
+    borderWidthSlider.value = imageProps.borderWidth;
+    borderWidthValueSpan.textContent = imageProps.borderWidth + 'px';
+    borderColorPicker.value = imageProps.borderColor;
+    iconShapeSelect.value = imageProps.iconShape;
+
+    // Ocultar a seção de download de ícones
+    downloadSection.style.display = 'none';
 }
 
-// Função para resetar uma propriedade individualmente
-function resetIndividualProperty(property) {
-    let initialScale = 1;
-    if (imageLoaded && (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE)) {
-        initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
-    }
+// Botão Resetar Tudo
+resetEditorBtn.addEventListener('click', () => {
+    resetImageProperties();
+    drawImage();
+    hideMessage();
+});
 
-    switch (property) {
-        case 'scale':
-            imageProps.scale = initialScale;
-            if (scaleSlider) scaleSlider.value = imageProps.scale;
-            break;
-        case 'rotation':
-            imageProps.rotation = 0;
-            if (rotationSlider) rotationSlider.value = imageProps.rotation;
-            break;
-        case 'xOffset':
-            imageProps.xOffset = 0;
-            if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
-            break;
-        case 'yOffset':
-            imageProps.yOffset = 0;
-            if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
-            break;
-        case 'backgroundColor':
-            imageProps.backgroundColor = '#ffffff';
-            if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
-            break;
-        case 'padding':
-            imageProps.padding = 0;
-            if (paddingSlider) paddingSlider.value = imageProps.padding;
-            break;
-        case 'borderWidth':
-            imageProps.borderWidth = 0;
-            if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth;
-            break;
-        case 'borderColor':
-            imageProps.borderColor = '#000000';
-            if (borderColorPicker) borderColorPicker.value = imageProps.borderColor;
-            break;
-        // NOVO: Reset para iconShape
-        case 'iconShape':
-            imageProps.iconShape = 'none';
-            if (iconShapeRadios) {
-                iconShapeRadios.forEach(radio => {
-                    if (radio.value === 'none') {
-                        radio.checked = true;
-                    } else {
-                        radio.checked = false;
-                    }
-                });
-            }
-            break;
-        default:
-            console.warn(`Propriedade desconhecida para reset: ${property}`);
-            return;
-    }
-    updateSliderValuesDisplay(); // Garante que o valor exibido seja atualizado
-}
+// Resetar sliders individuais
+resetSliderBtns.forEach(button => {
+    button.addEventListener('click', (e) => {
+        const target = e.target.dataset.target;
+        let defaultValue;
+        let sliderElement;
+        let valueSpanElement;
+
+        switch (target) {
+            case 'scale':
+                defaultValue = 1;
+                sliderElement = scaleSlider;
+                valueSpanElement = scaleValueSpan;
+                break;
+            case 'rotation':
+                defaultValue = 0;
+                sliderElement = rotationSlider;
+                valueSpanElement = rotationValueSpan;
+                break;
+            case 'xOffset':
+                defaultValue = 0;
+                sliderElement = xOffsetSlider;
+                valueSpanElement = xOffsetValueSpan;
+                break;
+            case 'yOffset':
+                defaultValue = 0;
+                sliderElement = yOffsetSlider;
+                valueSpanElement = yOffsetValueSpan;
+                break;
+            case 'padding':
+                defaultValue = 0;
+                sliderElement = paddingSlider;
+                valueSpanElement = paddingValueSpan;
+                break;
+            case 'borderWidth':
+                defaultValue = 0;
+                sliderElement = borderWidthSlider;
+                valueSpanElement = borderWidthValueSpan;
+                break;
+            default:
+                return;
+        }
+
+        imageProps[target] = defaultValue;
+        sliderElement.value = defaultValue;
+        
+        // Atualiza o texto do span de valor
+        if (target === 'scale') {
+            valueSpanElement.textContent = defaultValue.toFixed(2) + 'x';
+        } else if (target === 'rotation') {
+            valueSpanElement.textContent = defaultValue + '°';
+        } else {
+            valueSpanElement.textContent = defaultValue + 'px';
+        }
+        
+        drawImage(); // Redesenha o canvas após resetar
+    });
+});
 
 
-// Função para atualizar a exibição dos valores dos sliders
-function updateSliderValuesDisplay() {
-    if (scaleValueSpan) scaleValueSpan.textContent = imageProps.scale.toFixed(2);
-    if (rotationValueSpan) rotationValueSpan.textContent = `${imageProps.rotation}°`;
-    if (xOffsetValueSpan) xOffsetValueSpan.textContent = `${imageProps.xOffset}px`;
-    if (yOffsetValueSpan) yOffsetValueSpan.textContent = `${imageProps.yOffset}px`;
-    if (paddingValueSpan) paddingValueSpan.textContent = `${imageProps.padding}px`;
-    if (borderWidthValueSpan) borderWidthValueSpan.textContent = `${imageProps.borderWidth}px`;
-}
+// Eventos para atualização dos sliders e seletores
+const updateDebouncedDraw = debounce(drawImage, 10); // debounce para não redesenhar demais
 
-// Carrega imagem via URL (usado para exemplos do Firebase Storage)
-function loadImageFromUrl(url) {
-    console.log("loadImageFromUrl chamado com URL:", url.substring(0, 100) + "...");
-    originalImage = new Image();
-    originalImage.crossOrigin = "anonymous"; // *** ESSENCIAL para CORS em canvas ***
+scaleSlider.addEventListener('input', (e) => {
+    imageProps.scale = parseFloat(e.target.value);
+    scaleValueSpan.textContent = imageProps.scale.toFixed(2) + 'x';
+    updateDebouncedDraw();
+});
 
-    originalImage.onload = () => {
-        imageLoaded = true;
-        console.log("Imagem carregada com SUCESSO. Dimensões:", originalImage.width, "x", originalImage.height);
-        resetImageProperties(); // Reseta todas as propriedades para a imagem nova
-        drawImage();
-        showMessage("Imagem carregada com sucesso!", false);
-    };
-    originalImage.onerror = (e) => {
-        imageLoaded = false;
-        console.error("Erro ao carregar imagem do URL:", e);
-        showMessage("Erro ao carregar imagem do URL. Verifique a URL ou suas permissões CORS no Firebase Storage.", true);
-        drawImage();
-    };
-    originalImage.src = url;
-}
+rotationSlider.addEventListener('input', (e) => {
+    imageProps.rotation = parseInt(e.target.value);
+    rotationValueSpan.textContent = imageProps.rotation + '°';
+    updateDebouncedDraw();
+});
+
+xOffsetSlider.addEventListener('input', (e) => {
+    imageProps.xOffset = parseInt(e.target.value);
+    xOffsetValueSpan.textContent = imageProps.xOffset + 'px';
+    updateDebouncedDraw();
+});
+
+yOffsetSlider.addEventListener('input', (e) => {
+    imageProps.yOffset = parseInt(e.target.value);
+    yOffsetValueSpan.textContent = imageProps.yOffset + 'px';
+    updateDebouncedDraw();
+});
+
+backgroundColorPicker.addEventListener('input', (e) => {
+    imageProps.backgroundColor = e.target.value;
+    updateDebouncedDraw();
+});
+
+paddingSlider.addEventListener('input', (e) => {
+    imageProps.padding = parseInt(e.target.value);
+    paddingValueSpan.textContent = imageProps.padding + 'px';
+    updateDebouncedDraw();
+});
+
+borderWidthSlider.addEventListener('input', (e) => {
+    imageProps.borderWidth = parseInt(e.target.value);
+    borderWidthValueSpan.textContent = imageProps.borderWidth + 'px';
+    updateDebouncedDraw();
+});
+
+borderColorPicker.addEventListener('input', (e) => {
+    imageProps.borderColor = e.target.value;
+    updateDebouncedDraw();
+});
+
+iconShapeSelect.addEventListener('change', (e) => {
+    imageProps.iconShape = e.target.value;
+    updateDebouncedDraw();
+});
+
+
+// ===========================================
+// Geração e Download de Ícones
+// ===========================================
 
 // Definições de densidade para ícones Android
 const ANDROID_DENSITIES = {
@@ -693,12 +404,233 @@ const ANDROID_DENSITIES = {
     'xxxhdpi': 192
 };
 
+generateIconsBtn.addEventListener('click', async () => {
+    if (!imageLoaded) {
+        showMessage("Por favor, carregue uma imagem primeiro!", true);
+        return;
+    }
+
+    toggleLoading(true); // Mostra o spinner
+    hideMessage();
+    downloadSection.style.display = 'none'; // Esconde a seção de download anterior
+    generatedIconsContainer.innerHTML = ''; // Limpa ícones gerados anteriormente
+
+    try {
+        const originalImageBlob = await new Promise(resolve => iconCanvas.toBlob(resolve, 'image/png', 1));
+        const originalImageUrl = URL.createObjectURL(originalImageBlob);
+
+        for (const density in ANDROID_DENSITIES) {
+            const size = ANDROID_DENSITIES[density];
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = size;
+            tempCanvas.height = size;
+
+            // Desenha o fundo da cor selecionada no tempCanvas
+            tempCtx.fillStyle = imageProps.backgroundColor;
+            tempCtx.fillRect(0, 0, size, size);
+
+            // Calcula a escala da imagem para o novo tamanho, mantendo a proporção
+            // As transformações e offsets devem ser aplicados proporcionalmente ao novo tamanho
+            const scaleFactor = size / CANVAS_SIZE; // Fator de escala do canvas original para o novo tamanho
+            const scaledOriginalWidth = originalImage.width * imageProps.scale * scaleFactor;
+            const scaledOriginalHeight = originalImage.height * imageProps.scale * scaleFactor;
+
+            // Calcula a posição da imagem centralizada no novo canvas, ajustada pelo offset
+            const newCenterX = size / 2 + (imageProps.xOffset * scaleFactor);
+            const newCenterY = size / 2 + (imageProps.yOffset * scaleFactor);
+
+            tempCtx.save();
+            tempCtx.translate(newCenterX, newCenterY);
+            tempCtx.rotate(imageProps.rotation * Math.PI / 180);
+
+            // Aplica o recorte de forma
+            const effectiveTempCanvasSize = size - (imageProps.padding * 2 * scaleFactor);
+            if (imageProps.iconShape === 'circle') {
+                const radius = effectiveTempCanvasSize / 2;
+                tempCtx.beginPath();
+                tempCtx.arc(0, 0, radius, 0, Math.PI * 2);
+                tempCtx.clip();
+            } else if (imageProps.iconShape === 'rounded-square') {
+                const borderRadius = 24 * scaleFactor; // Arredondamento proporcional
+                const rectSize = effectiveTempCanvasSize;
+                tempCtx.beginPath();
+                tempCtx.roundRect(-rectSize / 2, -rectSize / 2, rectSize, rectSize, borderRadius);
+                tempCtx.clip();
+            }
+
+            tempCtx.drawImage(originalImage, -scaledOriginalWidth / 2, -scaledOriginalHeight / 2, scaledOriginalWidth, scaledOriginalHeight);
+
+            // Desenha a borda se houver
+            if (imageProps.borderWidth > 0) {
+                tempCtx.strokeStyle = imageProps.borderColor;
+                tempCtx.lineWidth = imageProps.borderWidth * scaleFactor; // Borda proporcional
+                if (imageProps.iconShape === 'circle') {
+                    const radius = (effectiveTempCanvasSize / 2) - (tempCtx.lineWidth / 2);
+                    tempCtx.beginPath();
+                    tempCtx.arc(0, 0, radius, 0, Math.PI * 2);
+                    tempCtx.stroke();
+                } else if (imageProps.iconShape === 'rounded-square') {
+                    const borderRadius = 24 * scaleFactor;
+                    const rectSize = effectiveTempCanvasSize - tempCtx.lineWidth;
+                    tempCtx.beginPath();
+                    tempCtx.roundRect(-rectSize / 2, -rectSize / 2, rectSize, rectSize, borderRadius);
+                    tempCtx.stroke();
+                } else {
+                    tempCtx.strokeRect(-effectiveTempCanvasSize / 2, -effectiveTempCanvasSize / 2, effectiveTempCanvasSize, effectiveTempCanvasSize);
+                }
+            }
+
+            tempCtx.restore(); // Restaura o estado do contexto
+
+            // Cria o elemento da imagem e o botão de download
+            const blob = await new Promise(resolve => tempCanvas.toBlob(resolve, 'image/png', 1));
+            const url = URL.createObjectURL(blob);
+
+            const iconItem = document.createElement('div');
+            iconItem.classList.add('generated-icon-item');
+            iconItem.innerHTML = `
+                <img src="${url}" alt="Icone ${density}" width="${size}" height="${size}">
+                <p>${density.toUpperCase()} (${size}x${size}px)</p>
+                <button data-url="${url}" data-filename="icon_${density}.png"><i class="fas fa-download"></i> Baixar</button>
+            `;
+            generatedIconsContainer.appendChild(iconItem);
+        }
+
+        downloadSection.style.display = 'block'; // Mostra a seção de download
+        showMessage("Ícones gerados com sucesso!", false);
+
+    } catch (error) {
+        console.error("Erro ao gerar ícones:", error);
+        showMessage("Erro ao gerar ícones. Tente novamente.", true);
+    } finally {
+        toggleLoading(false); // Oculta o spinner
+    }
+});
+
+// Evento para baixar ícones individuais
+generatedIconsContainer.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON' && e.target.dataset.url) {
+        const url = e.target.dataset.url;
+        const filename = e.target.dataset.filename;
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url); // Libera o URL do objeto
+    }
+});
+
+// Evento para baixar todos os ícones em um ZIP
+downloadAllZipBtn.addEventListener('click', async () => {
+    if (generatedIconsContainer.children.length === 0) {
+        showMessage("Nenhum ícone gerado para baixar.", true);
+        return;
+    }
+
+    toggleLoading(true);
+    showMessage("Preparando ZIP para download...", false);
+
+    try {
+        const zip = new JSZip(); // JSZip é global aqui
+
+        const iconItems = generatedIconsContainer.querySelectorAll('.generated-icon-item');
+        for (const item of iconItems) {
+            const img = item.querySelector('img');
+            const filename = img.alt.replace('Icone ', '') + '.png'; // e.g., "mdpi.png"
+            const response = await fetch(img.src);
+            const blob = await response.blob();
+            zip.file(filename, blob);
+        }
+
+        const content = await zip.generateAsync({ type: "blob" });
+        const zipUrl = URL.createObjectURL(content);
+
+        const a = document.createElement('a');
+        a.href = zipUrl;
+        a.download = 'android_icons.zip';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(zipUrl); // Libera o URL do objeto
+
+        showMessage("Todos os ícones baixados com sucesso!", false);
+
+    } catch (error) {
+        console.error("Erro ao gerar ou baixar ZIP:", error);
+        showMessage("Erro ao baixar o ZIP dos ícones.", true);
+    } finally {
+        toggleLoading(false);
+    }
+});
+
+
+// ===========================================
+// Inicialização
+// ===========================================
+
+// Monitorar o estado de autenticação
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        // Se o usuário não está logado, redireciona para a página inicial
+        console.log("Usuário não logado, redirecionando para index.html");
+        localStorage.removeItem('selectedExampleImageUrl'); // Limpa a imagem de exemplo
+        window.location.href = 'index.html';
+    } else {
+        console.log("Usuário logado no editor:", user.email);
+        // Tenta carregar uma imagem de exemplo se houver uma no localStorage
+        checkSelectedExampleImage();
+        drawImage(); // Desenha o canvas inicial (pode ser vazio ou com a imagem de exemplo)
+    }
+});
+
+
 // Verifica se há uma imagem de exemplo selecionada no localStorage e a carrega
 function checkSelectedExampleImage() {
     const selectedImageUrl = localStorage.getItem('selectedExampleImageUrl');
     if (selectedImageUrl) {
-        console.log("URL de imagem de exemplo encontrada no localStorage:", selectedImageUrl.substring(0,100) + "...");
+        console.log("URL de imagem de exemplo encontrada no localStorage:", selectedImageUrl);
         loadImageFromUrl(selectedImageUrl);
         localStorage.removeItem('selectedExampleImageUrl'); // Limpa após o uso
+    } else {
+        console.log("Nenhuma imagem de exemplo no localStorage.");
+        imageLoaded = false; // Garante que o estado seja 'sem imagem'
+        drawImage(); // Desenha o canvas vazio
     }
 }
+
+// Carrega uma imagem a partir de uma URL (usado para exemplos do Firebase Storage)
+function loadImageFromUrl(url) {
+    // Esconder mensagens anteriores e mostrar que está carregando
+    hideMessage();
+    toggleLoading(true);
+    showMessage("Carregando imagem de exemplo...", false);
+    
+    console.log("Tentando carregar imagem de URL:", url.substring(0, 100) + "...");
+    originalImage = new Image();
+    originalImage.crossOrigin = "anonymous"; // *** ESSENCIAL para CORS em canvas ***
+
+    originalImage.onload = () => {
+        imageLoaded = true;
+        console.log("Imagem carregada com SUCESSO. Dimensões:", originalImage.width, "x", originalImage.height);
+        resetImageProperties(); // Reseta todas as propriedades para a imagem nova
+        drawImage();
+        showMessage("Imagem carregada com sucesso!", false);
+        toggleLoading(false); // Oculta o spinner
+    };
+    originalImage.onerror = (e) => {
+        imageLoaded = false;
+        console.error("Erro ao carregar imagem do URL:", e);
+        showMessage("Erro ao carregar imagem do URL. Verifique a URL ou suas permissões CORS no Firebase Storage.", true);
+        drawImage();
+        toggleLoading(false); // Oculta o spinner
+    };
+    originalImage.src = url;
+}
+
+
+// Chamada inicial para desenhar o canvas (vazio ou com a imagem de exemplo se houver)
+// Será feito dentro do onAuthStateChanged
+// drawImage();

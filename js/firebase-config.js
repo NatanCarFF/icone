@@ -11,24 +11,22 @@ import { getStorage } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-
 
 // Suas configurações do Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyBng5_h6m9Kbh7dMH8elWghLqOtpasGzzs",
+  apiKey: "AIzaSyBng5_h6m9Kbh7dMH8elWghLqOtpasGzzs", // Mantenha sua chave real aqui
   authDomain: "icone-1c88a.firebaseapp.com",
   projectId: "icone-1c88a",
   storageBucket: "icone-1c88a.firebasestorage.app",
   messagingSenderId: "539251553983",
-  appId: "1:539251553983:web:50db3a7e7cc3048738380a",
-  measurementId: "G-V7HPWEHM9Z" // Deixei descomentado, como no seu arquivo original
+  appId: "1:539251553983:web:50db3a7e7cc18105d15a99",
+  measurementId: "G-G91W4M7K42" // Se estiver usando Analytics
 };
 
-// Inicializa o aplicativo Firebase
+// Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 
-// Obtém as instâncias dos serviços Firebase
+// Inicializa os serviços que você vai usar e os exporta
 export const auth = getAuth(app);
 export const storage = getStorage(app);
-// Se for usar Firestore:
+// Se for usar Firestore, exporte:
 // export const db = getFirestore(app);
-// Se for usar Analytics:
+// Se for usar Analytics, exporte:
 // export const analytics = getAnalytics(app);
-
-console.log("Firebase inicializado (SDK Modular)!");

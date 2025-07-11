@@ -6,26 +6,27 @@
     <title>Exemplos de Ícones - Gerador de Ícones Android</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
         <h1>Escolha um Exemplo para Começar!</h1>
         <nav>
-            <button id="logoutBtn">Sair</button>
+            <button id="logoutBtn" class="action-btn">Sair</button>
         </nav>
     </header>
 
     <main>
         <section class="examples-grid">
             <h2>Nossos Exemplos</h2>
-            <p id="loadingMessage">Carregando exemplos...</p>
+            <p id="loadingMessage" class="message success">Carregando exemplos... <span class="spinner"></span></p>
             <div id="imageExamplesContainer" class="image-grid">
                 </div>
             <p id="errorMessage" class="message error" style="display: none;"></p>
         </section>
 
         <section class="back-to-editor">
-            <p>Ou <a href="editor.html">comece um ícone do zero</a>.</p>
+            <p>Ou <a href="editor.html" class="action-link">comece um ícone do zero</a>.</p>
         </section>
     </main>
 

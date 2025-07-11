@@ -11,14 +11,22 @@ const loadingMessage = document.getElementById('loadingMessage');
 const errorMessage = document.getElementById('errorMessage');
 const logoutBtn = document.getElementById('logoutBtn');
 
-// Função para exibir mensagens de erro/sucesso
-function showMessage(element, message, isError = true) {
+// Função para exibir mensagens de erro/sucesso com spinner opcional
+// Adicionado parâmetro 'showSpinner' para controlar o spinner no 'loadingMessage'
+function showMessage(element, message, isError = true, showSpinner = false) {
     element.textContent = message;
     element.className = `message ${isError ? 'error' : 'success'}`;
     element.style.display = 'block';
+    if (showSpinner) {
+        element.innerHTML += ' <span class="spinner"></span>'; // Adiciona o spinner
+    } else {
+        // Garante que o spinner seja removido se a mensagem não for de carregamento
+        element.innerHTML = message;
+    }
 }
 
 function hideMessage(element) {
+    element.textContent = '';
     element.style.display = 'none';
 }
 
@@ -33,47 +41,46 @@ onAuthStateChanged(auth, (user) => {
         console.log("Usuário logado na página de exemplos:", user.email);
         loadExampleImages();
     } else {
-        // Usuário não está logado, redireciona para a página de login
-        console.log("Usuário não logado na página de exemplos. Redirecionando...");
-        window.location.href = 'login.html';
+        // Usuário não está logado, redireciona para a página inicial
+        console.log("Usuário não logado, redirecionando para index.html");
+        window.location.href = 'index.html';
     }
 });
 
-// Lógica para o botão de logout
+// Logout
 logoutBtn.addEventListener('click', async () => {
     try {
         await signOut(auth);
         console.log("Usuário deslogado.");
-        window.location.href = 'login.html'; // Redireciona para login após logout
+        window.location.href = 'index.html'; // Redireciona para a página inicial
     } catch (error) {
         console.error("Erro ao fazer logout:", error);
-        showMessage(errorMessage, "Erro ao fazer logout. Tente novamente.", true);
+        // Poderia mostrar uma mensagem de erro na UI
     }
 });
 
 
 // ===========================================
-// Lógica de Carregamento e Exibição de Imagens
+// Carregamento de Imagens de Exemplo do Firebase Storage
 // ===========================================
 
 async function loadExampleImages() {
-    loadingMessage.style.display = 'block'; // Mostra a mensagem de carregamento
     hideMessage(errorMessage); // Esconde qualquer erro anterior
-    imageExamplesContainer.innerHTML = ''; // Limpa o container
+    showMessage(loadingMessage, "Carregando exemplos...", false, true); // Mostra carregando com spinner
 
     try {
-        // Cria uma referência para a pasta 'examples' no Firebase Storage
-        const examplesListRef = ref(storage, 'examples/'); // Certifique-se que o nome da pasta corresponde ao seu Storage
-
-        // Lista todos os itens (arquivos) dentro da pasta
-        const res = await listAll(examplesListRef);
+        const listRef = ref(storage, 'examples/'); // Pasta onde suas imagens de exemplo estão no Storage
+        const res = await listAll(listRef);
 
         if (res.items.length === 0) {
-            loadingMessage.textContent = 'Nenhum exemplo de imagem encontrado no Storage.';
+            showMessage(errorMessage, "Nenhum exemplo de imagem encontrado no Firebase Storage.", true);
+            hideMessage(loadingMessage); // Esconde o carregamento
             return;
         }
 
-        // Para cada item, obtenha a URL de download e exiba
+        // Limpa o container antes de adicionar novas imagens
+        imageExamplesContainer.innerHTML = '';
+
         for (const itemRef of res.items) {
             const imageUrl = await getDownloadURL(itemRef);
             const imageName = itemRef.name; // Nome do arquivo
@@ -83,16 +90,21 @@ async function loadExampleImages() {
             exampleItem.innerHTML = `
                 <img src="${imageUrl}" alt="${imageName}">
                 <p>${imageName.split('.')[0]}</p>
+                <button class="action-btn" data-image-url="${imageUrl}"><i class="fas fa-edit"></i> Usar este</button>
             `;
-            // Adiciona evento de clique para selecionar a imagem
-            exampleItem.addEventListener('click', () => selectExampleImage(imageUrl));
+            // Adiciona evento de clique no botão para selecionar a imagem
+            exampleItem.querySelector('button').addEventListener('click', (e) => {
+                selectExampleImage(e.currentTarget.dataset.imageUrl);
+            });
+
             imageExamplesContainer.appendChild(exampleItem);
         }
 
-        loadingMessage.style.display = 'none'; // Esconde a mensagem de carregamento
+        hideMessage(loadingMessage); // Esconde a mensagem de carregamento
+
     } catch (error) {
         console.error("Erro ao carregar imagens de exemplo:", error);
-        loadingMessage.style.display = 'none'; // Esconde o carregamento
+        hideMessage(loadingMessage); // Esconde o carregamento
         showMessage(errorMessage, "Não foi possível carregar as imagens de exemplo. Verifique sua conexão ou as permissões do Firebase Storage.", true);
     }
 }
@@ -109,4 +121,4 @@ function selectExampleImage(imageUrl) {
     window.location.href = 'editor.html';
 }
 
-// loadExampleImages(); // Não chame aqui, pois onAuthStateChanged já faz isso
+// A chamada inicial para loadExampleImages() é feita dentro do onAuthStateChanged.

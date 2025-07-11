@@ -5,606 +5,690 @@
 /* Variáveis CSS (Melhora a manutenção e consistência) */
 /* ===================================== */
 :root {
-    --primary-color: #28a745; /* Verde mais profundo e profissional */
-    --accent-color: #007bff; /* Azul vibrante para ações */
-    --text-color: #333333;
-    --light-text-color: #555555;
-    --background-light: #f8f9fa; /* Fundo claro e limpo */
-    --background-card: #ffffff;
-    --border-color: #e0e0e0;
-    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra mais suave e moderna */
-    --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
-    --border-radius-base: 8px;
-    --transition-speed: 0.3s ease;
+    /* Cores atualizadas para um visual mais moderno e profissional */
+    --primary-color: #4CAF50; /* Um verde um pouco mais vibrante e reconhecível (Material Design Green 500) */
+    --primary-color-rgb-values: 76, 175, 80; /* RGB para sombras dinâmicas */
+    --accent-color: #2196F3; /* Um azul mais calmo e profissional (Material Design Blue 500) */
+    --accent-color-rgb-values: 33, 150, 243; /* RGB para sombras dinâmicas */
+    --secondary-accent-color: #FFC107; /* Um amarelo/laranja para destaques ou avisos */
+    
+    --text-color: #333333; /* Texto principal mais escuro para melhor contraste */
+    --light-text-color: #666666; /* Texto secundário, levemente mais escuro que o original para legibilidade */
+    
+    --background-light: #F2F5F8; /* Um cinza-azulado muito sutil para o fundo geral (macio e limpo) */
+    --background-card: #ffffff; /* Fundo de cards/seções brancos */
+    
+    --border-color: #E0E0E0; /* Cor de borda suave */
+    --input-border-color: #CCCCCC; /* Cor de borda para inputs */
+    
+    --shadow-light: 0 6px 20px rgba(0, 0, 0, 0.08); /* Sombra um pouco mais pronunciada, mas ainda suave */
+    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra para hover, mais evidente */
+    
+    --border-radius-base: 10px; /* Levemente mais arredondado para um toque moderno */
+    --transition-speed: 0.3s ease-in-out; /* Transição mais suave e responsiva */
 }
 
 /* ===================================== */
 /* Estilos Globais e Layout Base */
 /* ===================================== */
+html {
+    scroll-behavior: smooth; /* Rolagem suave para âncoras */
+}
+
 body {
-    font-family: 'Inter', sans-serif; /* Fonte mais moderna e legível */
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6; /* Melhorar espaçamento entre linhas para legibilidade */
+    color: var(--text-color);
+    background-color: var(--background-light);
     margin: 0;
     padding: 0;
-    background-color: var(--background-light);
-    color: var(--text-color);
-    line-height: 1.6;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100vh; /* Garante que o footer fique no final da página */
+    overflow-x: hidden; /* Previne rolagem horizontal indesejada */
 }
 
-header {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 1.2em 0; /* Padding um pouco menor */
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15); /* Sombra mais pronunciada */
-    position: relative; /* Para o botão de logout */
-    z-index: 100; /* Garante que o header esteja acima de outros elementos */
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.5em; /* Tamanho do título aumentado */
-    font-weight: 600; /* Peso da fonte mais definido */
-}
-
-/* Navegação e botões no cabeçalho (Logout) */
-header nav {
-    position: absolute;
-    top: 50%; /* Centraliza verticalmente */
-    right: 1.5em;
-    transform: translateY(-50%); /* Ajuste fino para centralização */
-}
-
-header nav button {
-    background-color: rgba(255, 255, 255, 0.2); /* Fundo transparente */
-    color: white;
-    padding: 8px 18px; /* Padding ajustado */
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Borda sutil */
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    font-size: 0.95em;
-    font-weight: 500;
-    transition: var(--transition-speed);
-}
-
-header nav button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-color: white;
-}
-
+/* Container principal para centralizar o conteúdo */
 main {
-    flex: 1;
-    padding: 30px; /* Mais padding para o conteúdo principal */
-    max-width: 1200px;
-    margin: 30px auto; /* Mais margin para centralizar */
-    background-color: var(--background-card);
-    border-radius: var(--border-radius-base);
-    box-shadow: var(--shadow-light); /* Sombra leve */
+    flex-grow: 1; /* Faz o main ocupar o espaço restante na coluna */
+    padding: 30px 20px; /* Padding geral para o conteúdo principal */
+    max-width: 1200px; /* Limita a largura em telas grandes para melhor legibilidade */
+    margin: 0 auto; /* Centraliza o conteúdo */
+    width: 100%; /* Garante que ocupe a largura disponível dentro do max-width */
+    box-sizing: border-box; /* Inclui padding na largura total */
 }
 
-footer {
-    background-color: #2c3e50; /* Azul escuro quase preto para o footer */
-    color: rgba(255, 255, 255, 0.8);
-    text-align: center;
-    padding: 1.2em 0;
-    margin-top: 40px; /* Mais espaço antes do footer */
-    font-size: 0.9em;
-}
-
-/* ===================================== */
-/* Estilos para Páginas de Autenticação (Login/Cadastro) */
-/* ===================================== */
-.auth-container {
-    max-width: 450px; /* Ligeiramente mais largo */
-    margin: 60px auto;
-    padding: 40px; /* Mais padding */
+/* Estilo para seções/cards */
+section {
     background-color: var(--background-card);
     border-radius: var(--border-radius-base);
     box-shadow: var(--shadow-light);
-    text-align: center;
+    padding: 30px; /* Aumentar o padding interno das seções para mais "ar" */
+    margin-bottom: 30px; /* Espaço consistente entre as seções */
+    box-sizing: border-box;
 }
 
-.auth-container h2 {
-    color: var(--primary-color);
-    margin-bottom: 25px; /* Mais espaço */
-    font-size: 2em; /* Título maior */
-    font-weight: 600;
+h1, h2, h3, h4 {
+    color: var(--primary-color); /* Usar a cor primária para títulos para consistência */
+    margin-bottom: 0.8em;
+    font-weight: 700; /* Títulos mais fortes e impactantes */
+    line-height: 1.2;
 }
 
-.auth-container input[type="email"],
-.auth-container input[type="password"] {
-    width: calc(100% - 24px); /* Ajuste de largura para padding */
-    padding: 14px; /* Mais padding */
-    margin-bottom: 18px; /* Mais espaço */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    font-size: 1.05em;
-    outline: none; /* Remove outline padrão */
-    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+h1 {
+    font-size: 2.5em; /* Ajustar tamanho para o header */
 }
 
-.auth-container input[type="email"]:focus,
-.auth-container input[type="password"]:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+h2 {
+    font-size: 2em;
 }
 
-.auth-container button {
-    width: 100%;
-    padding: 14px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius-base);
-    font-size: 1.15em; /* Texto maior */
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition-speed);
-    margin-bottom: 12px;
-    box-shadow: var(--shadow-light); /* Sombra para botões */
+h3 {
+    font-size: 1.5em;
+    color: var(--text-color); /* Subtítulos podem ter a cor do texto principal */
 }
 
-.auth-container button:hover {
-    background-color: #218838; /* Verde ligeiramente mais escuro */
-    box-shadow: var(--shadow-hover);
+p {
+    margin-bottom: 1em;
 }
 
-.auth-container .google-signin-btn {
-    background-color: #ea4335; /* Vermelho do Google */
-}
-
-.auth-container .google-signin-btn:hover {
-    background-color: #d13d2f;
-}
-
-.auth-container p {
-    margin-top: 25px;
-    font-size: 0.95em;
-    color: var(--light-text-color);
-}
-
-.auth-container p a {
-    color: var(--primary-color);
+a {
+    color: var(--accent-color);
     text-decoration: none;
-    font-weight: 600;
     transition: color var(--transition-speed);
 }
 
-.auth-container p a:hover {
-    color: #218838;
+a:hover {
+    color: darken(var(--accent-color), 15%); /* Escurece no hover (requer pré-processador ou HSL) */
     text-decoration: underline;
 }
 
 /* ===================================== */
-/* Estilos para a Página Inicial (index.html) - ATUALIZADOS */
+/* Header e Footer */
+/* ===================================== */
+header {
+    background-color: var(--background-card);
+    box-shadow: var(--shadow-light);
+    padding: 20px 30px; /* Mais padding nas laterais */
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+header h1 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 2.2em; /* Tamanho do título do header */
+}
+
+nav #logoutBtn {
+    background-color: #dc3545; /* Vermelho padrão para logout */
+    color: white;
+    padding: 10px 20px; /* Padding maior */
+    border-radius: var(--border-radius-base);
+    transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+}
+nav #logoutBtn:hover {
+    background-color: #c82333; /* Um pouco mais escuro no hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+nav #logoutBtn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+
+footer {
+    background-color: var(--text-color); /* Fundo escuro para o footer */
+    color: white;
+    text-align: center;
+    padding: 25px; /* Mais padding */
+    margin-top: auto; /* Empurra o footer para a parte inferior da tela */
+    font-size: 0.9em;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ===================================== */
+/* Botões Gerais */
+/* ===================================== */
+.action-btn {
+    display: inline-block;
+    padding: 12px 25px; /* Padding generoso para botões */
+    font-size: 1.1em;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    border: none; /* Remove borda padrão */
+    box-sizing: border-box;
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    /* Usar valores RGB para sombra com cor do botão */
+    box-shadow: 0 4px 10px rgba(var(--primary-color-rgb-values), 0.2); 
+}
+
+.primary-btn:hover {
+    background-color: darken(var(--primary-color), 10%); /* Exemplo: um pouco mais escuro */
+    transform: translateY(-2px); /* Efeito sutil de levantar */
+    box-shadow: 0 8px 15px rgba(var(--primary-color-rgb-values), 0.3);
+}
+
+.primary-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(var(--primary-color-rgb-values), 0.2);
+}
+
+/* Botão Google */
+.google-btn {
+    background-color: #DB4437; /* Cor do Google red */
+    color: white;
+    box-shadow: 0 4px 10px rgba(219, 68, 55, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espaço entre ícone e texto */
+    width: 100%; /* Ocupa a largura total no container de login */
+    padding: 12px 20px;
+    font-size: 1.1em;
+    border-radius: var(--border-radius-base);
+    transition: all var(--transition-speed);
+    border: none;
+    cursor: pointer;
+}
+
+.google-btn:hover {
+    background-color: #c0392b; /* Mais escuro */
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(219, 68, 55, 0.3);
+}
+.google-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(219, 68, 55, 0.2);
+}
+
+.google-btn i { /* Estilo para o ícone do FontAwesome */
+    font-size: 1.2em;
+}
+
+
+/* ===================================== */
+/* Home Page (index.html) */
 /* ===================================== */
 .hero {
     text-align: center;
-    padding: 60px 30px; /* Mais padding para espaçamento */
-    background: linear-gradient(135deg, var(--primary-color) 0%, #4CAF50 100%); /* Gradiente suave */
-    color: white; /* Texto branco no hero */
+    padding: 50px 30px; /* Mais padding para destacar */
+    background: linear-gradient(135deg, var(--primary-color), lighten(var(--primary-color), 15%)); /* Gradiente suave */
+    color: white;
+    box-shadow: var(--shadow-light);
     border-radius: var(--border-radius-base);
-    margin-bottom: 40px; /* Mais espaço */
-    box-shadow: var(--shadow-light); /* Sombra para o hero */
+    margin-bottom: 30px;
 }
 
 .hero h1 {
-    font-size: 3em; /* Título maior e mais impactante */
+    color: white; /* Título branco no hero */
+    font-size: 3em;
     margin-bottom: 15px;
-    font-weight: 700; /* Mais forte */
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
 }
 
 .hero p {
-    font-size: 1.3em; /* Texto maior */
+    font-size: 1.2em;
     max-width: 800px;
-    margin: 0 auto 40px auto; /* Mais espaço antes dos botões */
-    color: rgba(255, 255, 255, 0.9); /* Branco ligeiramente transparente */
-    font-weight: 300; /* Mais leve para o corpo do texto */
+    margin: 0 auto 30px auto;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.hero .actions {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    justify-content: center;
+    gap: 20px; /* Espaço entre os botões */
 }
 
 .hero .actions button {
-    background-color: rgba(255, 255, 255, 0.2); /* Fundo transparente no hero */
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Borda branca sutil */
-    padding: 15px 30px; /* Mais padding para botões */
-    margin: 0 15px; /* Mais espaço entre botões */
+    background-color: white;
+    color: var(--primary-color);
+    padding: 15px 30px; /* Padding maior */
+    font-size: 1.1em;
+    font-weight: 700;
+    border: none;
     border-radius: var(--border-radius-base);
     cursor: pointer;
-    font-size: 1.1em;
-    font-weight: 600; /* Mais forte */
-    transition: var(--transition-speed);
+    transition: all var(--transition-speed);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .hero .actions button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-color: white;
-    transform: translateY(-3px); /* Efeito de elevação sutil */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 .features {
-    padding: 30px 0; /* Mais padding */
+    padding: 30px;
 }
 
 .features h2 {
     text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 30px; /* Mais espaço */
-    font-size: 2.2em; /* Título maior */
-    font-weight: 600;
+    margin-bottom: 30px;
 }
 
 .features ul {
     list-style: none;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colunas com largura mínima maior */
-    gap: 25px; /* Mais espaçamento entre itens */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Layout responsivo */
+    gap: 25px; /* Espaço entre os itens */
 }
 
 .features li {
-    background-color: var(--background-card); /* Fundo branco */
-    padding: 20px; /* Mais padding */
-    border-left: 5px solid var(--primary-color); /* Borda esquerda verde */
+    background-color: var(--background-light);
     border-radius: var(--border-radius-base);
-    box-shadow: var(--shadow-light); /* Sombra mais visível */
-    font-size: 1em;
-    color: var(--light-text-color);
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-.features li:hover {
-    transform: translateY(-5px); /* Efeito de elevação */
-    box-shadow: var(--shadow-hover);
-}
-
-/* ===================================== */
-/* Estilos para a Página do Editor */
-/* ===================================== */
-.editor-container {
-    display: flex;
-    gap: 40px; /* Mais espaçamento entre as colunas */
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.editor-controls {
-    flex: 1;
-    min-width: 350px; /* Garante largura mínima maior */
-    padding: 25px; /* Mais padding */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    background-color: var(--background-card);
-    box-shadow: var(--shadow-light);
-}
-
-.editor-controls h2, .editor-controls h3 {
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-.editor-controls input[type="file"] {
-    display: block;
-    margin-bottom: 20px;
-    padding: 8px 0; /* Padding para o input de arquivo */
-    font-size: 1em;
-}
-
-.editor-controls p a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color var(--transition-speed);
-}
-.editor-controls p a:hover {
-    color: #218838;
-    text-decoration: underline;
-}
-
-.editor-controls .tool-group {
-    margin-bottom: 18px; /* Mais espaço */
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 1.05em;
     display: flex;
     align-items: center;
-    gap: 12px; /* Mais espaçamento */
-}
-
-.editor-controls .tool-group label {
-    flex-basis: 90px; /* Largura um pouco maior para labels */
-    min-width: 90px;
-    font-weight: 500;
+    gap: 15px;
     color: var(--light-text-color);
 }
 
-.editor-controls .tool-group input[type="range"] {
-    flex-grow: 1;
-    -webkit-appearance: none; /* Reset para customização */
-    appearance: none;
-    height: 6px; /* Altura do slider */
-    background: var(--border-color);
-    outline: none;
-    border-radius: 3px;
-    transition: background 0.15s ease-in-out;
+/* Adicionar ícones de Font Awesome para as features (exemplo) */
+/* .features li::before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f00c"; /* check-circle icon * /
+    color: var(--primary-color);
+    font-size: 1.3em;
+} */
+
+
+/* ===================================== */
+/* Login Page (login.html) */
+/* ===================================== */
+.auth-container {
+    max-width: 500px; /* Limita a largura do formulário de auth */
+    margin: 50px auto; /* Centraliza verticalmente e horizontalmente */
+    text-align: center;
 }
 
-.editor-controls .tool-group input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px; /* Tamanho do "thumb" */
-    height: 20px;
-    background: var(--accent-color);
-    border: 2px solid white;
-    border-radius: 50%;
-    cursor: grab;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background var(--transition-speed), transform var(--transition-speed);
+.auth-container h2 {
+    margin-bottom: 25px;
+    color: var(--primary-color);
 }
 
-.editor-controls .tool-group input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: var(--accent-color);
-    border: 2px solid white;
-    border-radius: 50%;
-    cursor: grab;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background var(--transition-speed), transform var(--transition-speed);
+.form-group {
+    margin-bottom: 20px; /* Mais espaço entre grupos de formulário */
+    text-align: left;
 }
 
-.editor-controls .tool-group input[type="range"]::-webkit-slider-thumb:active {
-    cursor: grabbing;
-    transform: scale(1.1);
-}
-
-.editor-controls .tool-group input[type="range"]::-moz-range-thumb:active {
-    cursor: grabbing;
-    transform: scale(1.1);
-}
-
-.editor-controls .tool-group input[type="color"] {
-    flex-grow: 1;
-    height: 40px; /* Altura maior para o color picker */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    padding: 2px;
-}
-
-
-/* Estilo para exibir os valores dos sliders */
-.slider-value {
-    min-width: 60px; /* Garante espaço para o texto */
-    text-align: right;
-    font-weight: 600;
-    color: var(--accent-color);
-    font-size: 1em;
-}
-
-/* Estilos para os botões de reset individuais */
-.reset-slider-btn {
-    background: none;
-    border: none;
-    color: var(--light-text-color);
-    cursor: pointer;
-    font-size: 1.2em; /* Ícone maior */
-    padding: 6px;
-    transition: var(--transition-speed);
-}
-
-.reset-slider-btn:hover {
-    color: var(--accent-color);
-    transform: scale(1.15);
-}
-
-/* Estilos para o grupo de rádio de formato do ícone */
-.editor-controls .tool-group-radio {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Mais espaçamento entre as opções */
-    padding-left: 10px; /* Recuo ajustado */
-}
-
-.editor-controls .tool-group-radio label {
-    display: flex;
-    align-items: center;
-    font-weight: normal;
-    color: var(--light-text-color);
-    cursor: pointer;
-    transition: color var(--transition-speed);
-}
-
-.editor-controls .tool-group-radio label:hover {
-    color: var(--accent-color);
-}
-
-.editor-controls .tool-group-radio input[type="radio"] {
-    margin-right: 10px; /* Mais espaçamento entre o rádio e o texto */
-    width: 18px; /* Tamanho do rádio */
-    height: 18px;
-    cursor: pointer;
-    accent-color: var(--primary-color); /* Altera a cor do rádio nativo */
-}
-
-.editor-controls .action-btn {
+.form-group label {
     display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--light-text-color);
+    font-size: 0.95em;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"],
+select { /* Adicionado select para consistência */
     width: 100%;
-    padding: 12px 20px; /* Mais padding */
-    background-color: var(--accent-color);
+    padding: 12px;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius-base);
+    font-size: 1em;
+    color: var(--text-color);
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+    box-sizing: border-box; /* Garante que padding não aumente a largura */
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus,
+select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb-values), 0.2); /* Foco visual suave */
+}
+
+/* Esconder o input de arquivo padrão e estilizá-lo */
+input[type="file"] {
+    display: none; /* Esconde o input padrão */
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: var(--accent-color); /* Usar accent para upload */
+    color: white;
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.custom-file-upload:hover {
+    background-color: darken(var(--accent-color), 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--accent-color-rgb-values), 0.2);
+}
+
+.auth-container button[type="submit"] {
+    margin-top: 15px; /* Espaço para o botão de submit */
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: var(--border-radius-base);
     font-size: 1.1em;
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition-speed);
-    margin-top: 30px; /* Mais espaço antes dos botões de ação */
-    box-shadow: var(--shadow-light);
+    transition: all var(--transition-speed);
+    box-shadow: 0 4px 10px rgba(var(--primary-color-rgb-values), 0.2);
+}
+.auth-container button[type="submit"]:hover {
+    background-color: darken(var(--primary-color), 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(var(--primary-color-rgb-values), 0.3);
 }
 
-.editor-controls .action-btn:hover {
-    background-color: #0056b3;
-    box-shadow: var(--shadow-hover);
+.auth-container .message {
+    margin-top: 20px;
+    font-weight: 500;
+}
+
+.toggle-mode {
+    margin-top: 25px;
+    font-size: 0.95em;
+    color: var(--light-text-color);
+}
+.toggle-mode a {
+    font-weight: 600;
+}
+
+
+/* ===================================== */
+/* Editor Page (editor.html) */
+/* ===================================== */
+.editor-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebra de linha em telas menores */
+    gap: 30px; /* Espaço entre os controles e o canvas */
+    align-items: flex-start; /* Alinha o topo */
+}
+
+.editor-controls {
+    flex: 1; /* Ocupa o espaço disponível */
+    min-width: 300px; /* Largura mínima para os controles */
+    padding: 30px;
 }
 
 .canvas-area {
-    flex: 2;
-    min-width: 450px; /* Garante largura mínima maior para o canvas */
+    flex: 2; /* Ocupa mais espaço que os controles */
+    min-width: 300px;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    background-color: var(--background-card);
-    padding: 25px;
-    box-shadow: var(--shadow-light);
+    padding: 30px;
 }
 
-#iconCanvas {
-    border: 1px solid var(--border-color);
-    background-color: #f0f0f0; /* Fundo cinza mais suave para o canvas */
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-bottom: 25px;
-    border-radius: var(--border-radius-base); /* Cantos arredondados para o canvas */
+.editing-tools {
+    border-top: 1px solid var(--border-color);
+    padding-top: 25px;
+    margin-top: 25px;
+}
+.editing-tools h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--primary-color); /* Cor dos subtítulos das ferramentas */
 }
 
-.canvas-hint {
-    font-size: 0.95em;
+.tool-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* Mais espaço entre grupos de ferramentas */
+    gap: 15px; /* Espaço entre label, input e valor */
+}
+.tool-group label {
+    flex-basis: 100px; /* Ajuste para o label para alinhamento */
+    min-width: 80px;
+    font-weight: 600;
     color: var(--light-text-color);
+    font-size: 0.95em;
+}
+.tool-group input[type="range"] {
+    flex-grow: 1; /* Slider ocupa o espaço restante */
+}
+.slider-value {
+    min-width: 40px; /* Manter um tamanho mínimo para o valor */
+    text-align: right;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+.reset-slider-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    margin-left: 10px;
+    transition: color var(--transition-speed), text-decoration var(--transition-speed);
+    border-radius: var(--border-radius-base); /* Adiciona border-radius para consistência */
+}
+.reset-slider-btn:hover {
+    color: darken(var(--accent-color), 15%);
+    text-decoration: underline;
+    background-color: rgba(var(--accent-color-rgb-values), 0.05); /* Fundo sutil no hover */
+}
+
+/* Estilos para o Slider (range input) */
+input[type="range"] {
+    -webkit-appearance: none; /* Remove estilo padrão do Chrome/Safari */
+    appearance: none; /* Remove estilo padrão para outros navegadores */
+    width: 100%;
+    height: 8px; /* Altura da barra do slider */
+    background: var(--border-color); /* Cor da trilha */
+    border-radius: 5px;
+    outline: none;
+    transition: background var(--transition-speed);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: grab; /* Altera cursor para indicar que pode arrastar */
+    border: 2px solid var(--background-card); /* Borda branca para destacar o thumb */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    margin-top: -6px; /* Ajuste para centralizar o thumb na trilha */
+    transition: background var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: darken(var(--accent-color), 10%);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+    cursor: grabbing; /* Cursor para indicar que está arrastando */
+}
+
+/* Para Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: grab;
+    border: 2px solid var(--background-card);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background var(--transition-speed), box-shadow var(--transition-speed);
+}
+input[type="range"]::-moz-range-thumb:hover {
+    background: darken(var(--accent-color), 10%);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+input[type="range"]::-moz-range-track {
+    background: var(--border-color);
+    border-radius: 5px;
+    height: 8px;
+}
+
+
+/* Canvas area */
+#iconCanvas {
+    border: 2px dashed var(--border-color); /* Borda tracejada para indicar área de desenho */
+    border-radius: var(--border-radius-base);
+    background-color: var(--background-light); /* Fundo sutil */
+    margin-bottom: 20px;
+    max-width: 100%; /* Garante que o canvas não ultrapasse o container */
+    height: auto;
+    display: block; /* Remove espaço extra abaixo */
+}
+.canvas-hint {
+    font-size: 0.9em;
+    color: var(--light-text-color);
+    margin-bottom: 25px; /* Mais espaço antes do botão de gerar */
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Download Section */
+.download-section h2, .examples-grid h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.download-section p, .examples-grid p {
     text-align: center;
     margin-bottom: 20px;
+    color: var(--light-text-color);
+}
+.download-section #downloadAllZip {
+    display: block; /* Ocupa a largura total */
+    margin: 30px auto 0 auto; /* Centraliza e adiciona espaço superior */
+    max-width: 300px; /* Limita a largura do botão ZIP */
 }
 
-.primary-btn {
-    background-color: var(--primary-color);
-}
-
-.primary-btn:hover {
-    background-color: #218838;
-}
-
-/* Seção de Download */
-.download-section {
-    margin-top: 50px; /* Mais espaço */
-    padding: 30px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    background-color: var(--background-card);
-    text-align: center;
-    box-shadow: var(--shadow-light);
-}
-
-.download-section h2 {
-    color: var(--primary-color);
-    margin-bottom: 25px;
-    font-weight: 600;
-}
-
+/* ===================================== */
+/* Imagens e Grids (Exemplos e Ícones Gerados) */
+/* ===================================== */
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Tamanho mínimo maior para as imagens */
-    gap: 25px; /* Mais espaçamento */
-    margin-top: 25px;
-    padding: 25px;
-    background-color: var(--background-light);
-    border-radius: var(--border-radius-base);
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Mais flexibilidade */
+    gap: 25px; /* Aumentar o espaçamento entre imagens */
+    padding: 20px 0;
+    justify-content: center; /* Centraliza os itens na grade */
 }
 
-.generated-icon-item, .example-item {
-    text-align: center;
+.image-grid .example-item,
+.image-grid .generated-icon-item {
+    background-color: var(--background-card);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-base);
-    padding: 15px; /* Mais padding */
-    background-color: var(--background-card);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: transform var(--transition-speed);
+    padding: 15px;
+    text-align: center;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Para espaçar imagem e texto/botão */
 }
 
-.generated-icon-item:hover, .example-item:hover {
-    transform: translateY(-8px); /* Efeito de elevação mais pronunciado */
+.image-grid .example-item:hover,
+.image-grid .generated-icon-item:hover {
+    transform: translateY(-5px); /* Efeito de levantar */
     box-shadow: var(--shadow-hover);
 }
 
-.generated-icon-item img, .example-item img {
-    max-width: 90%; /* Ajustado para melhor visualização */
+.image-grid img {
+    max-width: 100%;
     height: auto;
-    display: block;
-    margin: 0 auto 12px auto;
-    border: 1px solid #f0f0f0;
-    border-radius: 6px; /* Cantos arredondados nas miniaturas */
+    border-radius: var(--border-radius-base); /* Bordas arredondadas também para as imagens */
+    margin-bottom: 10px;
+    display: block; /* Remove espaço extra abaixo da imagem */
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+    background-color: var(--background-light); /* Fundo para imagens transparentes */
+    padding: 5px; /* Pequeno padding dentro do card da imagem */
 }
 
-.generated-icon-item p, .example-item p {
-    font-weight: 600;
-    color: var(--light-text-color);
-    margin-bottom: 12px;
-}
-
-.generated-icon-item a {
-    display: inline-block;
+.image-grid .generated-icon-item button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    font-size: 0.9em;
     background-color: var(--accent-color);
     color: white;
-    padding: 8px 15px;
+    border: none;
     border-radius: var(--border-radius-base);
-    text-decoration: none;
-    font-size: 0.9em;
-    font-weight: 500;
-    transition: var(--transition-speed);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+.image-grid .generated-icon-item button:hover {
+    background-color: darken(var(--accent-color), 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-rgb-values), 0.2);
 }
 
-.generated-icon-item a:hover {
-    background-color: #0056b3;
-}
 
-/* Mensagens de feedback */
+/* ===================================== */
+/* Mensagens (Erro, Sucesso, Carregando) */
+/* ===================================== */
 .message {
-    padding: 12px;
-    margin-top: 20px;
+    padding: 12px 20px;
     border-radius: var(--border-radius-base);
+    margin-top: 15px;
     font-weight: 500;
-    font-size: 0.95em;
     text-align: center;
-}
-
-.message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    display: block; /* Garante que a mensagem ocupe a própria linha */
 }
 
 .message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: #ffebee; /* Light red */
+    color: #D32F2F; /* Dark red */
+    border: 1px solid #D32F2F;
 }
 
-/* Estilos para o indicador de carregamento e spinner */
-#loadingIndicator {
-    background-color: #e3f2fd; /* Fundo azul claro para carregamento */
-    color: #1976d2; /* Texto azul escuro */
-    border: 1px solid #90caf9;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 12px;
-    border-radius: var(--border-radius-base);
+.message.success {
+    background-color: #e8f5e9; /* Light green */
+    color: #388E3C; /* Dark green */
+    border: 1px solid #388E3C;
 }
 
+/* Spinner de Carregamento */
 .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid var(--accent-color); /* Cor do spinner (azul) */
+    border-left-color: var(--accent-color);
     border-radius: 50%;
-    width: 24px; /* Spinner maior */
-    height: 24px;
+    width: 20px;
+    height: 20px;
     animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
 }
 
 @keyframes spin {
@@ -612,191 +696,120 @@ footer {
     100% { transform: rotate(360deg); }
 }
 
-/* Estilos para a página de exemplos */
-.examples-grid {
-    text-align: center;
-}
-
-.examples-grid h2 {
-    color: var(--primary-color);
-    margin-bottom: 25px;
-    font-weight: 600;
-}
-
-#loadingMessage {
-    font-style: italic;
-    color: var(--light-text-color);
-    margin-top: 20px;
-}
-
-.back-to-editor {
-    text-align: center;
-    margin-top: 40px;
-}
-
-.back-to-editor a {
-    color: var(--accent-color);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.05em;
-    transition: color var(--transition-speed);
-}
-
-.back-to-editor a:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}
-
-
 /* ===================================== */
-/* Responsividade */
+/* Media Queries para Responsividade */
 /* ===================================== */
 @media (max-width: 992px) {
-    main {
-        padding: 20px;
-        margin: 20px auto;
-    }
     .editor-container {
-        gap: 30px;
+        flex-direction: column;
     }
     .editor-controls, .canvas-area {
-        min-width: unset;
-        flex-basis: 100%; /* Ocupa a largura total em telas médias */
-    }
-    header h1 {
-        font-size: 2em;
-    }
-    header nav {
-        position: static;
-        transform: none;
-        margin-top: 10px;
-    }
-    /* Ajuste para hero e features em telas menores */
-    .hero {
-        padding: 40px 20px;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 20px;
     }
     .hero h1 {
         font-size: 2.5em;
     }
-    .hero p {
-        font-size: 1.1em;
+    .hero .actions {
+        flex-direction: column;
+        gap: 15px;
     }
     .hero .actions button {
-        margin: 0 8px;
-        padding: 12px 20px;
-    }
-    .features h2 {
-        font-size: 2em;
-    }
-    .features ul {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
+        width: 80%;
+        max-width: 300px;
     }
 }
 
 @media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px; /* Mais espaço entre o título e o botão de logout */
+        padding: 15px 20px;
+    }
     header h1 {
         font-size: 1.8em;
     }
-    .auth-container {
-        margin: 30px auto;
-        padding: 30px;
+    main {
+        padding: 20px 15px;
     }
-    .auth-container h2 {
-        font-size: 1.8em;
-    }
-    .editor-controls {
-        padding: 20px;
-    }
-    .editor-controls .tool-group label {
-        flex-basis: 70px;
-        min-width: 70px;
-    }
-    .slider-value {
-        min-width: 45px;
+    section {
+        padding: 25px;
+        margin-bottom: 25px;
     }
     .image-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 15px;
-        padding: 20px;
     }
-    /* Ajuste para hero e features em telas menores */
-    .hero {
-        padding: 30px 15px;
+    .auth-container {
+        margin: 30px auto;
+        padding: 25px;
     }
-    .hero h1 {
-        font-size: 2em;
+    .tool-group {
+        flex-wrap: wrap; /* Permite que o grupo de ferramentas quebre linha */
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
     }
-    .hero p {
-        font-size: 1em;
+    .tool-group label {
+        width: 100%; /* Label ocupa a largura total */
+        text-align: center;
+        margin-bottom: 5px;
     }
-    .hero .actions button {
-        display: block; /* Botões de ação em bloco */
-        width: calc(100% - 30px); /* Ocupa quase toda a largura */
-        margin: 10px auto; /* Centraliza */
-    }
-    .features h2 {
-        font-size: 1.8em;
-    }
-    .features ul {
-        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
+    .slider-value {
+        text-align: center;
     }
 }
 
 @media (max-width: 480px) {
     header h1 {
-        font-size: 1.5em;
-    }
-    .auth-container {
-        padding: 20px;
-    }
-    .auth-container input[type="email"],
-    .auth-container input[type="password"],
-    .auth-container button {
-        padding: 12px;
-        font-size: 1em;
-    }
-    .editor-controls {
-        padding: 15px;
-    }
-    .editor-controls .tool-group label {
-        flex-basis: 60px;
-        min-width: 60px;
-    }
-    .slider-value {
-        min-width: 40px;
-    }
-    .reset-slider-btn {
-        font-size: 1em;
-        padding: 4px;
-    }
-    .canvas-area {
-        padding: 15px;
-    }
-    .image-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
-        padding: 10px;
-    }
-    /* Ajuste para hero e features em telas muito pequenas */
-    .hero {
-        padding: 25px 10px;
+        font-size: 1.6em;
     }
     .hero h1 {
-        font-size: 1.7em;
+        font-size: 2em;
     }
-    .hero p {
-        font-size: 0.9em;
-        margin-bottom: 25px;
+    .auth-container, .editor-controls, .canvas-area {
+        padding: 20px;
     }
-    .hero .actions button {
-        font-size: 0.9em;
-        padding: 10px 15px;
+    .action-btn, .google-btn {
+        padding: 10px 20px;
+        font-size: 1em;
     }
-    .features h2 {
-        font-size: 1.6em;
+    .image-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+        gap: 10px;
+    }
+    .features ul {
+        gap: 15px;
     }
     .features li {
         padding: 15px;
     }
+    .tool-group {
+        flex-direction: column; /* Ferramentas empilham em telas muito pequenas */
+        align-items: stretch;
+        gap: 8px;
+    }
+    .tool-group label {
+        text-align: left; /* Alinhar labels à esquerda */
+        margin-bottom: 0;
+    }
+    .slider-value, .reset-slider-btn {
+        width: 100%;
+        text-align: left;
+    }
+    .reset-slider-btn {
+        margin-left: 0;
+        margin-top: 5px;
+    }
 }
+
+/* Helper para cálculo de cor em SCSS-like syntax. Se não usar pré-processador, remova ou substitua. */
+/* Exemplo de uso: background-color: darken(var(--primary-color), 10%); */
+/* Para uso em CSS puro, você precisaria calcular o HSL ou usar variáveis RGB com rgba() */
+/* Por exemplo, para darken:
+   background-color: hsl(hue(var(--primary-color)), saturation(var(--primary-color)), calc(lightness(var(--primary-color)) - 10%));
+   Ou simplesmente definir uma nova variável: --primary-color-darker: #3E8E41;
+*/

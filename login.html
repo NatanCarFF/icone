@@ -6,7 +6,8 @@
     <title>Login - Gerador de Ícones Android</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
 <body>
     <header>
         <h1>Acesse sua conta ou crie uma nova!</h1>
@@ -24,11 +25,11 @@
                     <label for="password">Senha:</label>
                     <input type="password" id="password" required>
                 </div>
-                <button type="submit" id="loginRegisterBtn">Entrar / Registrar</button>
-                <p class="message" id="authMessage"></p>
+                <button type="submit" id="loginRegisterBtn" class="action-btn primary-btn">Entrar / Registrar</button>
+                <p class="message" id="authMessage" style="display: none;"></p>
             </form>
 
-            <button id="googleSignInBtn" class="google-btn">Entrar com Google</button>
+            <button id="googleSignInBtn" class="google-btn"><i class="fab fa-google"></i> Entrar com Google</button>
 
             <p class="toggle-mode">
                 <span id="toggleText">Novo por aqui?</span>
