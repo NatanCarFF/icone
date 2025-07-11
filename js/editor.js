@@ -41,7 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutBtn = document.getElementById('logoutBtn');
     imageUpload = document.getElementById('imageUpload');
     iconCanvas = document.getElementById('iconCanvas');
-    ctx = iconCanvas.getContext('2d'); // Agora iconCanvas está garantido de existir
+    ctx = iconCanvas.getContext('2d');
+
+    // *** ADICIONEI ESTAS DUAS LINHAS PARA GARANTIR A RESOLUÇÃO INTERNA DO CANVAS ***
+    iconCanvas.width = CANVAS_SIZE;
+    iconCanvas.height = CANVAS_SIZE;
+    // **************************************************************************
+
     scaleSlider = document.getElementById('scaleSlider');
     rotationSlider = document.getElementById('rotationSlider');
     xOffsetSlider = document.getElementById('xOffsetSlider');
@@ -66,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 originalImage = new Image();
                 originalImage.onload = () => {
                     imageLoaded = true;
-                    resetImageProperties();
+                    resetImageProperties(); // Esta função agora calculará a escala inicial
                     drawImage();
                     showMessage("Imagem carregada com sucesso!", false);
                 };
@@ -108,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Botão de reset
     resetEditorBtn.addEventListener('click', () => {
         if (imageLoaded) {
-            resetImageProperties();
+            resetImageProperties(); // Esta função agora calculará a escala inicial
             showMessage("Edição resetada.", false);
         } else {
             showMessage("Nenhuma imagem para resetar.", true);
@@ -145,8 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                // CORREÇÃO: originalImage.height sem o duplicado
-                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor; 
+                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor;
                 tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
                 tempCtx.restore();
 
@@ -200,8 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                // CORREÇÃO: originalImage.height sem o duplicado
-                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor; 
+                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor;
                 tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
                 tempCtx.restore();
 
@@ -297,6 +301,7 @@ function drawImage() {
 
         console.log(`Desenho: escala=${imageProps.scale}, rot=${imageProps.rotation}, xOff=${imageProps.xOffset}, yOff=${imageProps.yOffset}`);
         console.log(`Dimensões desenhadas: ${scaledWidth.toFixed(0)}x${scaledHeight.toFixed(0)}`);
+        console.log(`Posição de desenho (após translate): X=${(-scaledWidth / 2).toFixed(0)}, Y=${(-scaledHeight / 2).toFixed(0)}`);
 
         ctx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
         ctx.restore();
@@ -328,10 +333,18 @@ function hideMessage() {
     }
 }
 
-// Reseta as propriedades de edição da imagem para o estado inicial
+// *** FUNÇÃO ATUALIZADA PARA ESCALONAR IMAGENS AO CARREGAR/RESETAR ***
 function resetImageProperties() {
+    let initialScale = 1;
+    // Calcule a escala inicial para fazer a imagem caber se ela for maior que o canvas
+    if (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE) {
+        initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
+    }
+    // Opcional: Se a imagem for muito pequena, você pode querer ampliá-la para preencher um mínimo.
+    // Por exemplo, initialScale = Math.max(initialScale, 0.5); para não ficar minúscula.
+
     imageProps = {
-        scale: 1,
+        scale: initialScale, // Use a escala inicial calculada
         rotation: 0,
         xOffset: 0,
         yOffset: 0
@@ -342,6 +355,7 @@ function resetImageProperties() {
     if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
     drawImage();
 }
+// ***************************************************************
 
 // Carrega imagem via URL (usado para exemplos do Firebase Storage)
 function loadImageFromUrl(url) {
@@ -352,7 +366,7 @@ function loadImageFromUrl(url) {
     originalImage.onload = () => {
         imageLoaded = true;
         console.log("Imagem carregada com SUCESSO. Dimensões:", originalImage.width, "x", originalImage.height);
-        resetImageProperties();
+        resetImageProperties(); // Esta função agora calculará a escala inicial
         drawImage();
         showMessage("Imagem carregada com sucesso!", false);
     };
