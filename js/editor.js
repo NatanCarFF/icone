@@ -2,7 +2,6 @@
 
 import { auth } from './firebase-config.js'; // Importa a instância de auth
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-// REMOVIDO: import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
 // JSZip agora será acessível globalmente, carregado via <script> no HTML
 
 
@@ -146,7 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                const scaledHeight = originalImage.height * originalImage.height * imageProps.scale * scaleFactor; // Corrigido: deve ser originalImage.height
+                // CORREÇÃO AQUI: originalImage.height sem o duplicado
+                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor; 
                 tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
                 tempCtx.restore();
 
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         showMessage("Gerando ZIP... Aguarde.", false);
-        const zip = new JSZip(); // JSZip agora deve ser acessível aqui
+        const zip = new JSZip();
 
         try {
             for (const density in ANDROID_DENSITIES) {
@@ -200,7 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor;
+                // CORREÇÃO AQUI: originalImage.height sem o duplicado
+                const scaledHeight = originalImage.height * imageProps.scale * scaleFactor; 
                 tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
                 tempCtx.restore();
 
