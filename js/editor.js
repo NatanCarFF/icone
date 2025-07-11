@@ -317,8 +317,8 @@ downloadAllZip.addEventListener('click', async () => {
         return;
     }
 
-    // Acessa JSZip e JSZipUtils como propriedades do objeto importado
-    const zip = new JSZip.default(); // Ou new JSZip() se for a instância global
+    // CORREÇÃO AQUI: Instanciar JSZip diretamente, sem '.default'
+    const zip = new JSZip(); 
     const folderName = "android_icons"; // Nome da pasta raiz no ZIP
 
     // Para cada densidade, gerar o ícone e adicioná-lo ao ZIP
