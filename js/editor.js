@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                // CORREÇÃO AQUI: originalImage.height sem o duplicado
+                // CORREÇÃO: originalImage.height sem o duplicado
                 const scaledHeight = originalImage.height * imageProps.scale * scaleFactor; 
                 tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
                 tempCtx.restore();
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-                // CORREÇÃO AQUI: originalImage.height sem o duplicado
+                // CORREÇÃO: originalImage.height sem o duplicado
                 const scaledHeight = originalImage.height * imageProps.scale * scaleFactor; 
                 tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
                 tempCtx.restore();
@@ -273,6 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // Função principal para desenhar a imagem no canvas
 function drawImage() {
     console.log("drawImage chamado. imageLoaded:", imageLoaded);
+    console.log("Contexto ctx:", ctx); // Adicionado para depuração
+    console.log("originalImage:", originalImage); // Adicionado para depuração
+    console.log("imageProps:", imageProps); // Adicionado para depuração
+
     if (!ctx) { // Garante que o contexto foi inicializado
         console.error("Contexto do canvas não disponível.");
         return;
