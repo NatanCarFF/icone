@@ -2,8 +2,9 @@
 
 import { auth } from './firebase-config.js'; // Importa a instância de auth
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
-import JSZipUtils from "https://cdn.jsdelivr.net/npm/jszip-utils@0.1.0/dist/jszip-utils.min.js";
+// CORREÇÃO: Importar JSZip e JSZipUtils como namespace (*)
+import * as JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+import * as JSZipUtils from "https://cdn.jsdelivr.net/npm/jszip-utils@0.1.0/dist/jszip-utils.min.js";
 
 // ===========================================
 // Seleção de Elementos e Variáveis Globais
@@ -316,7 +317,8 @@ downloadAllZip.addEventListener('click', async () => {
         return;
     }
 
-    const zip = new JSZip();
+    // Acessa JSZip e JSZipUtils como propriedades do objeto importado
+    const zip = new JSZip.default(); // Ou new JSZip() se for a instância global
     const folderName = "android_icons"; // Nome da pasta raiz no ZIP
 
     // Para cada densidade, gerar o ícone e adicioná-lo ao ZIP
