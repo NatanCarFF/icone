@@ -14,7 +14,8 @@ let imageProps = {
     scale: 1,
     rotation: 0,
     xOffset: 0,
-    yOffset: 0
+    yOffset: 0,
+    backgroundColor: '#ffffff' // NOVO: Cor de fundo padrão (branco)
 };
 const CANVAS_SIZE = 512; // Tamanho base do canvas para edição
 
@@ -29,6 +30,7 @@ let scaleSlider;
 let rotationSlider;
 let xOffsetSlider;
 let yOffsetSlider;
+let backgroundColorPicker; // NOVO: Seletor de cor
 let resetEditorBtn;
 let generateIconsBtn;
 let editorMessage;
@@ -43,15 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
     iconCanvas = document.getElementById('iconCanvas');
     ctx = iconCanvas.getContext('2d');
 
-    // *** ADICIONEI ESTAS DUAS LINHAS PARA GARANTIR A RESOLUÇÃO INTERNA DO CANVAS ***
+    // Garante a resolução interna do canvas
     iconCanvas.width = CANVAS_SIZE;
     iconCanvas.height = CANVAS_SIZE;
-    // **************************************************************************
 
     scaleSlider = document.getElementById('scaleSlider');
     rotationSlider = document.getElementById('rotationSlider');
     xOffsetSlider = document.getElementById('xOffsetSlider');
     yOffsetSlider = document.getElementById('yOffsetSlider');
+    backgroundColorPicker = document.getElementById('backgroundColorPicker'); // NOVO: Seleciona o input de cor
     resetEditorBtn = document.getElementById('resetEditorBtn');
     generateIconsBtn = document.getElementById('generateIconsBtn');
     editorMessage = document.getElementById('editorMessage');
@@ -72,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 originalImage = new Image();
                 originalImage.onload = () => {
                     imageLoaded = true;
-                    resetImageProperties(); // Esta função agora calculará a escala inicial
+                    resetImageProperties(); // Esta função agora calculará a escala inicial e resetará a cor
                     drawImage();
                     showMessage("Imagem carregada com sucesso!", false);
                 };
@@ -111,10 +113,17 @@ document.addEventListener('DOMContentLoaded', () => {
         drawImage();
     });
 
+    // NOVO: Evento para o seletor de cor
+    backgroundColorPicker.addEventListener('input', (e) => {
+        imageProps.backgroundColor = e.target.value;
+        drawImage();
+    });
+    // FIM NOVO
+
     // Botão de reset
     resetEditorBtn.addEventListener('click', () => {
         if (imageLoaded) {
-            resetImageProperties(); // Esta função agora calculará a escala inicial
+            resetImageProperties(); // Esta função agora calculará a escala inicial e resetará a cor
             showMessage("Edição resetada.", false);
         } else {
             showMessage("Nenhuma imagem para resetar.", true);
@@ -143,7 +152,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCanvas.height = size;
                 const tempCtx = tempCanvas.getContext('2d');
 
-                tempCtx.clearRect(0, 0, size, size);
+                tempCtx.clearRect(0, 0, size, size); // Limpa o canvas temporário
+
+                // NOVO: Preenche o fundo do ícone gerado com a cor selecionada
+                if (imageProps.backgroundColor) {
+                    tempCtx.fillStyle = imageProps.backgroundColor;
+                    tempCtx.fillRect(0, 0, size, size);
+                }
+                // FIM NOVO
+
                 tempCtx.save();
                 const scaleFactor = size / CANVAS_SIZE;
 
@@ -198,7 +215,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempCanvas.height = size;
                 const tempCtx = tempCanvas.getContext('2d');
 
-                tempCtx.clearRect(0, 0, size, size);
+                tempCtx.clearRect(0, 0, size, size); // Limpa o canvas temporário
+
+                // NOVO: Preenche o fundo do ícone do ZIP com a cor selecionada
+                if (imageProps.backgroundColor) {
+                    tempCtx.fillStyle = imageProps.backgroundColor;
+                    tempCtx.fillRect(0, 0, size, size);
+                }
+                // FIM NOVO
+
                 tempCtx.save();
                 const scaleFactor = size / CANVAS_SIZE;
                 tempCtx.translate(size / 2 + imageProps.xOffset * scaleFactor, size / 2 + imageProps.yOffset * scaleFactor);
@@ -277,15 +302,22 @@ document.addEventListener('DOMContentLoaded', () => {
 // Função principal para desenhar a imagem no canvas
 function drawImage() {
     console.log("drawImage chamado. imageLoaded:", imageLoaded);
-    console.log("Contexto ctx:", ctx); // Adicionado para depuração
-    console.log("originalImage:", originalImage); // Adicionado para depuração
-    console.log("imageProps:", imageProps); // Adicionado para depuração
+    console.log("Contexto ctx:", ctx);
+    console.log("originalImage:", originalImage);
+    console.log("imageProps:", imageProps);
 
-    if (!ctx) { // Garante que o contexto foi inicializado
+    if (!ctx) {
         console.error("Contexto do canvas não disponível.");
         return;
     }
-    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE); // Limpa o canvas
+    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE); // Sempre limpa o canvas primeiro
+
+    // NOVO: Preenche o fundo do canvas com a cor selecionada, se houver
+    if (imageProps.backgroundColor) {
+        ctx.fillStyle = imageProps.backgroundColor;
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    }
+    // FIM NOVO
 
     if (imageLoaded) {
         console.log("originalImage dimensões:", originalImage.width, "x", originalImage.height);
@@ -306,9 +338,8 @@ function drawImage() {
         ctx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
         ctx.restore();
     } else {
-        ctx.fillStyle = '#f0f0f0';
-        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        ctx.fillStyle = '#ccc';
+        // Desenha texto placeholder (o fundo já foi preenchido acima, se aplicável)
+        ctx.fillStyle = '#ccc'; // Cor do texto
         ctx.font = '24px Arial';
         ctx.textAlign = 'center';
         ctx.fillText('Carregue ou escolha uma imagem', CANVAS_SIZE / 2, CANVAS_SIZE / 2);
@@ -333,29 +364,28 @@ function hideMessage() {
     }
 }
 
-// *** FUNÇÃO ATUALIZADA PARA ESCALONAR IMAGENS AO CARREGAR/RESETAR ***
+// Função para resetar as propriedades de edição da imagem para o estado inicial
 function resetImageProperties() {
     let initialScale = 1;
     // Calcule a escala inicial para fazer a imagem caber se ela for maior que o canvas
     if (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE) {
         initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
     }
-    // Opcional: Se a imagem for muito pequena, você pode querer ampliá-la para preencher um mínimo.
-    // Por exemplo, initialScale = Math.max(initialScale, 0.5); para não ficar minúscula.
 
     imageProps = {
-        scale: initialScale, // Use a escala inicial calculada
+        scale: initialScale,
         rotation: 0,
         xOffset: 0,
-        yOffset: 0
+        yOffset: 0,
+        backgroundColor: '#ffffff' // NOVO: Reseta a cor de fundo para branco
     };
     if (scaleSlider) scaleSlider.value = imageProps.scale;
     if (rotationSlider) rotationSlider.value = imageProps.rotation;
     if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
     if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
+    if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor; // NOVO: Atualiza o seletor de cor
     drawImage();
 }
-// ***************************************************************
 
 // Carrega imagem via URL (usado para exemplos do Firebase Storage)
 function loadImageFromUrl(url) {
@@ -366,7 +396,7 @@ function loadImageFromUrl(url) {
     originalImage.onload = () => {
         imageLoaded = true;
         console.log("Imagem carregada com SUCESSO. Dimensões:", originalImage.width, "x", originalImage.height);
-        resetImageProperties(); // Esta função agora calculará a escala inicial
+        resetImageProperties(); // Esta função agora calculará a escala inicial e resetará a cor
         drawImage();
         showMessage("Imagem carregada com sucesso!", false);
     };
@@ -395,8 +425,5 @@ function checkSelectedExampleImage() {
         console.log("URL de imagem de exemplo encontrada no localStorage:", selectedImageUrl.substring(0,100) + "...");
         loadImageFromUrl(selectedImageUrl);
         localStorage.removeItem('selectedExampleImageUrl'); // Limpa após o uso
-    } else {
-        // Se drawImage for chamado no DOMContentLoaded, não precisamos chamar aqui.
-        // drawImage(); // Desenha o placeholder se não houver imagem pré-selecionada
     }
 }
