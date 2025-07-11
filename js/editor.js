@@ -15,7 +15,10 @@ let imageProps = {
     rotation: 0,
     xOffset: 0,
     yOffset: 0,
-    backgroundColor: '#ffffff' // Cor de fundo padrão (branco)
+    backgroundColor: '#ffffff', // Cor de fundo padrão (branco)
+    padding: 0, // NOVO: Padding padrão
+    borderWidth: 0, // NOVO: Largura da borda padrão
+    borderColor: '#000000' // NOVO: Cor da borda padrão (preto)
 };
 const CANVAS_SIZE = 512; // Tamanho base do canvas para edição
 
@@ -54,6 +57,9 @@ let rotationSlider;
 let xOffsetSlider;
 let yOffsetSlider;
 let backgroundColorPicker;
+let paddingSlider; // NOVO
+let borderWidthSlider; // NOVO
+let borderColorPicker; // NOVO
 let resetEditorBtn;
 let generateIconsBtn;
 let editorMessage;
@@ -61,13 +67,15 @@ let downloadSection;
 let generatedIconsContainer;
 let downloadAllZip;
 let loadingIndicator;
-let resetSliderButtons; // NOVO: Variável para os botões de reset individuais
+let resetSliderButtons;
 
 // Elementos para exibir os valores dos sliders
 let scaleValueSpan;
 let rotationValueSpan;
 let xOffsetValueSpan;
 let yOffsetValueSpan;
+let paddingValueSpan; // NOVO
+let borderWidthValueSpan; // NOVO
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -86,6 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
     xOffsetSlider = document.getElementById('xOffsetSlider');
     yOffsetSlider = document.getElementById('yOffsetSlider');
     backgroundColorPicker = document.getElementById('backgroundColorPicker');
+    paddingSlider = document.getElementById('paddingSlider'); // NOVO
+    borderWidthSlider = document.getElementById('borderWidthSlider'); // NOVO
+    borderColorPicker = document.getElementById('borderColorPicker'); // NOVO
     resetEditorBtn = document.getElementById('resetEditorBtn');
     generateIconsBtn = document.getElementById('generateIconsBtn');
     editorMessage = document.getElementById('editorMessage');
@@ -93,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
     generatedIconsContainer = document.getElementById('generatedIconsContainer');
     downloadAllZip = document.getElementById('downloadAllZip');
     loadingIndicator = document.getElementById('loadingIndicator');
-    // NOVO: Seleciona todos os botões de reset individuais
     resetSliderButtons = document.querySelectorAll('.reset-slider-btn');
 
 
@@ -102,6 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
     rotationValueSpan = document.getElementById('rotationValue');
     xOffsetValueSpan = document.getElementById('xOffsetValue');
     yOffsetValueSpan = document.getElementById('yOffsetValue');
+    paddingValueSpan = document.getElementById('paddingValue'); // NOVO
+    borderWidthValueSpan = document.getElementById('borderWidthValue'); // NOVO
+
 
     // ===========================================
     // Manipuladores de Eventos
@@ -159,11 +172,30 @@ document.addEventListener('DOMContentLoaded', () => {
         debouncedDrawImage();
     });
 
-    // Evento para o seletor de cor - Chama drawImage diretamente, pois não é um evento de arrastar
+    // Evento para o seletor de cor de fundo
     backgroundColorPicker.addEventListener('input', (e) => {
         imageProps.backgroundColor = e.target.value;
         drawImage();
     });
+
+    // NOVO: Eventos para os sliders de padding e borda
+    paddingSlider.addEventListener('input', (e) => {
+        imageProps.padding = parseInt(e.target.value);
+        paddingValueSpan.textContent = `${imageProps.padding}px`;
+        debouncedDrawImage();
+    });
+
+    borderWidthSlider.addEventListener('input', (e) => {
+        imageProps.borderWidth = parseInt(e.target.value);
+        borderWidthValueSpan.textContent = `${imageProps.borderWidth}px`;
+        debouncedDrawImage();
+    });
+
+    borderColorPicker.addEventListener('input', (e) => {
+        imageProps.borderColor = e.target.value;
+        drawImage();
+    });
+
 
     // Botão de resetar TUDO
     resetEditorBtn.addEventListener('click', () => {
@@ -176,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // NOVO: Adiciona manipuladores de evento para os botões de reset individuais
+    // Adiciona manipuladores de evento para os botões de reset individuais
     resetSliderButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             if (!imageLoaded) {
@@ -222,10 +254,34 @@ document.addEventListener('DOMContentLoaded', () => {
                     tempCtx.fillRect(0, 0, size, size);
                 }
 
-                tempCtx.save();
-                const scaleFactor = size / CANVAS_SIZE;
+                // Calcula as dimensões e posições considerando padding e borda
+                const effectiveSize = size;
+                const borderOffset = imageProps.borderWidth;
+                const paddingOffset = imageProps.padding + borderOffset; // Padding se soma à borda
+                const imageDrawableArea = effectiveSize - (paddingOffset * 2);
 
-                tempCtx.translate(size / 2 + imageProps.xOffset * scaleFactor, size / 2 + imageProps.yOffset * scaleFactor);
+                if (imageDrawableArea <= 0) { // Garante que a área para a imagem não seja negativa/zero
+                    console.warn("Área de desenho da imagem é muito pequena devido a padding/borda. Ícone pode não ser visível.");
+                    // Pode desenhar um X ou apenas a borda/fundo se a imagem não couber
+                }
+                
+                // Desenha a borda se a largura for maior que 0
+                if (borderOffset > 0) {
+                    tempCtx.beginPath();
+                    tempCtx.rect(borderOffset / 2, borderOffset / 2, effectiveSize - borderOffset, effectiveSize - borderOffset);
+                    tempCtx.lineWidth = borderOffset;
+                    tempCtx.strokeStyle = imageProps.borderColor;
+                    tempCtx.stroke();
+                }
+
+                tempCtx.save();
+                // Ajusta a translação e escala para o tamanho efetivo da área de desenho da imagem
+                const scaleFactor = imageDrawableArea / CANVAS_SIZE; // Nova escala baseada na área de desenho disponível
+                
+                tempCtx.translate(
+                    paddingOffset + (imageDrawableArea / 2) + (imageProps.xOffset * scaleFactor),
+                    paddingOffset + (imageDrawableArea / 2) + (imageProps.yOffset * scaleFactor)
+                );
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
@@ -286,10 +342,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     tempCtx.fillStyle = imageProps.backgroundColor;
                     tempCtx.fillRect(0, 0, size, size);
                 }
+                
+                // Calcula as dimensões e posições considerando padding e borda (repetido da geração individual)
+                const effectiveSize = size;
+                const borderOffset = imageProps.borderWidth;
+                const paddingOffset = imageProps.padding + borderOffset;
+                const imageDrawableArea = effectiveSize - (paddingOffset * 2);
+
+                if (imageDrawableArea <= 0) {
+                    console.warn("Área de desenho da imagem para ZIP é muito pequena devido a padding/borda.");
+                }
+
+                if (borderOffset > 0) {
+                    tempCtx.beginPath();
+                    tempCtx.rect(borderOffset / 2, borderOffset / 2, effectiveSize - borderOffset, effectiveSize - borderOffset);
+                    tempCtx.lineWidth = borderOffset;
+                    tempCtx.strokeStyle = imageProps.borderColor;
+                    tempCtx.stroke();
+                }
 
                 tempCtx.save();
-                const scaleFactor = size / CANVAS_SIZE;
-                tempCtx.translate(size / 2 + imageProps.xOffset * scaleFactor, size / 2 + imageProps.yOffset * scaleFactor);
+                const scaleFactor = imageDrawableArea / CANVAS_SIZE; // Nova escala baseada na área de desenho disponível
+
+                tempCtx.translate(
+                    paddingOffset + (imageDrawableArea / 2) + (imageProps.xOffset * scaleFactor),
+                    paddingOffset + (imageDrawableArea / 2) + (imageProps.yOffset * scaleFactor)
+                );
                 tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
                 const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
@@ -381,15 +459,46 @@ function drawImage() {
         ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     }
 
+    // Calcula a área efetiva para desenho da imagem após considerar padding e borda
+    const borderOffset = imageProps.borderWidth;
+    const paddingOffset = imageProps.padding + borderOffset; // Padding se soma à borda
+    const imageDrawableArea = CANVAS_SIZE - (paddingOffset * 2);
+
+    if (imageDrawableArea <= 0) {
+        console.warn("Área de desenho da imagem é muito pequena devido a padding/borda. Ícone pode não ser visível.");
+        // Se a área for <= 0, pode-se desenhar apenas a borda/fundo e não a imagem.
+    }
+    
+    // Desenha a borda se a largura for maior que 0
+    if (borderOffset > 0) {
+        ctx.beginPath();
+        // A borda é desenhada no meio da linha, então subtraímos 1/2 da largura da borda de cada lado
+        ctx.rect(borderOffset / 2, borderOffset / 2, CANVAS_SIZE - borderOffset, CANVAS_SIZE - borderOffset);
+        ctx.lineWidth = borderOffset;
+        ctx.strokeStyle = imageProps.borderColor;
+        ctx.stroke();
+    }
+
+
     if (imageLoaded) {
         ctx.save();
-        const centerX = CANVAS_SIZE / 2 + imageProps.xOffset;
-        const centerY = CANVAS_SIZE / 2 + imageProps.yOffset;
+        
+        // Ajusta a translação e escala para o tamanho efetivo da área de desenho da imagem
+        // A escala aqui é a proporção do tamanho da área de desenho para o CANVAS_SIZE original
+        const scaleFactorForDrawableArea = imageDrawableArea / CANVAS_SIZE; 
+        
+        // O centro da imagem deve ser o centro da 'imageDrawableArea'
+        // que é offset + (imageDrawableArea / 2)
+        const centerX = paddingOffset + (imageDrawableArea / 2) + (imageProps.xOffset * scaleFactorForDrawableArea);
+        const centerY = paddingOffset + (imageDrawableArea / 2) + (imageProps.yOffset * scaleFactorForDrawableArea);
+
         ctx.translate(centerX, centerY);
         ctx.rotate(imageProps.rotation * Math.PI / 180);
 
-        const scaledWidth = originalImage.width * imageProps.scale;
-        const scaledHeight = originalImage.height * imageProps.scale;
+        // A largura e altura escaladas da imagem original são multiplicadas pela escala do usuário
+        // E também pelo fator de escala da área de desenho para que se encaixem corretamente
+        const scaledWidth = originalImage.width * imageProps.scale * scaleFactorForDrawableArea;
+        const scaledHeight = originalImage.height * imageProps.scale * scaleFactorForDrawableArea;
 
         ctx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
         ctx.restore();
@@ -398,7 +507,8 @@ function drawImage() {
         ctx.fillStyle = '#ccc'; // Cor do texto
         ctx.font = '24px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Carregue ou escolha uma imagem', CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+        // Ajusta a posição do texto placeholder para o centro da 'imageDrawableArea'
+        ctx.fillText('Carregue ou escolha uma imagem', paddingOffset + imageDrawableArea / 2, paddingOffset + imageDrawableArea / 2);
     }
 }
 
@@ -440,8 +550,8 @@ function hideLoadingIndicator() {
 // Função para resetar as propriedades de edição da imagem para o estado inicial
 function resetImageProperties() {
     let initialScale = 1;
-    // Calcule a escala inicial para fazer a imagem caber se ela for maior que o canvas
-    if (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE) {
+    // Calcule a escala inicial para fazer a imagem caber se ela for maior que o CANVAS_SIZE
+    if (imageLoaded && (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE)) {
         initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
     }
 
@@ -450,7 +560,10 @@ function resetImageProperties() {
         rotation: 0,
         xOffset: 0,
         yOffset: 0,
-        backgroundColor: '#ffffff' // Reseta a cor de fundo para branco
+        backgroundColor: '#ffffff', // Reseta a cor de fundo para branco
+        padding: 0, // NOVO: Reseta padding
+        borderWidth: 0, // NOVO: Reseta largura da borda
+        borderColor: '#000000' // NOVO: Reseta cor da borda
     };
     // Atualiza os sliders e seus valores exibidos
     if (scaleSlider) scaleSlider.value = imageProps.scale;
@@ -458,14 +571,17 @@ function resetImageProperties() {
     if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
     if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
     if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
+    if (paddingSlider) paddingSlider.value = imageProps.padding; // NOVO
+    if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth; // NOVO
+    if (borderColorPicker) borderColorPicker.value = imageProps.borderColor; // NOVO
     
     updateSliderValuesDisplay();
 }
 
-// NOVO: Função para resetar uma propriedade individualmente
+// Função para resetar uma propriedade individualmente
 function resetIndividualProperty(property) {
     let initialScale = 1;
-    if (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE) {
+    if (imageLoaded && (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE)) {
         initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
     }
 
@@ -490,6 +606,18 @@ function resetIndividualProperty(property) {
             imageProps.backgroundColor = '#ffffff';
             if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
             break;
+        case 'padding': // NOVO
+            imageProps.padding = 0;
+            if (paddingSlider) paddingSlider.value = imageProps.padding;
+            break;
+        case 'borderWidth': // NOVO
+            imageProps.borderWidth = 0;
+            if (borderWidthSlider) borderWidthSlider.value = imageProps.borderWidth;
+            break;
+        case 'borderColor': // NOVO
+            imageProps.borderColor = '#000000';
+            if (borderColorPicker) borderColorPicker.value = imageProps.borderColor;
+            break;
         default:
             console.warn(`Propriedade desconhecida para reset: ${property}`);
             return;
@@ -504,6 +632,8 @@ function updateSliderValuesDisplay() {
     if (rotationValueSpan) rotationValueSpan.textContent = `${imageProps.rotation}°`;
     if (xOffsetValueSpan) xOffsetValueSpan.textContent = `${imageProps.xOffset}px`;
     if (yOffsetValueSpan) yOffsetValueSpan.textContent = `${imageProps.yOffset}px`;
+    if (paddingValueSpan) paddingValueSpan.textContent = `${imageProps.padding}px`; // NOVO
+    if (borderWidthValueSpan) borderWidthValueSpan.textContent = `${imageProps.borderWidth}px`; // NOVO
 }
 
 // Carrega imagem via URL (usado para exemplos do Firebase Storage)

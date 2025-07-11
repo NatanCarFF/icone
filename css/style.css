@@ -193,7 +193,7 @@ footer {
     font-size: 0.95em;
 }
 
-/* NOVO: Estilos para os botões de reset individuais */
+/* Estilos para os botões de reset individuais */
 .reset-slider-btn {
     background: none;
     border: none;
@@ -208,7 +208,6 @@ footer {
     color: #007bff; /* Cor azul no hover */
     transform: scale(1.1);
 }
-/* FIM NOVO */
 
 
 .editor-controls .action-btn {
