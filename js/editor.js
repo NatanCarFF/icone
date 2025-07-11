@@ -60,7 +60,8 @@ let editorMessage;
 let downloadSection;
 let generatedIconsContainer;
 let downloadAllZip;
-let loadingIndicator; // NOVO: Variável para o indicador de carregamento
+let loadingIndicator;
+let resetSliderButtons; // NOVO: Variável para os botões de reset individuais
 
 // Elementos para exibir os valores dos sliders
 let scaleValueSpan;
@@ -91,7 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadSection = document.getElementById('downloadSection');
     generatedIconsContainer = document.getElementById('generatedIconsContainer');
     downloadAllZip = document.getElementById('downloadAllZip');
-    loadingIndicator = document.getElementById('loadingIndicator'); // NOVO: Seleciona o indicador
+    loadingIndicator = document.getElementById('loadingIndicator');
+    // NOVO: Seleciona todos os botões de reset individuais
+    resetSliderButtons = document.querySelectorAll('.reset-slider-btn');
+
 
     // Seleciona os spans de valor
     scaleValueSpan = document.getElementById('scaleValue');
@@ -112,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 originalImage = new Image();
                 originalImage.onload = () => {
                     imageLoaded = true;
-                    resetImageProperties();
+                    resetImageProperties(); // Reseta todas as propriedades
                     drawImage();
                     showMessage("Imagem carregada com sucesso!", false);
                 };
@@ -161,16 +165,31 @@ document.addEventListener('DOMContentLoaded', () => {
         drawImage();
     });
 
-    // Botão de reset
+    // Botão de resetar TUDO
     resetEditorBtn.addEventListener('click', () => {
         if (imageLoaded) {
-            resetImageProperties();
+            resetImageProperties(); // Reseta todas as propriedades para o padrão
             drawImage();
-            showMessage("Edição resetada.", false);
+            showMessage("Edição resetada para o padrão.", false);
         } else {
-            showMessage("Nenhuma imagem para resetar.", true);
+            showMessage("Nenhuma imagem carregada para resetar.", true);
         }
     });
+
+    // NOVO: Adiciona manipuladores de evento para os botões de reset individuais
+    resetSliderButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            if (!imageLoaded) {
+                showMessage("Carregue uma imagem antes de resetar propriedades individuais.", true);
+                return;
+            }
+            const targetProperty = e.currentTarget.dataset.target; // Obtém o nome da propriedade do atributo data-target
+            resetIndividualProperty(targetProperty);
+            drawImage();
+            showMessage(`Propriedade '${targetProperty}' resetada.`, false);
+        });
+    });
+
 
     // Botão de Gerar Ícones
     generateIconsBtn.addEventListener('click', async () => {
@@ -180,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         hideMessage();
-        showLoadingIndicator("Gerando ícones..."); // NOVO: Mostra o carregamento
+        showLoadingIndicator("Gerando ícones...");
         generatedIconsContainer.innerHTML = ''; // Limpa ícones anteriores
         downloadSection.style.display = 'block'; // Mostra a seção de download
 
@@ -227,12 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 generatedIconsContainer.appendChild(iconItem);
             }
-            hideLoadingIndicator(); // NOVO: Esconde o carregamento
+            hideLoadingIndicator();
             showMessage("Ícones gerados com sucesso! Role para baixo para baixar.", false);
 
         } catch (error) {
             console.error("Erro ao gerar ícones:", error);
-            hideLoadingIndicator(); // NOVO: Esconde o carregamento em caso de erro
+            hideLoadingIndicator();
             if (error.name === "SecurityError") {
                 showMessage("Erro de segurança: Imagem de outra origem não pode ser usada no canvas. Verifique as configurações CORS do Firebase Storage e se 'originalImage.crossOrigin = \"anonymous\"' está no código.", true);
             } else {
@@ -249,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         hideMessage();
-        showLoadingIndicator("Gerando ZIP..."); // NOVO: Mostra o carregamento
+        showLoadingIndicator("Gerando ZIP...");
         const zip = new JSZip();
 
         try {
@@ -291,18 +310,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.body.appendChild(downloadLink);
                     downloadLink.click();
                     document.body.removeChild(downloadLink);
-                    hideLoadingIndicator(); // NOVO: Esconde o carregamento
+                    hideLoadingIndicator();
                     showMessage("ZIP gerado com sucesso! Baixe o arquivo.", false);
                 })
                 .catch(error => {
                     console.error("Erro ao gerar ZIP:", error);
-                    hideLoadingIndicator(); // NOVO: Esconde o carregamento em caso de erro
+                    hideLoadingIndicator();
                     showMessage("Erro ao gerar ZIP: " + error.message, true);
                 });
 
         } catch (error) {
             console.error("Erro inesperado ao preparar ZIP:", error);
-            hideLoadingIndicator(); // NOVO: Esconde o carregamento em caso de erro
+            hideLoadingIndicator();
             if (error.name === "SecurityError") {
                 showMessage("Erro de segurança ao gerar ZIP: Imagem de outra origem não pode ser usada. Verifique CORS e crossOrigin.", true);
             } else {
@@ -401,16 +420,16 @@ function hideMessage() {
     }
 }
 
-// NOVO: Exibe o indicador de carregamento
+// Exibe o indicador de carregamento
 function showLoadingIndicator(message = "Carregando...") {
     if (loadingIndicator) {
         loadingIndicator.textContent = message;
         loadingIndicator.style.display = 'block';
-        loadingIndicator.classList.add('loading'); // Adiciona classe para estilização do spinner
+        loadingIndicator.classList.add('loading');
     }
 }
 
-// NOVO: Oculta o indicador de carregamento
+// Oculta o indicador de carregamento
 function hideLoadingIndicator() {
     if (loadingIndicator) {
         loadingIndicator.style.display = 'none';
@@ -433,6 +452,7 @@ function resetImageProperties() {
         yOffset: 0,
         backgroundColor: '#ffffff' // Reseta a cor de fundo para branco
     };
+    // Atualiza os sliders e seus valores exibidos
     if (scaleSlider) scaleSlider.value = imageProps.scale;
     if (rotationSlider) rotationSlider.value = imageProps.rotation;
     if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
@@ -441,6 +461,42 @@ function resetImageProperties() {
     
     updateSliderValuesDisplay();
 }
+
+// NOVO: Função para resetar uma propriedade individualmente
+function resetIndividualProperty(property) {
+    let initialScale = 1;
+    if (originalImage.width > CANVAS_SIZE || originalImage.height > CANVAS_SIZE) {
+        initialScale = Math.min(CANVAS_SIZE / originalImage.width, CANVAS_SIZE / originalImage.height);
+    }
+
+    switch (property) {
+        case 'scale':
+            imageProps.scale = initialScale;
+            if (scaleSlider) scaleSlider.value = imageProps.scale;
+            break;
+        case 'rotation':
+            imageProps.rotation = 0;
+            if (rotationSlider) rotationSlider.value = imageProps.rotation;
+            break;
+        case 'xOffset':
+            imageProps.xOffset = 0;
+            if (xOffsetSlider) xOffsetSlider.value = imageProps.xOffset;
+            break;
+        case 'yOffset':
+            imageProps.yOffset = 0;
+            if (yOffsetSlider) yOffsetSlider.value = imageProps.yOffset;
+            break;
+        case 'backgroundColor':
+            imageProps.backgroundColor = '#ffffff';
+            if (backgroundColorPicker) backgroundColorPicker.value = imageProps.backgroundColor;
+            break;
+        default:
+            console.warn(`Propriedade desconhecida para reset: ${property}`);
+            return;
+    }
+    updateSliderValuesDisplay(); // Garante que o valor exibido seja atualizado
+}
+
 
 // Função para atualizar a exibição dos valores dos sliders
 function updateSliderValuesDisplay() {
@@ -459,7 +515,7 @@ function loadImageFromUrl(url) {
     originalImage.onload = () => {
         imageLoaded = true;
         console.log("Imagem carregada com SUCESSO. Dimensões:", originalImage.width, "x", originalImage.height);
-        resetImageProperties();
+        resetImageProperties(); // Reseta todas as propriedades para a imagem nova
         drawImage();
         showMessage("Imagem carregada com sucesso!", false);
     };

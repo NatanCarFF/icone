@@ -193,6 +193,24 @@ footer {
     font-size: 0.95em;
 }
 
+/* NOVO: Estilos para os botões de reset individuais */
+.reset-slider-btn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 5px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.reset-slider-btn:hover {
+    color: #007bff; /* Cor azul no hover */
+    transform: scale(1.1);
+}
+/* FIM NOVO */
+
+
 .editor-controls .action-btn {
     display: block;
     width: 100%;
@@ -338,7 +356,7 @@ footer {
     border: 1px solid #f5c6cb;
 }
 
-/* NOVO: Estilos para o indicador de carregamento e spinner */
+/* Estilos para o indicador de carregamento e spinner */
 #loadingIndicator {
     background-color: #e0f7fa; /* Fundo azul claro para carregamento */
     color: #00796b; /* Texto verde escuro */
@@ -363,7 +381,6 @@ footer {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-/* FIM NOVO */
 
 /* Estilos para a página de exemplos */
 .examples-grid {
@@ -472,6 +489,11 @@ footer {
 
     .slider-value {
         min-width: 40px; /* Ajusta espaço para o texto */
+    }
+
+    .reset-slider-btn { /* Ajustes para telas menores */
+        font-size: 1em;
+        padding: 3px;
     }
 
     .canvas-area {

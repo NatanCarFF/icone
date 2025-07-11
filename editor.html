@@ -6,6 +6,7 @@
     <title>Editor de Ícones - Gerador de Ícones Android</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
@@ -28,28 +29,27 @@
                         <label for="scaleSlider">Escala:</label>
                         <input type="range" id="scaleSlider" min="0.1" max="2" value="1" step="0.01">
                         <span id="scaleValue" class="slider-value">1.00</span>
-                    </div>
+                        <button class="reset-slider-btn" data-target="scale"><i class="fas fa-undo"></i></button> </div>
                     <div class="tool-group">
                         <label for="rotationSlider">Rotação:</label>
                         <input type="range" id="rotationSlider" min="0" max="360" value="0" step="1">
                         <span id="rotationValue" class="slider-value">0°</span>
-                    </div>
+                        <button class="reset-slider-btn" data-target="rotation"><i class="fas fa-undo"></i></button> </div>
                     <div class="tool-group">
                         <label for="xOffsetSlider">Offset X:</label>
                         <input type="range" id="xOffsetSlider" min="-200" max="200" value="0" step="1">
                         <span id="xOffsetValue" class="slider-value">0px</span>
-                    </div>
+                        <button class="reset-slider-btn" data-target="xOffset"><i class="fas fa-undo"></i></button> </div>
                     <div class="tool-group">
                         <label for="yOffsetSlider">Offset Y:</label>
                         <input type="range" id="yOffsetSlider" min="-200" max="200" value="0" step="1">
                         <span id="yOffsetValue" class="slider-value">0px</span>
-                    </div>
+                        <button class="reset-slider-btn" data-target="yOffset"><i class="fas fa-undo"></i></button> </div>
                     <div class="tool-group">
                         <label for="backgroundColorPicker">Cor de Fundo:</label>
                         <input type="color" id="backgroundColorPicker" value="#ffffff">
-                    </div>
-                    <button id="resetEditorBtn" class="action-btn">Resetar Edição</button>
-                </div>
+                        <button class="reset-slider-btn" data-target="backgroundColor"><i class="fas fa-undo"></i></button> </div>
+                    <button id="resetEditorBtn" class="action-btn">Resetar Tudo</button> </div>
             </div>
 
             <div class="canvas-area">
@@ -57,7 +57,8 @@
                 <p class="canvas-hint">Ajuste a imagem para preencher o espaço do ícone. O fundo será transparente ou preenchido conforme configurado no Android.</p>
                 <button id="generateIconsBtn" class="action-btn primary-btn">Gerar Ícones!</button>
                 <p id="editorMessage" class="message" style="display: none;"></p>
-                <p id="loadingIndicator" class="message" style="display: none;">Processando... <span class="spinner"></span></p> </div>
+                <p id="loadingIndicator" class="message" style="display: none;">Processando... <span class="spinner"></span></p>
+            </div>
         </section>
 
         <section id="downloadSection" class="download-section" style="display: none;">
