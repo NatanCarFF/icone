@@ -32,104 +32,52 @@ header h1 {
 main {
     flex: 1; /* Faz o conteúdo principal ocupar o espaço restante */
     padding: 20px;
-    max-width: 960px; /* Largura máxima do conteúdo */
-    margin: 20px auto; /* Centraliza o conteúdo na página */
-    background-color: #fff; /* Fundo branco para a área de conteúdo */
-    border-radius: 8px; /* Cantos arredondados */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra mais pronunciada para o conteúdo */
-}
-
-/* ===================================== */
-/* Seção Hero (destaque na index.html) */
-/* ===================================== */
-.hero {
-    text-align: center;
-    padding: 40px 20px;
-    background-color: #e8f5e9; /* Um verde bem claro */
-    border-radius: 6px;
-    margin-bottom: 30px;
-}
-
-.hero p {
-    font-size: 1.2em;
-    max-width: 700px;
-    margin: 0 auto 30px auto;
-    color: #555;
-}
-
-.actions button {
-    background-color: #4CAF50; /* Cor de fundo dos botões de ação */
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    margin: 0 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
-}
-
-.actions button:hover {
-    background-color: #45a049; /* Escurece no hover */
-    transform: translateY(-2px); /* Efeito de "levantar" */
-}
-
-.actions button:active {
-    transform: translateY(0); /* Retorna à posição original no clique */
-}
-
-/* ===================================== */
-/* Seção de Recursos (na index.html) */
-/* ===================================== */
-.features {
-    padding: 20px 0;
-}
-
-.features h2 {
-    text-align: center;
-    color: #4CAF50; /* Título verde */
-    margin-bottom: 25px;
-}
-
-.features ul {
-    list-style: none; /* Remove marcadores de lista */
-    padding: 0;
-    display: grid; /* Layout em grid */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Colunas responsivas */
-    gap: 15px; /* Espaçamento entre os itens do grid */
-}
-
-.features li {
-    background-color: #f9f9f9; /* Fundo levemente cinza para itens da lista */
-    padding: 15px;
-    border-left: 5px solid #4CAF50; /* Borda esquerda verde */
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Sombra sutil */
-    font-size: 0.95em;
-}
-
-/* ===================================== */
-/* Rodapé */
-/* ===================================== */
-footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 30px;
-    background-color: #333; /* Fundo escuro */
-    color: white; /* Texto branco */
-    font-size: 0.9em;
-}
-
-/* ===================================== */
-/* Estilos para o Formulário de Autenticação (login.html) */
-/* ===================================== */
-.auth-container {
-    max-width: 400px;
-    margin: 50px auto; /* Centraliza vertical e horizontalmente */
-    padding: 30px;
+    max-width: 960px;
+    margin: 20px auto;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+    font-size: 0.9em;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+}
+
+nav {
+    margin-top: 10px;
+}
+
+nav button {
+    background-color: #f44336; /* Vermelho para o botão de sair */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+    background-color: #d32f2f;
+}
+
+/* ===================================== */
+/* Estilos para a página de Login/Registro */
+/* ===================================== */
+.auth-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto; /* Centraliza verticalmente */
     text-align: center;
 }
 
@@ -139,26 +87,27 @@ footer {
     font-size: 1.8em;
 }
 
-.form-group {
-    margin-bottom: 20px;
-    text-align: left; /* Alinha labels e inputs à esquerda */
+.auth-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.form-group label {
-    display: block; /* Cada label em uma nova linha */
-    margin-bottom: 8px;
+.auth-container label {
+    text-align: left;
     font-weight: bold;
     color: #555;
+    margin-bottom: 5px;
 }
 
-.form-group input[type="email"],
-.form-group input[type="password"] {
-    width: calc(100% - 20px); /* Ocupa 100% da largura menos o padding */
-    padding: 12px 10px;
-    border: 1px solid #ddd; /* Borda clara */
+.auth-container input[type="email"],
+.auth-container input[type="password"] {
+    width: calc(100% - 20px); /* Ajusta largura considerando padding */
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1em;
-    box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
 }
 
 .auth-container button[type="submit"] {
@@ -169,7 +118,7 @@ footer {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.1em;
-    width: 100%; /* Botão ocupa a largura total */
+    width: 100%;
     margin-top: 10px;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
@@ -179,7 +128,6 @@ footer {
     transform: translateY(-2px);
 }
 
-/* Estilo específico para o botão Google */
 .google-btn {
     background-color: #DB4437; /* Vermelho Google */
     color: white;
@@ -230,338 +178,318 @@ footer {
 }
 
 /* ===================================== */
-/* Estilos Específicos para Página de Exemplos (examples.html) */
-/* ===================================== */
-header nav {
-    margin-top: 10px;
-}
-
-header #logoutBtn {
-    background-color: #f44336; /* Cor de logout */
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-}
-
-header #logoutBtn:hover {
-    background-color: #da190b;
-}
-
-.examples-grid {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.examples-grid h2 {
-    color: #4CAF50;
-    margin-bottom: 25px;
-}
-
-#loadingMessage {
-    font-style: italic;
-    color: #777;
-}
-
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsivo, min 150px */
-    gap: 20px; /* Espaçamento entre as imagens */
-    justify-content: center;
-    padding: 20px;
-}
-
-.example-item {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.example-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.example-item img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    display: block; /* Remove espaço extra abaixo da imagem */
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.example-item p {
-    font-size: 0.9em;
-    color: #555;
-    margin: 0;
-}
-
-.back-to-editor {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.back-to-editor a {
-    color: #4CAF50;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.back-to-editor a:hover {
-    text-decoration: underline;
-}
-
-/* Garante que mensagens de erro/sucesso apareçam corretamente */
-.message {
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 15px;
-    display: block; /* Garante que ocupe a linha toda */
-}
-.message.error {
-    background-color: #ffe0e0;
-    color: #d32f2f;
-    border: 1px solid #d32f2f;
-}
-.message.success {
-    background-color: #e8f5e9;
-    color: #388e3c;
-    border: 1px solid #388e3c;
-}
-
-/* ===================================== */
-/* Estilos Específicos para Página do Editor (editor.html) */
+/* Estilos para o Editor de Ícones */
 /* ===================================== */
 .editor-container {
     display: flex;
-    flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+    flex-wrap: wrap; /* Permite quebrar em telas menores */
     gap: 30px;
-    justify-content: center;
-    align-items: flex-start;
+    margin-top: 30px;
 }
 
-.editor-controls {
-    flex: 1; /* Ocupa espaço flexível */
-    min-width: 300px; /* Largura mínima para os controles */
+.editor-controls, .canvas-area {
+    flex: 1; /* Ocupa espaço igual */
+    min-width: 300px; /* Garante tamanho mínimo */
     background-color: #f9f9f9;
-    padding: 25px;
+    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
 
 .editor-controls h2, .editor-controls h3 {
     color: #4CAF50;
     margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
     margin-bottom: 20px;
 }
 
-#imageUpload {
+.editor-controls input[type="file"] {
     display: block;
+    margin-bottom: 20px;
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: white;
+    background-color: #fff;
+    cursor: pointer;
 }
 
 .editor-controls p {
     font-size: 0.9em;
-    color: #666;
-    margin-bottom: 20px;
+    color: #777;
 }
 
-.editing-tools {
-    border-top: 1px solid #eee;
-    padding-top: 20px;
-    margin-top: 20px;
+.editor-controls p a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-.tool-group {
+.editing-tools .tool-group {
     margin-bottom: 15px;
 }
 
-.tool-group label {
+.editing-tools label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
     color: #555;
 }
 
-.tool-group input[type="range"] {
+.editing-tools input[type="range"] {
     width: 100%;
-    -webkit-appearance: none; /* Remove estilos padrão do navegador */
+    -webkit-appearance: none; /* Remove default styling for Chrome/Safari */
     appearance: none;
     height: 8px;
     background: #ddd;
-    outline: none;
     border-radius: 5px;
+    outline: none;
+    transition: opacity .2s;
 }
 
-.tool-group input[type="range"]::-webkit-slider-thumb {
+.editing-tools input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 20px;
     height: 20px;
-    background: #4CAF50;
     border-radius: 50%;
-    cursor: grab;
-    border: 2px solid white;
-    box-shadow: 0 0 0 1px #4CAF50;
+    background: #4CAF50;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.tool-group input[type="range"]::-moz-range-thumb {
+.editing-tools input[type="range"]::-moz-range-thumb {
     width: 20px;
     height: 20px;
-    background: #4CAF50;
     border-radius: 50%;
-    cursor: grab;
-    border: 2px solid white;
-    box-shadow: 0 0 0 1px #4CAF50;
+    background: #4CAF50;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 
 .canvas-area {
-    flex: 2; /* Ocupa mais espaço */
-    min-width: 320px; /* Largura mínima para o canvas */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f0f0f0; /* Fundo do canvas */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
 #iconCanvas {
-    background-color: #fff; /* Fundo branco para o canvas */
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
     border-radius: 8px;
-    max-width: 100%; /* Garante que o canvas não transborde */
-    height: auto; /* Mantém a proporção */
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .canvas-hint {
     font-size: 0.85em;
     color: #888;
-    margin-top: 10px;
-    text-align: center;
+    margin-bottom: 20px;
 }
 
 .action-btn {
-    background-color: #4CAF50;
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 15px;
-    width: auto; /* Botões de ação podem ter largura variável */
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
 }
 
 .action-btn:hover {
+    background-color: #0056b3;
+}
+
+.primary-btn {
+    background-color: #4CAF50;
+}
+
+.primary-btn:hover {
     background-color: #45a049;
-    transform: translateY(-2px);
 }
 
-.action-btn.primary-btn {
-    width: 100%; /* Botões principais ocupam a largura total */
-    font-size: 1.1em;
-}
 
+/* ===================================== */
+/* Estilos para a Seção de Download de Ícones (Editor) */
+/* ===================================== */
 .download-section {
-    text-align: center;
     margin-top: 40px;
-    padding: 30px;
-    background-color: #e8f5e9; /* Fundo claro para a seção de download */
+    padding: 20px;
+    background-color: #f9f9f9;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
 
 .download-section h2 {
     color: #4CAF50;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
     margin-bottom: 20px;
 }
 
-.download-section p {
-    color: #555;
-    margin-bottom: 25px;
-}
-
-#generatedIconsContainer {
+.image-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Ícones menores */
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Ajusta para 120px ou 1fr */
     gap: 15px;
-    justify-content: center;
-    margin-bottom: 25px;
+    padding: 20px;
+    justify-items: center; /* Centraliza os itens na grade */
 }
 
-.generated-icon-item {
+.generated-icon-item, .example-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    border: 1px solid #eee;
-    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     padding: 10px;
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+    cursor: pointer; /* Para os itens clicáveis de exemplo */
 }
 
-.generated-icon-item img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto 5px auto;
+.generated-icon-item:hover, .example-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* NOVO: Define um tamanho pequeno para as imagens dentro dos itens de exemplo e gerados */
+.generated-icon-item img, .example-item img {
+    width: 80px;  /* Tamanho fixo para miniaturas */
+    height: 80px; /* Tamanho fixo para miniaturas */
+    object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #eee; /* Borda suave para destacar */
+}
+
+
+.generated-icon-item p, .example-item p {
+    font-size: 0.8em;
+    color: #555;
+    margin: 0 0 8px 0;
+    word-break: break-word; /* Quebra palavras longas */
 }
 
 .generated-icon-item a {
-    display: block;
-    font-size: 0.8em;
-    color: #4CAF50;
+    background-color: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
     text-decoration: none;
-    margin-top: 5px;
+    font-size: 0.8em;
+    transition: background-color 0.3s ease;
 }
 
 .generated-icon-item a:hover {
+    background-color: #0056b3;
+}
+
+/* ===================================== */
+/* Estilos para a Página de Exemplos */
+/* ===================================== */
+.examples-grid h2 {
+    color: #4CAF50;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.back-to-editor {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.back-to-editor a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.back-to-editor a:hover {
+    color: #388e3c;
     text-decoration: underline;
 }
 
-#downloadAllZip {
-    margin-top: 20px;
-}
-
-
-/* Responsividade para o editor */
+/* ===================================== */
+/* Responsividade Geral */
+/* ===================================== */
 @media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .auth-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    main {
+        margin: 10px;
+        padding: 15px;
+    }
+
     .editor-container {
-        flex-direction: column; /* Coluna em telas menores */
-        align-items: stretch;
+        flex-direction: column;
+        gap: 20px;
     }
 
     .editor-controls, .canvas-area {
-        min-width: unset; /* Remove largura mínima */
-        width: 100%; /* Ocupa a largura total */
+        min-width: unset; /* Remove min-width em telas pequenas */
     }
 
-    .action-btn.primary-btn {
-        width: calc(100% - 20px); /* Ajusta para padding */
-        margin-left: auto;
-        margin-right: auto;
+    #iconCanvas {
+        width: 95%; /* Ajusta para não transbordar em telas pequenas */
+    }
+
+    .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Reduz min-width em telas pequenas */
+        gap: 10px;
+        padding: 15px;
     }
 }
 
-@media (max-width: 600px) {
-    .image-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Reduz tamanho mínimo em telas menores */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    .auth-container {
+        padding: 15px;
+    }
+
+    .auth-container input[type="email"],
+    .auth-container input[type="password"],
+    .auth-container button {
+        font-size: 0.9em;
+        padding: 10px;
+    }
+
+    .editor-controls input[type="file"] {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+
+    .action-btn, .primary-btn {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+
+    /* Ajuste para imagens em telas muito pequenas, se necessário */
+    .generated-icon-item img, .example-item img {
+        width: 60px;
+        height: 60px;
     }
 }
