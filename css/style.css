@@ -36,498 +36,82 @@ body {
 header {
     background-color: var(--primary-color);
     color: white;
-    padding: 1.2em 0; /* Padding um pouco menor */
+    padding: 1.5em 0;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15); /* Sombra mais pronunciada */
-    position: relative; /* Para o botão de logout */
-    z-index: 100; /* Garante que o header esteja acima de outros elementos */
+    box-shadow: var(--shadow-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 header h1 {
     margin: 0;
-    font-size: 2.5em; /* Tamanho do título aumentado */
-    font-weight: 600; /* Peso da fonte mais definido */
-}
-
-/* Navegação e botões no cabeçalho (Logout) */
-header nav {
-    position: absolute;
-    top: 50%; /* Centraliza verticalmente */
-    right: 1.5em;
-    transform: translateY(-50%); /* Ajuste fino para centralização */
+    font-size: 2.2em;
 }
 
 header nav button {
-    background-color: rgba(255, 255, 255, 0.2); /* Fundo transparente */
-    color: white;
-    padding: 8px 18px; /* Padding ajustado */
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Borda sutil */
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    font-size: 0.95em;
-    font-weight: 500;
-    transition: var(--transition-speed);
-}
-
-header nav button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-color: white;
-}
-
-main {
-    flex: 1;
-    padding: 30px; /* Mais padding para o conteúdo principal */
-    max-width: 1200px;
-    margin: 30px auto; /* Mais margin para centralizar */
-    background-color: var(--background-card);
-    border-radius: var(--border-radius-base);
-    box-shadow: var(--shadow-light); /* Sombra leve */
-}
-
-footer {
-    background-color: #2c3e50; /* Azul escuro quase preto para o footer */
-    color: rgba(255, 255, 255, 0.8);
-    text-align: center;
-    padding: 1.2em 0;
-    margin-top: 40px; /* Mais espaço antes do footer */
-    font-size: 0.9em;
-}
-
-/* ===================================== */
-/* Estilos para Páginas de Autenticação (Login/Cadastro) */
-/* ===================================== */
-.auth-container {
-    max-width: 450px; /* Ligeiramente mais largo */
-    margin: 60px auto;
-    padding: 40px; /* Mais padding */
-    background-color: var(--background-card);
-    border-radius: var(--border-radius-base);
-    box-shadow: var(--shadow-light);
-    text-align: center;
-}
-
-.auth-container h2 {
-    color: var(--primary-color);
-    margin-bottom: 25px; /* Mais espaço */
-    font-size: 2em; /* Título maior */
-    font-weight: 600;
-}
-
-.auth-container input[type="email"],
-.auth-container input[type="password"] {
-    width: calc(100% - 24px); /* Ajuste de largura para padding */
-    padding: 14px; /* Mais padding */
-    margin-bottom: 18px; /* Mais espaço */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    font-size: 1.05em;
-    outline: none; /* Remove outline padrão */
-    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-.auth-container input[type="email"]:focus,
-.auth-container input[type="password"]:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
-}
-
-.auth-container button {
-    width: 100%;
-    padding: 14px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius-base);
-    font-size: 1.15em; /* Texto maior */
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition-speed);
-    margin-bottom: 12px;
-    box-shadow: var(--shadow-light); /* Sombra para botões */
-}
-
-.auth-container button:hover {
-    background-color: #218838; /* Verde ligeiramente mais escuro */
-    box-shadow: var(--shadow-hover);
-}
-
-.auth-container .google-signin-btn {
-    background-color: #ea4335; /* Vermelho do Google */
-}
-
-.auth-container .google-signin-btn:hover {
-    background-color: #d13d2f;
-}
-
-.auth-container p {
-    margin-top: 25px;
-    font-size: 0.95em;
-    color: var(--light-text-color);
-}
-
-.auth-container p a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color var(--transition-speed);
-}
-
-.auth-container p a:hover {
-    color: #218838;
-    text-decoration: underline;
-}
-
-/* ===================================== */
-/* Estilos para a Página Inicial (index.html) */
-/* ===================================== */
-.hero {
-    text-align: center;
-    padding: 60px 30px; /* Mais padding para espaçamento */
-    background: linear-gradient(135deg, var(--primary-color) 0%, #4CAF50 100%); /* Gradiente suave */
-    color: white; /* Texto branco no hero */
-    border-radius: var(--border-radius-base);
-    margin-bottom: 40px; /* Mais espaço */
-    box-shadow: var(--shadow-light); /* Sombra para o hero */
-}
-
-.hero h1 {
-    font-size: 3em; /* Título maior e mais impactante */
-    margin-bottom: 15px;
-    font-weight: 700; /* Mais forte */
-}
-
-.hero p {
-    font-size: 1.3em; /* Texto maior */
-    max-width: 800px;
-    margin: 0 auto 40px auto; /* Mais espaço antes dos botões */
-    color: rgba(255, 255, 255, 0.9); /* Branco ligeiramente transparente */
-    font-weight: 300; /* Mais leve para o corpo do texto */
-}
-
-.hero .actions button {
-    background-color: rgba(255, 255, 255, 0.2); /* Fundo transparente no hero */
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Borda branca sutil */
-    padding: 15px 30px; /* Mais padding para botões */
-    margin: 0 15px; /* Mais espaço entre botões */
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: 600; /* Mais forte */
-    transition: var(--transition-speed);
-}
-
-.hero .actions button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-color: white;
-    transform: translateY(-3px); /* Efeito de elevação sutil */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.features {
-    padding: 30px 0; /* Mais padding */
-}
-
-.features h2 {
-    text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 30px; /* Mais espaço */
-    font-size: 2.2em; /* Título maior */
-    font-weight: 600;
-}
-
-.features ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colunas com largura mínima maior */
-    gap: 25px; /* Mais espaçamento entre itens */
-}
-
-.features li {
-    background-color: var(--background-card); /* Fundo branco */
-    padding: 20px; /* Mais padding */
-    border-left: 5px solid var(--primary-color); /* Borda esquerda verde */
-    border-radius: var(--border-radius-base);
-    box-shadow: var(--shadow-light); /* Sombra mais visível */
-    font-size: 1em;
-    color: var(--light-text-color);
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-.features li:hover {
-    transform: translateY(-5px); /* Efeito de elevação */
-    box-shadow: var(--shadow-hover);
-}
-
-/* ===================================== */
-/* Estilos para a Página do Editor */
-/* ===================================== */
-.editor-container {
-    display: flex;
-    gap: 40px; /* Mais espaçamento entre as colunas */
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.editor-controls {
-    flex: 1;
-    min-width: 350px; /* Garante largura mínima maior */
-    padding: 25px; /* Mais padding */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    background-color: var(--background-card);
-    box-shadow: var(--shadow-light);
-}
-
-.editor-controls h2, .editor-controls h3 {
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-.editor-controls input[type="file"] {
-    display: block;
-    margin-bottom: 20px;
-    padding: 8px 0; /* Padding para o input de arquivo */
-    font-size: 1em;
-}
-
-.editor-controls p a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color var(--transition-speed);
-}
-.editor-controls p a:hover {
-    color: #218838;
-    text-decoration: underline;
-}
-
-.editing-tools { /* Novo estilo para agrupar ferramentas */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    padding: 15px;
-    margin-bottom: 20px;
-    background-color: var(--background-light); /* Fundo ligeiramente diferente */
-}
-
-.editing-tools h3 {
-    color: var(--accent-color); /* Título de subseção com a cor de destaque */
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.2em;
-}
-
-.tool-group {
-    margin-bottom: 15px; /* Ajuste de espaçamento */
-    display: flex;
-    align-items: center;
-    gap: 12px; /* Mais espaçamento */
-}
-
-.tool-group label {
-    flex-basis: 90px; /* Largura um pouco maior para labels */
-    min-width: 90px;
-    font-weight: 500;
-    color: var(--light-text-color);
-}
-
-.tool-group input[type="range"] {
-    flex-grow: 1;
-    -webkit-appearance: none; /* Reset para customização */
-    appearance: none;
-    height: 6px; /* Altura do slider */
-    background: var(--border-color);
-    outline: none;
-    border-radius: 3px;
-    transition: background 0.15s ease-in-out;
-}
-
-.tool-group input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px; /* Tamanho do "thumb" */
-    height: 20px;
-    background: var(--accent-color);
-    border: 2px solid white;
-    border-radius: 50%;
-    cursor: grab;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background var(--transition-speed), transform var(--transition-speed);
-}
-
-.tool-group input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: var(--accent-color);
-    border: 2px solid white;
-    border-radius: 50%;
-    cursor: grab;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background var(--transition-speed), transform var(--transition-speed);
-}
-
-.tool-group input[type="range"]::-webkit-slider-thumb:active {
-    cursor: grabbing;
-    transform: scale(1.1);
-}
-
-.tool-group input[type="range"]::-moz-range-thumb:active {
-    cursor: grabbing;
-    transform: scale(1.1);
-}
-
-.tool-group input[type="color"],
-.tool-group select, /* Novo: Estilo para select (filtros) */
-.tool-group input[type="text"] { /* Novo: Estilo para input de texto */
-    flex-grow: 1;
-    height: 40px; /* Altura maior */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    padding: 8px 12px; /* Padding interno */
-    font-size: 1em;
-    color: var(--text-color);
-    background-color: var(--background-card);
-    transition: border-color var(--transition-speed);
-}
-
-.tool-group input[type="color"] {
-    padding: 2px; /* Ajuste para color picker */
-}
-
-.tool-group input[type="text"]:focus,
-.tool-group select:focus,
-.tool-group input[type="color"]:focus {
-    border-color: var(--accent-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-/* Estilo para exibir os valores dos sliders */
-.slider-value {
-    min-width: 60px; /* Garante espaço para o texto */
-    text-align: right;
-    font-weight: 600;
-    color: var(--accent-color);
-    font-size: 1em;
-}
-
-/* Estilos para os botões de reset individuais */
-.reset-slider-btn {
-    background: none;
-    border: none;
-    color: var(--light-text-color);
-    cursor: pointer;
-    font-size: 1.2em; /* Ícone maior */
-    padding: 6px;
-    transition: var(--transition-speed);
-}
-
-.reset-slider-btn:hover {
-    color: var(--accent-color);
-    transform: scale(1.15);
-}
-
-/* Estilo para o color picker de fundo que está em um tool-group-color */
-.tool-group-color {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.tool-group-color label {
-    flex-basis: 90px;
-    min-width: 90px;
-    font-weight: 500;
-    color: var(--light-text-color);
-}
-.tool-group-color input[type="color"] {
-    flex-grow: 1;
-    height: 40px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    padding: 2px;
-}
-
-
-/* Grupo de botões de ação (Undo/Redo, Reset) */
-.action-buttons-group { /* Novo estilo para agrupar botões de ação */
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    justify-content: flex-end; /* Alinha à direita */
-}
-
-.action-btn {
-    display: block; /* Alterado de block para inline-block se for para ficar lado a lado */
-    padding: 12px 20px; /* Mais padding */
     background-color: var(--accent-color);
     color: white;
     border: none;
+    padding: 10px 20px;
     border-radius: var(--border-radius-base);
-    font-size: 1.1em;
-    font-weight: 600;
     cursor: pointer;
-    transition: var(--transition-speed);
-    box-shadow: var(--shadow-light);
-    flex-grow: 1; /* Permite que os botões se expandam igualmente */
-    text-align: center;
+    font-size: 1em;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
 }
 
-.action-btn:hover {
-    background-color: #0056b3;
-    box-shadow: var(--shadow-hover);
+header nav button:hover {
+    background-color: #0056b3; /* Tom mais escuro do azul */
+    transform: translateY(-2px);
 }
 
-.action-btn.secondary-btn { /* Estilo para Undo/Redo */
-    background-color: #6c757d; /* Cinza mais neutro */
-    box-shadow: none;
-}
-
-.action-btn.secondary-btn:hover {
-    background-color: #5a6268;
-    box-shadow: none;
-}
-
-.action-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background-color: #cccccc; /* Cinza claro para desabilitado */
-    box-shadow: none;
-}
-
-.canvas-area {
-    flex: 2;
-    min-width: 450px; /* Garante largura mínima maior para o canvas */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
+main {
+    flex: 1; /* Ocupa o espaço restante */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
     background-color: var(--background-card);
-    padding: 25px;
+    border-radius: var(--border-radius-base);
     box-shadow: var(--shadow-light);
 }
 
-#iconCanvas {
-    border: 1px solid var(--border-color);
-    background-color: #f0f0f0; /* Fundo cinza mais suave para o canvas */
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin-bottom: 25px;
-    border-radius: var(--border-radius-base); /* Cantos arredondados para o canvas */
+footer {
+    background-color: var(--text-color);
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+    margin-top: auto; /* Empurra o footer para o final */
 }
 
-.canvas-hint {
-    font-size: 0.95em;
-    color: var(--light-text-color);
+/* ===================================== */
+/* Botões e Formulários */
+/* ===================================== */
+button, input[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    display: inline-block; /* Para padding e margem */
+    text-decoration: none; /* Para botões que são links */
     text-align: center;
-    margin-bottom: 20px;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #218838; /* Tom mais escuro do verde */
+    transform: translateY(-2px);
+}
+
+.action-btn {
+    margin-top: 15px;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: var(--border-radius-base);
 }
 
 .primary-btn {
@@ -538,87 +122,79 @@ footer {
     background-color: #218838;
 }
 
-/* Seção de Download */
-.download-section {
-    margin-top: 50px; /* Mais espaço */
-    padding: 30px;
+.secondary-btn {
+    background-color: #6c757d; /* Cinza para secundário */
+}
+
+.secondary-btn:hover {
+    background-color: #5a6268;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="file"],
+input[type="text"],
+input[type="range"],
+input[type="color"],
+select {
+    width: calc(100% - 22px); /* Ajusta para padding */
+    padding: 10px;
+    margin-bottom: 10px;
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    background-color: var(--background-card);
-    text-align: center;
-    box-shadow: var(--shadow-light);
+    border-radius: 4px;
+    box-sizing: border-box; /* Inclui padding na largura */
+    font-size: 1em;
 }
 
-.download-section h2 {
-    color: var(--primary-color);
-    margin-bottom: 25px;
-    font-weight: 600;
+input[type="range"] {
+    -webkit-appearance: none; /* Remove estilo padrão do Chrome/Safari */
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--border-color);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity var(--transition-speed);
+    border-radius: 5px;
 }
 
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Tamanho mínimo maior para as imagens */
-    gap: 25px; /* Mais espaçamento */
-    margin-top: 25px;
-    padding: 25px;
-    background-color: var(--background-light);
-    border-radius: var(--border-radius-base);
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.generated-icon-item, .example-item {
-    text-align: center;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    padding: 15px; /* Mais padding */
-    background-color: var(--background-card);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: transform var(--transition-speed);
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.generated-icon-item:hover, .example-item:hover {
-    transform: translateY(-8px); /* Efeito de elevação mais pronunciado */
-    box-shadow: var(--shadow-hover);
-}
-
-.generated-icon-item img, .example-item img {
-    max-width: 90%; /* Ajustado para melhor visualização */
-    height: auto;
-    display: block;
-    margin: 0 auto 12px auto;
-    border: 1px solid #f0f0f0;
-    border-radius: 6px; /* Cantos arredondados nas miniaturas */
-}
-
-.generated-icon-item p, .example-item p {
-    font-weight: 600;
-    color: var(--light-text-color);
-    margin-bottom: 12px;
-}
-
-.generated-icon-item a {
-    display: inline-block;
-    background-color: var(--accent-color);
-    color: white;
-    padding: 8px 15px;
-    border-radius: var(--border-radius-base);
+a {
+    color: var(--accent-color);
     text-decoration: none;
-    font-size: 0.9em;
-    font-weight: 500;
-    transition: var(--transition-speed);
+    transition: color var(--transition-speed);
 }
 
-.generated-icon-item a:hover {
-    background-color: #0056b3;
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }
 
 /* Mensagens de feedback */
 .message {
-    padding: 12px;
-    margin-top: 20px;
+    padding: 10px;
+    margin-top: 15px;
     border-radius: var(--border-radius-base);
-    font-weight: 500;
-    font-size: 0.95em;
+    font-weight: bold;
     text-align: center;
 }
 
@@ -634,175 +210,452 @@ footer {
     border: 1px solid #f5c6cb;
 }
 
-/* Estilos para o indicador de carregamento e spinner */
-#loadingIndicator {
-    background-color: #e3f2fd; /* Fundo azul claro para carregamento */
-    color: #1976d2; /* Texto azul escuro */
-    border: 1px solid #90caf9;
+/* ===================================== */
+/* Layout Geral das Seções */
+/* ===================================== */
+.hero {
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 12px;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, var(--primary-color), #4CAF50);
+    color: white;
     border-radius: var(--border-radius-base);
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-light);
 }
 
-.spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid var(--accent-color); /* Cor do spinner (azul) */
-    border-radius: 50%;
-    width: 24px; /* Spinner maior */
-    height: 24px;
-    animation: spin 1s linear infinite;
+.hero h2 {
+    font-size: 2.8em;
+    margin-bottom: 15px;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.hero p {
+    font-size: 1.2em;
+    max-width: 700px;
+    margin: 0 auto 30px;
 }
 
-/* Estilos para a página de exemplos */
-.examples-grid {
+.hero .actions button {
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    background-color: white;
+    color: var(--primary-color);
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+.hero .actions button:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-3px);
+}
+
+.features {
+    padding: 30px 20px;
     text-align: center;
 }
 
-.examples-grid h2 {
+.features h2 {
     color: var(--primary-color);
     margin-bottom: 25px;
-    font-weight: 600;
+    font-size: 2em;
 }
 
-#loadingMessage {
-    font-style: italic;
-    color: var(--light-text-color);
-    margin-top: 20px;
+.features ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    text-align: left;
 }
 
-.back-to-editor {
+.features li {
+    background-color: var(--background-card);
+    padding: 25px;
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    position: relative;
+    padding-left: 55px; /* Espaço para o ícone */
+    min-height: 80px; /* Garante altura mínima para alinhamento */
+    display: flex;
+    align-items: center;
+}
+
+.features li:before {
+    content: '✅'; /* Ícone de checkmark */
+    position: absolute;
+    left: 20px;
+    font-size: 1.8em;
+    color: var(--primary-color);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.features li:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* ===================================== */
+/* Autenticação (Login/Registro) */
+/* ===================================== */
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: var(--background-card);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
     text-align: center;
-    margin-top: 40px;
 }
 
-.back-to-editor a {
+.auth-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.auth-container p {
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.auth-container button {
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* ===================================== */
+/* Página de Exemplos */
+/* ===================================== */
+.examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.example-item {
+    background-color: var(--background-card);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
+    text-align: center;
+    padding: 15px;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    cursor: pointer;
+}
+
+.example-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.example-item img {
+    max-width: 100px; /* Tamanho da imagem de exemplo */
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.example-item p {
+    font-size: 0.9em;
+    color: var(--light-text-color);
+    margin: 0;
+}
+
+
+/* ===================================== */
+/* Editor de Ícones */
+/* ===================================== */
+.editor-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os itens quebrem a linha */
+    gap: 30px; /* Espaçamento entre os controles e o canvas */
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.editor-controls {
+    flex: 1;
+    min-width: 300px; /* Largura mínima para os controles */
+    background-color: var(--background-card);
+    padding: 25px;
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
+}
+
+.editor-controls h2, .editor-controls h3 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.editor-controls h3 {
+    font-size: 1.3em;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+
+/* Estilos para grupos de ferramentas (sliders, color pickers etc) */
+.tool-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px; /* Espaçamento entre os elementos do grupo */
+    flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+}
+
+.tool-group label {
+    flex-basis: 120px; /* Largura fixa para labels */
+    min-width: 80px; /* Garante que a label não fique muito pequena */
+    font-weight: 500; /* Medium weight */
+}
+
+.tool-group input[type="range"] {
+    flex-grow: 1; /* Ocupa o espaço restante */
+    margin-bottom: 0; /* Remove a margem padrão */
+}
+
+.tool-group input[type="file"],
+.tool-group input[type="text"],
+.tool-group select,
+.tool-group input[type="color"] {
+    flex-grow: 1; /* Ocupa o espaço restante */
+    margin-bottom: 0;
+    height: 40px; /* Altura consistente */
+    padding: 8px 12px;
+}
+
+
+.slider-value {
+    min-width: 50px; /* Largura mínima para o valor do slider */
+    text-align: right;
+    font-weight: bold;
     color: var(--accent-color);
+}
+
+.reset-slider-btn {
+    background-color: #6c757d; /* Cinza para botão de reset */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    white-space: nowrap; /* Impede quebra de linha no texto do botão */
+    margin-left: 5px;
+}
+
+.reset-slider-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Grupo de botões de ação */
+.action-buttons-group {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-top: 20px;
+    flex-wrap: wrap; /* Permite quebra de linha */
+    justify-content: center;
+}
+
+.action-buttons-group .action-btn {
+    margin-top: 0; /* Remove margem superior padrão do .action-btn */
+    flex-grow: 1; /* Permite que cresçam para preencher o espaço */
+    min-width: 120px; /* Garante que não fiquem muito pequenos */
+}
+.action-buttons-group .action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #cccccc;
+}
+.action-buttons-group .action-btn:disabled:hover {
+    transform: none;
+    background-color: #cccccc;
+}
+
+
+.canvas-area {
+    flex: 2; /* Ocupa o dobro do espaço dos controles */
+    min-width: 400px; /* Largura mínima para a área do canvas */
+    background-color: var(--background-card);
+    padding: 25px;
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#iconCanvas {
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    max-width: 100%; /* Garante que o canvas não transborde */
+    height: auto;
+    display: block; /* Remove espaço extra abaixo do canvas */
+    margin-bottom: 20px;
+}
+
+.canvas-hint {
+    font-size: 0.9em;
+    color: var(--light-text-color);
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Seção de Download de Ícones */
+.download-section {
+    margin-top: 30px;
+    padding: 25px;
+    background-color: var(--background-card);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
+    text-align: center;
+}
+
+.download-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background-color: var(--background-light);
+    border-radius: var(--border-radius-base);
+    margin-bottom: 20px;
+}
+
+.generated-icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-base);
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.generated-icon-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.generated-icon-item img {
+    max-width: 100px;
+    height: auto;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.generated-icon-item p {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--text-color);
+    margin: 5px 0;
+}
+
+.generated-icon-item a {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 1.05em;
-    transition: color var(--transition-speed);
+    font-size: 0.9em;
+    transition: background-color var(--transition-speed);
 }
 
-.back-to-editor a:hover {
-    color: #0056b3;
-    text-decoration: underline;
+.generated-icon-item a:hover {
+    background-color: #0056b3;
+    text-decoration: none;
 }
 
 
 /* ===================================== */
-/* Responsividade */
+/* Media Queries para Responsividade */
 /* ===================================== */
-@media (max-width: 992px) {
-    main {
-        padding: 20px;
-        margin: 20px auto;
-    }
-    .editor-container {
-        gap: 30px;
-    }
-    .editor-controls, .canvas-area {
-        min-width: unset;
-        flex-basis: 100%; /* Ocupa a largura total em telas médias */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding-top: 1em;
+        padding-bottom: 1em;
+        gap: 10px;
     }
     header h1 {
-        font-size: 2em;
+        font-size: 1.8em;
     }
-    header nav {
-        position: static;
-        transform: none;
-        margin-top: 10px;
+    header nav button {
+        padding: 8px 15px;
+        font-size: 0.9em;
     }
-    /* Ajuste para hero e features em telas menores */
-    .hero {
-        padding: 40px 20px;
+
+    main {
+        margin: 10px;
+        padding: 15px;
     }
-    .hero h1 {
-        font-size: 2.5em;
-    }
-    .hero p {
-        font-size: 1.1em;
-    }
-    .hero .actions button {
-        margin: 0 8px;
-        padding: 12px 20px;
-    }
-    .features h2 {
-        font-size: 2em;
-    }
+
     .features ul {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: 1fr; /* Uma coluna em telas pequenas para recursos */
+    }
+
+    .auth-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .editor-container {
+        flex-direction: column;
         gap: 20px;
     }
-    .action-buttons-group {
-        flex-direction: column; /* Botões em coluna em telas menores */
-        align-items: stretch;
-    }
-    .action-btn {
-        width: 100%;
-    }
-}
 
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 1.8em;
+    .editor-controls, .canvas-area {
+        min-width: unset; /* Remove min-width em telas pequenas */
     }
-    .auth-container {
-        margin: 30px auto;
-        padding: 30px;
+
+    #iconCanvas {
+        width: 95%; /* Ajusta para não transbordar em telas pequenas */
     }
-    .auth-container h2 {
-        font-size: 1.8em;
-    }
-    .editor-controls {
-        padding: 20px;
-    }
-    .editor-controls .tool-group label {
-        flex-basis: 70px;
-        min-width: 70px;
-    }
-    .slider-value {
-        min-width: 45px;
-    }
+
     .image-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 15px;
-        padding: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Reduz min-width em telas pequenas */
+        gap: 10px;
+        padding: 15px;
     }
-    /* Ajuste para hero e features em telas menores */
-    .hero {
-        padding: 30px 15px;
+
+    .tool-group {
+        flex-direction: column; /* Empilha elementos em telas pequenas */
+        align-items: flex-start;
     }
-    .hero h1 {
-        font-size: 2em;
+    .tool-group label {
+        flex-basis: auto;
+        min-width: unset;
+        margin-bottom: 5px; /* Espaço entre label e input */
     }
-    .hero p {
-        font-size: 1em;
-    }
-    .hero .actions button {
-        display: block; /* Botões de ação em bloco */
-        width: calc(100% - 30px); /* Ocupa quase toda a largura */
-        margin: 10px auto; /* Centraliza */
-    }
-    .features h2 {
-        font-size: 1.8em;
-    }
-    .features ul {
-        grid-template-columns: 1fr; /* Uma coluna em telas pequenas */
-    }
+    .tool-group input[type="range"],
     .tool-group input[type="text"],
     .tool-group select,
     .tool-group input[type="color"] {
-        height: 36px; /* Altura um pouco menor */
-        padding: 6px 10px;
+        width: 100%;
+    }
+    .slider-value {
+        width: 100%;
+        text-align: left; /* Alinha o valor à esquerda */
+    }
+    .reset-slider-btn {
+        width: 100%; /* Botão de reset ocupa a largura total */
+        margin-left: 0;
+        margin-top: 5px;
     }
 }
 
@@ -810,15 +663,18 @@ footer {
     header h1 {
         font-size: 1.5em;
     }
+
     .auth-container {
         padding: 15px;
     }
+
     .auth-container input[type="email"],
     .auth-container input[type="password"],
     .auth-container button {
         padding: 12px;
         font-size: 1em;
     }
+
     .editor-controls {
         padding: 15px;
     }
@@ -837,29 +693,16 @@ footer {
         padding: 15px;
     }
     .image-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
-        padding: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Reduz ainda mais */
     }
-    /* Ajuste para hero e features em telas muito pequenas */
-    .hero {
-        padding: 25px 10px;
+    .generated-icon-item img {
+        max-width: 80px;
     }
-    .hero h1 {
-        font-size: 1.7em;
+    .action-buttons-group {
+        flex-direction: column; /* Botões empilhados */
     }
-    .hero p {
-        font-size: 0.9em;
-        margin-bottom: 25px;
-    }
-    .hero .actions button {
-        font-size: 0.9em;
-        padding: 10px 15px;
-    }
-    .features h2 {
-        font-size: 1.6em;
-    }
-    .features li {
-        padding: 15px;
+    .action-buttons-group .action-btn {
+        width: 100%;
+        min-width: unset;
     }
 }

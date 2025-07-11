@@ -674,46 +674,55 @@ document.addEventListener('DOMContentLoaded', () => {
             tempCanvas.height = size;
             const tempCtx = tempCanvas.getContext('2d');
 
-            // Preenche o fundo
+            // 1. Preenche o fundo com a cor selecionada (no contexto padrão)
             tempCtx.fillStyle = imageProps.backgroundColor;
             tempCtx.fillRect(0, 0, size, size);
 
-            // Desenha a imagem centralizada e com as transformações
-            // Calcula o centro da imagem original
-            const imgCenterX = originalImage.width / 2;
-            const imgCenterY = originalImage.height / 2;
+            // 2. Desenha a imagem com suas transformações (isoladas por save/restore)
+            // Certifique-se de que a imagem esteja carregada antes de tentar desenhá-la
+            if (imageLoaded) {
+                tempCtx.save(); // Salva o estado atual do contexto (não transformado)
 
-            // Transfere o contexto para o centro do canvas temporário
-            tempCtx.translate(size / 2, size / 2);
-            tempCtx.rotate(imageProps.rotation * Math.PI / 180); // Aplica rotação
-            tempCtx.scale(imageProps.scale, imageProps.scale); // Aplica escala
+                // Move a origem para o centro do canvas temporário
+                tempCtx.translate(size / 2, size / 2);
 
-            // Desenha a imagem com offset, considerando o centro do canvas temporário
-            tempCtx.drawImage(
-                originalImage,
-                -imgCenterX + (imageProps.xOffset / CANVAS_SIZE * size),
-                -imgCenterY + (imageProps.yOffset / CANVAS_SIZE * size),
-                originalImage.width,
-                originalImage.height
-            );
+                // Aplica rotação
+                tempCtx.rotate(imageProps.rotation * Math.PI / 180);
 
-            // Reseta as transformações para desenhar o texto
-            tempCtx.setTransform(1, 0, 0, 1, 0, 0);
+                // Aplica escala
+                tempCtx.scale(imageProps.scale, imageProps.scale);
 
-            // Aplica filtro à imagem no canvas temporário ANTES de desenhar o texto
+                // Desenha a imagem centralizada no novo sistema de coordenadas com offsets escalados
+                const imgCenterX = originalImage.width / 2;
+                const imgCenterY = originalImage.height / 2;
+                tempCtx.drawImage(
+                    originalImage,
+                    -imgCenterX + (imageProps.xOffset / CANVAS_SIZE * size), // Offsets escalados
+                    -imgCenterY + (imageProps.yOffset / CANVAS_SIZE * size), // Offsets escalados
+                    originalImage.width,
+                    originalImage.height
+                );
+
+                tempCtx.restore(); // Restaura o estado anterior do contexto (removendo transformações da imagem)
+            }
+
+            // 3. Aplica filtro ao canvas principal (APÓS desenhar a imagem e restaurar as transformações)
             if (imageProps.filter !== 'none') {
                 applyFilterToCanvas(tempCtx, tempCanvas.width, tempCanvas.height, imageProps.filter);
             }
 
-            // Desenha o texto (após a imagem e o filtro)
+            // 4. Desenha o texto (SEMPRE depois da imagem e dos filtros para estar no topo)
             if (textProps.content) {
-                tempCtx.font = `${textProps.fontSize / CANVAS_SIZE * size}px Inter, sans-serif`; // Escala a fonte
+                tempCtx.save(); // Salva o estado para o texto (se houver transformações específicas para texto no futuro)
+                tempCtx.font = `${textProps.fontSize / CANVAS_SIZE * size}px 'Inter', sans-serif`; // Escala a fonte
                 tempCtx.fillStyle = textProps.fontColor;
                 tempCtx.textAlign = 'center';
                 tempCtx.textBaseline = 'middle';
+                // Calcular posição central no canvas + offset escalado
                 const textX = size / 2 + (textProps.xOffset / CANVAS_SIZE * size);
                 const textY = size / 2 + (textProps.yOffset / CANVAS_SIZE * size);
                 tempCtx.fillText(textProps.content, textX, textY);
+                tempCtx.restore();
             }
 
             // Converte para Base64 e cria o elemento de imagem

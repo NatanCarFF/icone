@@ -28,44 +28,39 @@
                         <label for="scaleSlider">Escala:</label>
                         <input type="range" id="scaleSlider" min="0.1" max="2" value="1" step="0.01">
                         <span class="slider-value" id="scaleValue">100%</span>
-                        <button class="reset-slider-btn" data-target="scaleSlider" aria-label="Redefinir escala">⟳</button>
+                        <button class="reset-slider-btn" data-target="scaleSlider">Reset</button>
                     </div>
                     <div class="tool-group">
                         <label for="rotationSlider">Rotação:</label>
                         <input type="range" id="rotationSlider" min="0" max="360" value="0" step="1">
                         <span class="slider-value" id="rotationValue">0°</span>
-                        <button class="reset-slider-btn" data-target="rotationSlider" aria-label="Redefinir rotação">⟳</button>
+                        <button class="reset-slider-btn" data-target="rotationSlider">Reset</button>
                     </div>
                     <div class="tool-group">
-                        <label for="xOffsetSlider">Offset X:</label>
+                        <label for="xOffsetSlider">Deslocamento X:</label>
                         <input type="range" id="xOffsetSlider" min="-200" max="200" value="0" step="1">
                         <span class="slider-value" id="xOffsetValue">0px</span>
-                        <button class="reset-slider-btn" data-target="xOffsetSlider" aria-label="Redefinir offset X">⟳</button>
+                        <button class="reset-slider-btn" data-target="xOffsetSlider">Reset</button>
                     </div>
                     <div class="tool-group">
-                        <label for="yOffsetSlider">Offset Y:</label>
+                        <label for="yOffsetSlider">Deslocamento Y:</label>
                         <input type="range" id="yOffsetSlider" min="-200" max="200" value="0" step="1">
                         <span class="slider-value" id="yOffsetValue">0px</span>
-                        <button class="reset-slider-btn" data-target="yOffsetSlider" aria-label="Redefinir offset Y">⟳</button>
+                        <button class="reset-slider-btn" data-target="yOffsetSlider">Reset</button>
                     </div>
-
-                    <div class="tool-group-color">
+                    <div class="tool-group">
                         <label for="backgroundColorPicker">Cor de Fundo:</label>
                         <input type="color" id="backgroundColorPicker" value="#FFFFFF">
-                        <button class="reset-slider-btn" data-target="backgroundColorPicker" aria-label="Redefinir cor de fundo">⟳</button>
+                        <button class="reset-slider-btn" data-target="backgroundColorPicker">Reset</button>
                     </div>
-                </div>
-
-                <div class="editing-tools">
-                    <h3>Filtros de Imagem</h3>
                     <div class="tool-group">
-                        <label for="filterSelect">Aplicar Filtro:</label>
+                        <label for="filterSelect">Filtro:</label>
                         <select id="filterSelect">
                             <option value="none">Nenhum</option>
                             <option value="grayscale">Escala de Cinza</option>
                             <option value="sepia">Sépia</option>
-                            <option value="invert">Inverter Cores</option>
-                            <option value="blur">Desfoque (5px)</option>
+                            <option value="invert">Inverter</option>
+                            <option value="blur">Desfoque</option>
                         </select>
                     </div>
                 </div>
@@ -73,37 +68,37 @@
                 <div class="editing-tools">
                     <h3>Ferramentas de Texto</h3>
                     <div class="tool-group">
-                        <label for="textInput">Texto:</label>
+                        <label for="textInput">Conteúdo do Texto:</label>
                         <input type="text" id="textInput" placeholder="Digite seu texto">
                     </div>
                     <div class="tool-group">
-                        <label for="fontSizeSlider">Tamanho:</label>
-                        <input type="range" id="fontSizeSlider" min="10" max="200" value="40" step="1">
+                        <label for="fontSizeSlider">Tamanho da Fonte:</label>
+                        <input type="range" id="fontSizeSlider" min="10" max="100" value="40" step="1">
                         <span class="slider-value" id="fontSizeValue">40px</span>
-                        <button class="reset-slider-btn" data-target="fontSizeSlider" aria-label="Redefinir tamanho da fonte">⟳</button>
+                        <button class="reset-slider-btn" data-target="fontSizeSlider">Reset</button>
                     </div>
                     <div class="tool-group">
-                        <label for="fontColorPicker">Cor do Texto:</label>
+                        <label for="fontColorPicker">Cor da Fonte:</label>
                         <input type="color" id="fontColorPicker" value="#000000">
-                        <button class="reset-slider-btn" data-target="fontColorPicker" aria-label="Redefinir cor do texto">⟳</button>
+                        <button class="reset-slider-btn" data-target="fontColorPicker">Reset</button>
                     </div>
                     <div class="tool-group">
-                        <label for="textXOffsetSlider">Posição X:</label>
-                        <input type="range" id="textXOffsetSlider" min="-256" max="256" value="0" step="1">
+                        <label for="textXOffsetSlider">Deslocamento X (Texto):</label>
+                        <input type="range" id="textXOffsetSlider" min="-200" max="200" value="0" step="1">
                         <span class="slider-value" id="textXOffsetValue">0px</span>
-                        <button class="reset-slider-btn" data-target="textXOffsetSlider" aria-label="Redefinir posição X do texto">⟳</button>
+                        <button class="reset-slider-btn" data-target="textXOffsetSlider">Reset</button>
                     </div>
                     <div class="tool-group">
-                        <label for="textYOffsetSlider">Posição Y:</label>
-                        <input type="range" id="textYOffsetSlider" min="-256" max="256" value="0" step="1">
+                        <label for="textYOffsetSlider">Deslocamento Y (Texto):</label>
+                        <input type="range" id="textYOffsetSlider" min="-200" max="200" value="0" step="1">
                         <span class="slider-value" id="textYOffsetValue">0px</span>
-                        <button class="reset-slider-btn" data-target="textYOffsetSlider" aria-label="Redefinir posição Y do texto">⟳</button>
+                        <button class="reset-slider-btn" data-target="textYOffsetSlider">Reset</button>
                     </div>
                 </div>
 
                 <div class="action-buttons-group">
-                    <button id="undoBtn" class="action-btn secondary-btn">Desfazer</button>
-                    <button id="redoBtn" class="action-btn secondary-btn">Refazer</button>
+                    <button id="undoBtn" class="action-btn secondary-btn" disabled>Desfazer</button>
+                    <button id="redoBtn" class="action-btn secondary-btn" disabled>Refazer</button>
                     <button id="resetEditorBtn" class="action-btn">Resetar Edição</button>
                 </div>
             </div>
@@ -130,7 +125,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-    <script src="js/firebase-config.js" type="module"></script>
-    <script src="js/editor.js" type="module"></script>
-</body>
+    <script type="module" src="js/editor.js"></script>
+    </body>
 </html>
