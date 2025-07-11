@@ -2,8 +2,8 @@
 
 import { auth } from './firebase-config.js'; // Importa a instância de auth
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-// CORREÇÃO: Importar JSZip e JSZipUtils como namespace (*)
-import * as JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+// CORREÇÃO: Importar JSZip diretamente como default export
+import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
 import * as JSZipUtils from "https://cdn.jsdelivr.net/npm/jszip-utils@0.1.0/dist/jszip-utils.min.js";
 
 // ===========================================
@@ -317,7 +317,8 @@ downloadAllZip.addEventListener('click', async () => {
         return;
     }
 
-    // CORREÇÃO AQUI: Instanciar JSZip diretamente, sem '.default'
+    // A linha de importação foi corrigida para 'import JSZip from ...'
+    // Então, 'new JSZip()' deve funcionar se o JSZip tem um default export.
     const zip = new JSZip(); 
     const folderName = "android_icons"; // Nome da pasta raiz no ZIP
 
