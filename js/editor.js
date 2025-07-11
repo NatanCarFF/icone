@@ -2,9 +2,7 @@
 
 import { auth } from './firebase-config.js'; // Importa a instância de auth
 import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-// CORREÇÃO: Importar JSZip diretamente como default export
-import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
-import * as JSZipUtils from "https://cdn.jsdelivr.net/npm/jszip-utils@0.1.0/dist/jszip-utils.min.js";
+// JSZip e JSZipUtils IMPORTS REMOVIDOS AQUI
 
 // ===========================================
 // Seleção de Elementos e Variáveis Globais
@@ -22,7 +20,7 @@ const generateIconsBtn = document.getElementById('generateIconsBtn');
 const editorMessage = document.getElementById('editorMessage');
 const downloadSection = document.getElementById('downloadSection');
 const generatedIconsContainer = document.getElementById('generatedIconsContainer');
-const downloadAllZip = document.getElementById('downloadAllZip');
+// downloadAllZip CONST REMOVIDA AQUI
 
 let originalImage = new Image();
 let imageLoaded = false;
@@ -310,59 +308,5 @@ function generateAndDisplayIcon(density, size) {
     generatedIconsContainer.appendChild(iconItem);
 }
 
-// Download de todos os ícones em um arquivo ZIP
-downloadAllZip.addEventListener('click', async () => {
-    if (!imageLoaded) {
-        showMessage("Por favor, faça upload ou selecione uma imagem primeiro.", true);
-        return;
-    }
-
-    // A linha de importação foi corrigida para 'import JSZip from ...'
-    // Então, 'new JSZip()' deve funcionar se o JSZip tem um default export.
-    const zip = new JSZip(); 
-    const folderName = "android_icons"; // Nome da pasta raiz no ZIP
-
-    // Para cada densidade, gerar o ícone e adicioná-lo ao ZIP
-    for (const density in ICON_SIZES) {
-        const size = ICON_SIZES[density];
-
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = size;
-        tempCanvas.height = size;
-        const tempCtx = tempCanvas.getContext('2d');
-
-        // Adapta as transformações para o novo tamanho do canvas
-        const scaleFactor = size / EDITOR_CANVAS_SIZE;
-
-        tempCtx.save();
-        tempCtx.translate(size / 2 + imageProps.xOffset * scaleFactor, size / 2 + imageProps.yOffset * scaleFactor);
-        tempCtx.rotate(imageProps.rotation * Math.PI / 180);
-
-        const scaledWidth = originalImage.width * imageProps.scale * scaleFactor;
-        const scaledHeight = originalImage.height * imageProps.scale * scaleFactor;
-        tempCtx.drawImage(originalImage, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
-        tempCtx.restore();
-
-        // Obtém o blob da imagem
-        const blob = await new Promise(resolve => tempCanvas.toBlob(resolve, 'image/png'));
-
-        // Adiciona a imagem ao ZIP dentro da estrutura de pastas Android
-        zip.file(`${folderName}/res/drawable-${density}/ic_launcher.png`, blob);
-    }
-
-    // Gera o ZIP e força o download
-    zip.generateAsync({ type: "blob" })
-        .then(function(content) {
-            const downloadLink = document.createElement('a');
-            downloadLink.href = URL.createObjectURL(content);
-            downloadLink.download = "android_icons.zip";
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-            showMessage("ZIP gerado com sucesso!", false);
-        })
-        .catch(error => {
-            console.error("Erro ao gerar ZIP:", error);
-            showMessage("Erro ao gerar o arquivo ZIP. Tente novamente.", true);
-        });
-});
+// LÓGICA DE DOWNLOAD DE ZIP REMOVIDA AQUI
+// downloadAllZip.addEventListener('click', async () => { ... });
