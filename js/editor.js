@@ -397,11 +397,11 @@ iconShapeSelect.addEventListener('change', (e) => {
 
 // Definições de densidade para ícones Android
 const ANDROID_DENSITIES = {
-    'mdpi': 48,
-    'hdpi': 72,
-    'xhdpi': 96,
-    'xxhdpi': 144,
-    'xxxhdpi': 192
+    'mdpi': 96,
+    'hdpi': 144,
+    'xhdpi': 192,
+    'xxhdpi': 512,
+    'xxxhdpi': 1024
 };
 
 generateIconsBtn.addEventListener('click', async () => {
