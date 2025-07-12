@@ -7,7 +7,7 @@
 :root {
     --primary-color: #28a745; /* Verde mais profundo e profissional */
     --accent-color: #007bff; /* Azul vibrante para ações */
-    --text-color: #333333;\
+    --text-color: #333333;
     --light-text-color: #555555;
     --background-light: #f8f9fa; /* Fundo claro e limpo */
     --background-card: #ffffff;
@@ -720,16 +720,16 @@ section {
     header h1 {
         font-size: 1.6em;
         margin-bottom: 10px;
-        flex-grow: unset; /* Remove flex-grow para centralizar melhor */
+        flex-grow: unset;
     }
     header nav {
         margin-left: 0;
-        width: 100%; /* Ocupa a largura total para centralizar o botão */
+        width: 100%;
         display: flex;
-        justify-content: center; /* Centraliza o botão de logout */
+        justify-content: center;
     }
     header nav button {
-        margin-top: 10px; /* Adiciona espaçamento superior */
+        margin-top: 10px;
     }
 
     main {
@@ -751,16 +751,16 @@ section {
         font-size: 1.1em;
     }
     .hero .actions {
-        flex-direction: column; /* Botões empilhados */
+        flex-direction: column;
         gap: 15px;
     }
     .action-btn {
-        width: 100%; /* Botões ocupam a largura total */
-        box-sizing: border-box; /* Inclui padding na largura */
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .features ul {
-        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+        grid-template-columns: 1fr;
     }
     .features li {
         font-size: 1em;
@@ -778,76 +778,97 @@ section {
         font-size: 1.8em;
     }
 
+    /* Editor de Ícones em telas menores */
     .editor-container {
-        flex-direction: column; /* Empilha controles e canvas */
+        flex-direction: column;
         gap: 20px;
     }
     .editor-controls {
-        max-width: 100%; /* Ocupa a largura total */
+        max-width: 100%;
         min-width: unset;
-        padding: 20px;
+        padding: 15px; /* Reduz padding */
+    }
+    .editor-controls h2, .editor-controls h3 {
+        font-size: 1.5em; /* Reduz tamanho do título */
+        margin-bottom: 15px;
+    }
+    .editing-tools {
+        padding-top: 15px; /* Reduz padding superior */
     }
     .tool-group {
-        flex-wrap: wrap; /* Permite quebrar linha para label/slider/valor */
-        justify-content: space-between; /* Espaça os elementos */
+        display: grid; /* Usa grid para melhor organização */
+        grid-template-columns: auto 1fr auto; /* Label | Slider | Valor/Reset */
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px; /* Reduz margem inferior */
     }
     .tool-group label {
-        flex-basis: auto; /* Deixa a largura automática */
-        min-width: unset;
-        width: 100%; /* Ocupa a largura para o label */
-        margin-bottom: 5px; /* Espaço abaixo do label */
+        font-size: 0.95em;
+        margin-bottom: 0;
+        text-align: left;
     }
     .tool-group input[type="range"] {
-        width: calc(100% - 100px); /* Ajuste para o valor e botão */
-        margin-right: 0; /* Remove margem extra */
+        width: 100%; /* O slider ocupa todo o espaço disponível */
     }
     .slider-value {
-        min-width: 45px;
+        min-width: 40px;
+        text-align: right;
+        font-size: 0.9em;
     }
     .reset-slider-btn {
-        padding: 6px 8px; /* Reduz padding */
-        font-size: 0.8em; /* Reduz fonte */
+        padding: 5px 8px;
+        font-size: 0.8em;
+    }
+    .tool-group select {
+        font-size: 0.95em;
+        padding: 8px;
+    }
+    .custom-file-upload {
+        font-size: 1em;
+        padding: 10px 20px;
+        margin-bottom: 15px;
     }
     .action-buttons {
-        justify-content: center; /* Centraliza botões de ação */
+        justify-content: center;
+        margin-top: 20px;
+        padding-top: 15px;
     }
 
     .canvas-area {
-        min-height: 300px; /* Altura mínima para telas menores */
-        padding: 20px;
+        min-height: 300px;
+        padding: 15px;
     }
     #iconCanvas {
         max-width: 100%;
-        width: 300px; /* Tamanho fixo para o canvas em mobile, se necessário */
-        height: 300px;
+        width: auto; /* Deixa o tamanho automático para responsividade */
+        height: auto;
     }
     .canvas-hint {
-        font-size: 0.85em;
+        font-size: 0.8em;
         max-width: 90%;
+        margin-top: 10px;
     }
     #generateIconsBtn {
-        width: 100%; /* Botão de geração ocupa a largura total */
-        box-sizing: border-box;
+        width: 100%;
     }
 
     .image-grid {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Colunas mais flexíveis, com tamanho mínimo menor */
-        gap: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
     }
     .generated-icon-item, .example-item {
         padding: 10px;
     }
     .generated-icon-item img, .example-item img {
-        max-width: 80px; /* Limita o tamanho da imagem na grade */
-        height: 80px;
+        max-width: 70px;
+        height: 70px;
     }
     .generated-icon-item p, .example-item p {
-        font-size: 0.8em;
+        font-size: 0.85em;
     }
     .generated-icon-item button, .example-item button {
-        width: 100%;
+        font-size: 0.8em;
         padding: 6px 10px;
-        font-size: 0.85em;
     }
 }
 
@@ -894,82 +915,80 @@ section {
         height: 16px;
     }
 
+    /* Editor de Ícones em telas muito pequenas */
     .editor-controls, .canvas-area {
-        padding: 15px;
+        padding: 10px; /* Reduz ainda mais o padding */
     }
     .editor-controls h2, .editor-controls h3 {
-        font-size: 1.4em;
-        margin-bottom: 15px;
+        font-size: 1.3em;
+        margin-bottom: 10px;
     }
     .custom-file-upload {
-        padding: 10px 20px;
-        font-size: 1em;
-        width: 100%;
-        box-sizing: border-box;
+        font-size: 0.9em;
+        padding: 8px 15px;
+        margin-bottom: 10px;
+    }
+    .editing-tools {
+        padding-top: 10px;
     }
     .tool-group {
-        gap: 8px;
+        grid-template-columns: auto 1fr auto; /* Mantém o layout em grid */
+        gap: 5px; /* Reduz o espaçamento */
+        margin-bottom: 8px; /* Reduz a margem */
     }
     .tool-group label {
-        font-size: 0.9em;
-        margin-bottom: 2px;
-    }
-    .tool-group input[type="range"] {
-        height: 6px;
-    }
-    .tool-group input[type="range"]::-webkit-slider-thumb {
-        width: 18px;
-        height: 18px;
-    }
-    .tool-group input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
+        font-size: 0.85em;
     }
     .slider-value {
-        min-width: 40px;
-        font-size: 0.9em;
+        font-size: 0.8em;
+        min-width: 35px;
     }
     .reset-slider-btn {
         padding: 4px 6px;
-        font-size: 0.75em;
+        font-size: 0.7em;
     }
     .tool-group select {
-        padding: 6px 8px;
-        font-size: 0.9em;
+        font-size: 0.85em;
+        padding: 6px;
     }
     #iconCanvas {
-        width: 280px; /* Ainda menor para se adequar a telas pequenas */
-        height: 280px;
+        width: 100%; /* Ocupa toda a largura disponível */
+        max-width: 300px; /* Limite máximo para não esticar demais */
+        height: auto;
     }
     .canvas-hint {
-        font-size: 0.8em;
+        font-size: 0.75em;
+        margin-top: 8px;
+    }
+    #generateIconsBtn {
+        font-size: 1em;
+        padding: 10px 20px;
     }
 
     .image-grid {
-        grid-template-columns: 1fr; /* Força uma única coluna em telas muito pequenas */
-        gap: 10px;
+        grid-template-columns: 1fr; /* Uma única coluna para ícones em telas muito pequenas */
+        gap: 8px;
     }
     .generated-icon-item, .example-item {
+        flex-direction: column; /* Volta a empilhar em telas muito pequenas para melhor visualização */
+        align-items: center;
+        text-align: center;
         padding: 8px;
-        flex-direction: row; /* Coloca imagem e texto lado a lado */
-        justify-content: flex-start;
-        gap: 10px;
     }
     .generated-icon-item img, .example-item img {
-        max-width: 60px; /* Reduz ainda mais o tamanho da imagem */
-        height: 60px;
-        margin-bottom: 0;
+        max-width: 80px;
+        height: 80px;
+        margin-bottom: 5px;
     }
     .generated-icon-item p, .example-item p {
-        font-size: 0.85em;
-        margin-bottom: 0;
-        text-align: left;
+        font-size: 0.8em;
+        margin-bottom: 5px;
+        text-align: center;
     }
     .generated-icon-item button, .example-item button {
-        width: auto; /* Volta para auto para não esticar */
+        font-size: 0.75em;
         padding: 5px 8px;
-        font-size: 0.8em;
-        margin-left: auto; /* Empurra o botão para a direita */
+        width: auto;
     }
 
     footer {
