@@ -5,91 +5,65 @@
 /* Variáveis CSS (Melhora a manutenção e consistência) */
 /* ===================================== */
 :root {
-    /* Cores atualizadas para um visual mais moderno e profissional */
-    --primary-color: #4CAF50; /* Um verde um pouco mais vibrante e reconhecível (Material Design Green 500) */
-    --primary-color-rgb-values: 76, 175, 80; /* RGB para sombras dinâmicas */
-    --accent-color: #2196F3; /* Um azul mais calmo e profissional (Material Design Blue 500) */
-    --accent-color-rgb-values: 33, 150, 243; /* RGB para sombras dinâmicas */
-    --secondary-accent-color: #FFC107; /* Um amarelo/laranja para destaques ou avisos */
-    
-    --text-color: #333333; /* Texto principal mais escuro para melhor contraste */
-    --light-text-color: #666666; /* Texto secundário, levemente mais escuro que o original para legibilidade */
-    
-    --background-light: #F2F5F8; /* Um cinza-azulado muito sutil para o fundo geral (macio e limpo) */
-    --background-card: #ffffff; /* Fundo de cards/seções brancos */
-    
-    --border-color: #E0E0E0; /* Cor de borda suave */
-    --input-border-color: #CCCCCC; /* Cor de borda para inputs */
-    
-    --shadow-light: 0 6px 20px rgba(0, 0, 0, 0.08); /* Sombra um pouco mais pronunciada, mas ainda suave */
-    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra para hover, mais evidente */
-    
-    --border-radius-base: 10px; /* Levemente mais arredondado para um toque moderno */
-    --transition-speed: 0.3s ease-in-out; /* Transição mais suave e responsiva */
+    --primary-color: #28a745; /* Verde mais profundo e profissional */
+    --accent-color: #007bff; /* Azul vibrante para ações */
+    --text-color: #333333;\
+    --light-text-color: #555555;
+    --background-light: #f8f9fa; /* Fundo claro e limpo */
+    --background-card: #ffffff;
+    --border-color: #e0e0e0;
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra mais suave e moderna */
+    --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
+    --border-radius-base: 8px;
+    --transition-speed: 0.3s ease;
 }
 
 /* ===================================== */
 /* Estilos Globais e Layout Base */
 /* ===================================== */
-html {
-    scroll-behavior: smooth; /* Rolagem suave para âncoras */
-}
-
 body {
-    font-family: 'Inter', sans-serif;
-    line-height: 1.6; /* Melhorar espaçamento entre linhas para legibilidade */
-    color: var(--text-color);
-    background-color: var(--background-light);
+    font-family: 'Inter', sans-serif; /* Fonte mais moderna e legível */
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    background-color: var(--background-light);
+    color: var(--text-color);
+    line-height: 1.6;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Garante que o footer fique no final da página */
-    overflow-x: hidden; /* Previne rolagem horizontal indesejada */
+    min-height: 100vh; /* Garante que o footer fique no final */
 }
 
-/* Container principal para centralizar o conteúdo */
+/* Scrollbar estilizada */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
 main {
-    flex-grow: 1; /* Faz o main ocupar o espaço restante na coluna */
-    padding: 30px 20px; /* Padding geral para o conteúdo principal */
-    max-width: 1200px; /* Limita a largura em telas grandes para melhor legibilidade */
-    margin: 0 auto; /* Centraliza o conteúdo */
-    width: 100%; /* Garante que ocupe a largura disponível dentro do max-width */
-    box-sizing: border-box; /* Inclui padding na largura total */
+    flex: 1; /* Ocupa o espaço restante */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
 }
 
-/* Estilo para seções/cards */
-section {
-    background-color: var(--background-card);
-    border-radius: var(--border-radius-base);
-    box-shadow: var(--shadow-light);
-    padding: 30px; /* Aumentar o padding interno das seções para mais "ar" */
-    margin-bottom: 30px; /* Espaço consistente entre as seções */
-    box-sizing: border-box;
-}
-
-h1, h2, h3, h4 {
-    color: var(--primary-color); /* Usar a cor primária para títulos para consistência */
-    margin-bottom: 0.8em;
-    font-weight: 700; /* Títulos mais fortes e impactantes */
-    line-height: 1.2;
-}
-
-h1 {
-    font-size: 2.5em; /* Ajustar tamanho para o header */
-}
-
-h2 {
-    font-size: 2em;
-}
-
-h3 {
-    font-size: 1.5em;
-    color: var(--text-color); /* Subtítulos podem ter a cor do texto principal */
-}
-
-p {
-    margin-bottom: 1em;
+h1, h2, h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-weight: 600;
 }
 
 a {
@@ -99,597 +73,313 @@ a {
 }
 
 a:hover {
-    color: darken(var(--accent-color), 15%); /* Escurece no hover (requer pré-processador ou HSL) */
-    text-decoration: underline;
+    color: var(--primary-color);
 }
 
 /* ===================================== */
-/* Header e Footer */
+/* Cabeçalho (Header) */
 /* ===================================== */
 header {
     background-color: var(--background-card);
+    color: var(--text-color);
+    padding: 15px 20px;
     box-shadow: var(--shadow-light);
-    padding: 20px 30px; /* Mais padding nas laterais */
-    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap; /* Permite que os itens quebrem a linha */
 }
 
 header h1 {
     margin: 0;
-    color: var(--primary-color);
-    font-size: 2.2em; /* Tamanho do título do header */
+    font-size: 1.8em;
+    color: var(--text-color); /* Sobrescreve a cor padrão para cabeçalhos */
+    flex-grow: 1; /* Permite que o título ocupe espaço */
 }
 
-nav #logoutBtn {
-    background-color: #dc3545; /* Vermelho padrão para logout */
-    color: white;
-    padding: 10px 20px; /* Padding maior */
-    border-radius: var(--border-radius-base);
-    transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
-    border: none;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-}
-nav #logoutBtn:hover {
-    background-color: #c82333; /* Um pouco mais escuro no hover */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-nav #logoutBtn:active {
-    transform: translateY(0);
-    box-shadow: none;
-}
-
-
-footer {
-    background-color: var(--text-color); /* Fundo escuro para o footer */
-    color: white;
-    text-align: center;
-    padding: 25px; /* Mais padding */
-    margin-top: auto; /* Empurra o footer para a parte inferior da tela */
-    font-size: 0.9em;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+header nav {
+    margin-left: auto; /* Empurra o botão de logout para a direita */
 }
 
 /* ===================================== */
-/* Botões Gerais */
+/* Rodapé (Footer) */
+/* ===================================== */
+footer {
+    background-color: var(--text-color); /* Fundo escuro */
+    color: var(--background-light); /* Texto claro */
+    text-align: center;
+    padding: 15px 20px;
+    margin-top: 40px;
+    font-size: 0.9em;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===================================== */
+/* Botões */
 /* ===================================== */
 .action-btn {
-    display: inline-block;
-    padding: 12px 25px; /* Padding generoso para botões */
-    font-size: 1.1em;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
     border-radius: var(--border-radius-base);
+    font-size: 1.1em;
     cursor: pointer;
-    transition: all var(--transition-speed);
-    border: none; /* Remove borda padrão */
-    box-sizing: border-box;
+    transition: background-color var(--transition-speed), transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espaço entre texto e ícone */
+    box-shadow: var(--shadow-light);
+    white-space: nowrap; /* Evita que o texto quebre */
 }
 
+.action-btn:hover {
+    background-color: #0056b3; /* Tom mais escuro de azul */
+    transform: translateY(-2px); /* Pequeno efeito de elevação */
+    box-shadow: var(--shadow-hover);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Botão primário (verde) */
 .primary-btn {
     background-color: var(--primary-color);
-    color: white;
-    /* Usar valores RGB para sombra com cor do botão */
-    box-shadow: 0 4px 10px rgba(var(--primary-color-rgb-values), 0.2); 
 }
 
 .primary-btn:hover {
-    background-color: darken(var(--primary-color), 10%); /* Exemplo: um pouco mais escuro */
-    transform: translateY(-2px); /* Efeito sutil de levantar */
-    box-shadow: 0 8px 15px rgba(var(--primary-color-rgb-values), 0.3);
+    background-color: #218838; /* Tom mais escuro de verde */
 }
 
-.primary-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(var(--primary-color-rgb-values), 0.2);
-}
-
-/* Botão Google */
+/* Botão de Google (cores do Google) */
 .google-btn {
-    background-color: #DB4437; /* Cor do Google red */
+    background-color: #DB4437; /* Vermelho Google */
     color: white;
-    box-shadow: 0 4px 10px rgba(219, 68, 55, 0.2);
-    display: flex;
+    border: none;
+    padding: 12px 25px;
+    border-radius: var(--border-radius-base);
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), transform 0.1s ease;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* Espaço entre ícone e texto */
-    width: 100%; /* Ocupa a largura total no container de login */
-    padding: 12px 20px;
-    font-size: 1.1em;
-    border-radius: var(--border-radius-base);
-    transition: all var(--transition-speed);
-    border: none;
-    cursor: pointer;
+    gap: 8px;
+    box-shadow: var(--shadow-light);
 }
 
 .google-btn:hover {
-    background-color: #c0392b; /* Mais escuro */
+    background-color: #c0392b; /* Tom mais escuro de vermelho */
     transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(219, 68, 55, 0.3);
+    box-shadow: var(--shadow-hover);
 }
+
 .google-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(219, 68, 55, 0.2);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.google-btn i { /* Estilo para o ícone do FontAwesome */
-    font-size: 1.2em;
-}
-
-
-/* ===================================== */
-/* Home Page (index.html) */
-/* ===================================== */
-.hero {
-    text-align: center;
-    padding: 50px 30px; /* Mais padding para destacar */
-    background: linear-gradient(135deg, var(--primary-color), lighten(var(--primary-color), 15%)); /* Gradiente suave */
+/* Estilo para links que se parecem com botões */
+.action-link {
+    display: inline-block;
+    background-color: var(--accent-color);
     color: white;
-    box-shadow: var(--shadow-light);
+    padding: 10px 20px;
     border-radius: var(--border-radius-base);
+    text-decoration: none;
+    transition: background-color var(--transition-speed);
+}
+
+.action-link:hover {
+    background-color: #0056b3;
+}
+
+/* ===================================== */
+/* Seções Gerais e Cards */
+/* ===================================== */
+section {
+    background-color: var(--background-card);
+    padding: 30px;
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
     margin-bottom: 30px;
 }
 
+/* Hero Section (Página Inicial) */
+.hero {
+    text-align: center;
+    padding: 60px 30px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: white;
+    border-radius: var(--border-radius-base);
+    margin-top: 20px;
+    box-shadow: var(--shadow-hover);
+}
+
 .hero h1 {
-    color: white; /* Título branco no hero */
-    font-size: 3em;
-    margin-bottom: 15px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    color: white; /* Títulos no hero em branco */
+    font-size: 2.8em;
+    margin-bottom: 20px;
 }
 
 .hero p {
-    font-size: 1.2em;
+    font-size: 1.3em;
     max-width: 800px;
     margin: 0 auto 30px auto;
-    color: rgba(0, 0, 0, 0.9);
 }
 
 .hero .actions {
     display: flex;
-    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
     justify-content: center;
-    gap: 20px; /* Espaço entre os botões */
+    gap: 20px; /* Espaçamento entre os botões */
+    flex-wrap: wrap; /* Permite que os botões quebrem a linha */
 }
 
-.hero .actions button {
-    background-color: white;
-    color: var(--primary-color);
-    padding: 15px 30px; /* Padding maior */
-    font-size: 1.1em;
-    font-weight: 700;
-    border: none;
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    transition: all var(--transition-speed);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.hero .actions button:hover {
-    background-color: var(--accent-color);
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-}
-
-.features {
-    padding: 30px;
-}
-
-.features h2 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
+/* Features Section (Página Inicial) */
 .features ul {
     list-style: none;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Layout responsivo */
-    gap: 25px; /* Espaço entre os itens */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Colunas flexíveis */
+    gap: 20px;
 }
 
 .features li {
     background-color: var(--background-light);
-    border-radius: var(--border-radius-base);
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    font-size: 1.05em;
+    border-radius: var(--border-radius-base);
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
     display: flex;
     align-items: center;
     gap: 15px;
-    color: var(--light-text-color);
+    font-size: 1.1em;
 }
 
-/* Adicionar ícones de Font Awesome para as features (exemplo) */
-/* .features li::before {
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    content: "\f00c"; /* check-circle icon * /
+.features li i {
     color: var(--primary-color);
-    font-size: 1.3em;
-} */
+    font-size: 1.5em;
+}
 
+.features li:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
 
 /* ===================================== */
-/* Login Page (login.html) */
+/* Formulários (Login/Registro) */
 /* ===================================== */
 .auth-container {
-    max-width: 500px; /* Limita a largura do formulário de auth */
-    margin: 50px auto; /* Centraliza verticalmente e horizontalmente */
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 40px;
     text-align: center;
 }
 
 .auth-container h2 {
-    margin-bottom: 25px;
     color: var(--primary-color);
+    margin-bottom: 30px;
+    font-size: 2em;
 }
 
 .form-group {
-    margin-bottom: 20px; /* Mais espaço entre grupos de formulário */
+    margin-bottom: 20px;
     text-align: left;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--light-text-color);
-    font-size: 0.95em;
 }
 
-input[type="email"],
-input[type="password"],
-input[type="text"],
-select { /* Adicionado select para consistência */
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--input-border-color);
-    border-radius: var(--border-radius-base);
-    font-size: 1em;
-    color: var(--text-color);
-    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-    box-sizing: border-box; /* Garante que padding não aumente a largura */
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="text"]:focus,
-select:focus {
-    border-color: var(--accent-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb-values), 0.2); /* Foco visual suave */
-}
-
-/* Esconder o input de arquivo padrão e estilizá-lo */
-input[type="file"] {
-    display: none; /* Esconde o input padrão */
-}
-
-.custom-file-upload {
-    display: inline-block;
-    padding: 12px 25px;
-    background-color: var(--accent-color); /* Usar accent para upload */
-    color: white;
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    transition: all var(--transition-speed);
-    font-weight: 600;
-    margin-top: 10px;
-}
-
-.custom-file-upload:hover {
-    background-color: darken(var(--accent-color), 10%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(var(--accent-color-rgb-values), 0.2);
-}
-
-.auth-container button[type="submit"] {
-    margin-top: 15px; /* Espaço para o botão de submit */
-    width: 100%;
-    padding: 12px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
+.auth-container input[type="email"],
+.auth-container input[type="password"] {
+    width: calc(100% - 20px); /* Ajuste para padding */
+    padding: 15px 10px;
+    border: 1px solid var(--border-color);
     border-radius: var(--border-radius-base);
     font-size: 1.1em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all var(--transition-speed);
-    box-shadow: 0 4px 10px rgba(var(--primary-color-rgb-values), 0.2);
-}
-.auth-container button[type="submit"]:hover {
-    background-color: darken(var(--primary-color), 10%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(var(--primary-color-rgb-values), 0.3);
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
-.auth-container .message {
+.auth-container input[type="email"]:focus,
+.auth-container input[type="password"]:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.auth-container button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px;
+    font-size: 1.2em;
+}
+
+.auth-container .google-btn {
     margin-top: 20px;
-    font-weight: 500;
 }
 
 .toggle-mode {
     margin-top: 25px;
-    font-size: 0.95em;
+    font-size: 1em;
     color: var(--light-text-color);
 }
+
 .toggle-mode a {
-    font-weight: 600;
-}
-
-
-/* ===================================== */
-/* Editor Page (editor.html) */
-/* ===================================== */
-.editor-container {
-    display: flex;
-    flex-wrap: wrap; /* Permite quebra de linha em telas menores */
-    gap: 30px; /* Espaço entre os controles e o canvas */
-    align-items: flex-start; /* Alinha o topo */
-}
-
-.editor-controls {
-    flex: 1; /* Ocupa o espaço disponível */
-    min-width: 300px; /* Largura mínima para os controles */
-    padding: 30px;
-}
-
-.canvas-area {
-    flex: 2; /* Ocupa mais espaço que os controles */
-    min-width: 300px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px;
-}
-
-.editing-tools {
-    border-top: 1px solid var(--border-color);
-    padding-top: 25px;
-    margin-top: 25px;
-}
-.editing-tools h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: var(--primary-color); /* Cor dos subtítulos das ferramentas */
-}
-
-.tool-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px; /* Mais espaço entre grupos de ferramentas */
-    gap: 15px; /* Espaço entre label, input e valor */
-}
-.tool-group label {
-    flex-basis: 100px; /* Ajuste para o label para alinhamento */
-    min-width: 80px;
-    font-weight: 600;
-    color: var(--light-text-color);
-    font-size: 0.95em;
-}
-.tool-group input[type="range"] {
-    flex-grow: 1; /* Slider ocupa o espaço restante */
-}
-.slider-value {
-    min-width: 40px; /* Manter um tamanho mínimo para o valor */
-    text-align: right;
-    font-weight: 600;
-    color: var(--accent-color);
-}
-.reset-slider-btn {
-    background: none;
-    border: none;
-    color: var(--accent-color);
-    cursor: pointer;
-    font-size: 0.9em;
-    padding: 5px 10px;
-    margin-left: 10px;
-    transition: color var(--transition-speed), text-decoration var(--transition-speed);
-    border-radius: var(--border-radius-base); /* Adiciona border-radius para consistência */
-}
-.reset-slider-btn:hover {
-    color: darken(var(--accent-color), 15%);
-    text-decoration: underline;
-    background-color: rgba(var(--accent-color-rgb-values), 0.05); /* Fundo sutil no hover */
-}
-
-/* Estilos para o Slider (range input) */
-input[type="range"] {
-    -webkit-appearance: none; /* Remove estilo padrão do Chrome/Safari */
-    appearance: none; /* Remove estilo padrão para outros navegadores */
-    width: 100%;
-    height: 8px; /* Altura da barra do slider */
-    background: var(--border-color); /* Cor da trilha */
-    border-radius: 5px;
-    outline: none;
-    transition: background var(--transition-speed);
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    cursor: grab; /* Altera cursor para indicar que pode arrastar */
-    border: 2px solid var(--background-card); /* Borda branca para destacar o thumb */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    margin-top: -6px; /* Ajuste para centralizar o thumb na trilha */
-    transition: background var(--transition-speed), box-shadow var(--transition-speed);
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-    background: darken(var(--accent-color), 10%);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-input[type="range"]::-webkit-slider-thumb:active {
-    cursor: grabbing; /* Cursor para indicar que está arrastando */
-}
-
-/* Para Firefox */
-input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    cursor: grab;
-    border: 2px solid var(--background-card);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    transition: background var(--transition-speed), box-shadow var(--transition-speed);
-}
-input[type="range"]::-moz-range-thumb:hover {
-    background: darken(var(--accent-color), 10%);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-input[type="range"]::-moz-range-track {
-    background: var(--border-color);
-    border-radius: 5px;
-    height: 8px;
-}
-
-
-/* Canvas area */
-#iconCanvas {
-    border: 2px dashed var(--border-color); /* Borda tracejada para indicar área de desenho */
-    border-radius: var(--border-radius-base);
-    background-color: var(--background-light); /* Fundo sutil */
-    margin-bottom: 20px;
-    max-width: 100%; /* Garante que o canvas não ultrapasse o container */
-    height: auto;
-    display: block; /* Remove espaço extra abaixo */
-}
-.canvas-hint {
-    font-size: 0.9em;
-    color: var(--light-text-color);
-    margin-bottom: 25px; /* Mais espaço antes do botão de gerar */
-    max-width: 400px;
-    text-align: center;
-}
-
-/* Download Section */
-.download-section h2, .examples-grid h2 {
-    text-align: center;
-    margin-bottom: 25px;
-}
-.download-section p, .examples-grid p {
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--light-text-color);
-}
-.download-section #downloadAllZip {
-    display: block; /* Ocupa a largura total */
-    margin: 30px auto 0 auto; /* Centraliza e adiciona espaço superior */
-    max-width: 300px; /* Limita a largura do botão ZIP */
-}
-
-/* ===================================== */
-/* Imagens e Grids (Exemplos e Ícones Gerados) */
-/* ===================================== */
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Mais flexibilidade */
-    gap: 25px; /* Aumentar o espaçamento entre imagens */
-    padding: 20px 0;
-    justify-content: center; /* Centraliza os itens na grade */
-}
-
-.image-grid .example-item,
-.image-grid .generated-icon-item {
-    background-color: var(--background-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-base);
-    padding: 15px;
-    text-align: center;
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between; /* Para espaçar imagem e texto/botão */
-}
-
-.image-grid .example-item:hover,
-.image-grid .generated-icon-item:hover {
-    transform: translateY(-5px); /* Efeito de levantar */
-    box-shadow: var(--shadow-hover);
-}
-
-.image-grid img {
-    max-width: 100%;
-    height: auto;
-    border-radius: var(--border-radius-base); /* Bordas arredondadas também para as imagens */
-    margin-bottom: 10px;
-    display: block; /* Remove espaço extra abaixo da imagem */
-    margin-left: auto;
-    margin-right: auto;
-    object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
-    background-color: var(--background-light); /* Fundo para imagens transparentes */
-    padding: 5px; /* Pequeno padding dentro do card da imagem */
-}
-
-.image-grid .generated-icon-item button {
-    margin-top: 10px;
-    padding: 8px 15px;
-    font-size: 0.9em;
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius-base);
-    cursor: pointer;
-    transition: all var(--transition-speed);
-}
-.image-grid .generated-icon-item button:hover {
-    background-color: darken(var(--accent-color), 10%);
-    transform: translateY(-2px);
-    box-shadow: 0 2px 5px rgba(var(--accent-color-rgb-values), 0.2);
-}
-
-
-/* ===================================== */
-/* Mensagens (Erro, Sucesso, Carregando) */
-/* ===================================== */
-.message {
-    padding: 12px 20px;
-    border-radius: var(--border-radius-base);
-    margin-top: 15px;
     font-weight: 500;
-    text-align: center;
-    display: block; /* Garante que a mensagem ocupe a própria linha */
+}
+
+/* Mensagens de feedback */
+.message {
+    padding: 12px;
+    margin-top: 20px;
+    border-radius: var(--border-radius-base);
+    font-size: 0.95em;
+    font-weight: 500;
+    display: none; /* Oculto por padrão */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .message.error {
-    background-color: #ffebee; /* Light red */
-    color: #D32F2F; /* Dark red */
-    border: 1px solid #D32F2F;
+    background-color: #f8d7da; /* Fundo vermelho claro */
+    color: #721c24; /* Texto vermelho escuro */
+    border: 1px solid #f5c6cb;
 }
 
 .message.success {
-    background-color: #e8f5e9; /* Light green */
-    color: #388E3C; /* Dark green */
-    border: 1px solid #388E3C;
+    background-color: #d4edda; /* Fundo verde claro */
+    color: #155724; /* Texto verde escuro */
+    border: 1px solid #c3e6cb;
 }
 
-/* Spinner de Carregamento */
+/* Spinner de carregamento */
 .spinner {
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left-color: var(--accent-color);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff; /* Cor do spinner */
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     animation: spin 1s linear infinite;
     display: inline-block;
     vertical-align: middle;
-    margin-left: 10px;
 }
+
+.message.error .spinner {
+    border-top-color: #721c24; /* Spinner vermelho para erros */
+}
+
+.message.success .spinner {
+    border-top-color: #155724; /* Spinner verde para sucesso */
+}
+
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -697,119 +387,593 @@ input[type="range"]::-moz-range-track {
 }
 
 /* ===================================== */
-/* Media Queries para Responsividade */
+/* Editor de Ícones */
 /* ===================================== */
-@media (max-width: 992px) {
-    .editor-container {
-        flex-direction: column;
-    }
-    .editor-controls, .canvas-area {
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-        margin-bottom: 20px;
-    }
-    .hero h1 {
-        font-size: 2.5em;
-    }
-    .hero .actions {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .hero .actions button {
-        width: 80%;
-        max-width: 300px;
-    }
+.editor-container {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start; /* Alinha o topo dos elementos */
 }
 
+.editor-controls {
+    flex: 1; /* Ocupa o espaço disponível */
+    min-width: 300px;
+    max-width: 400px; /* Limita a largura para não ficar muito largo */
+    padding: 25px;
+}
+
+.editor-controls h2, .editor-controls h3 {
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.editor-controls p {
+    font-size: 0.9em;
+    color: var(--light-text-color);
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+/* Esconder o input de arquivo original */
+#imageUpload {
+    display: none;
+}
+
+/* Estilizar o label como um botão de upload */
+.custom-file-upload {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 12px 25px;
+    border-radius: var(--border-radius-base);
+    font-size: 1.1em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow-light);
+    transition: background-color var(--transition-speed), transform 0.1s ease;
+    margin-bottom: 20px;
+}
+
+.custom-file-upload:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+.custom-file-upload:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.editing-tools {
+    margin-top: 30px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px; /* Espaço entre os elementos do grupo */
+    flex-wrap: wrap; /* Permite quebrar em linha em telas pequenas */
+}
+
+.tool-group label {
+    flex-basis: 100px; /* Largura fixa para labels */
+    min-width: 80px; /* Garante que não encolha demais */
+    font-weight: 500;
+    color: var(--light-text-color);
+}
+
+.tool-group input[type="range"] {
+    flex-grow: 1; /* Ocupa o espaço restante */
+    height: 8px;
+    -webkit-appearance: none;
+    background: var(--border-color);
+    border-radius: 5px;
+    outline: none;
+    transition: opacity .2s;
+    margin: 0 5px; /* Pequena margem */
+}
+
+/* Estilo do thumb do slider (para WebKit) */
+.tool-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: grab;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.tool-group input[type="range"]::-webkit-slider-thumb:active {
+    cursor: grabbing;
+}
+
+/* Estilo do thumb do slider (para Firefox) */
+.tool-group input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: grab;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.tool-group input[type="range"]::-moz-range-thumb:active {
+    cursor: grabbing;
+}
+
+.slider-value {
+    min-width: 50px; /* Garante espaço para o valor */
+    text-align: right;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.tool-group input[type="color"] {
+    width: 50px;
+    height: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-base);
+    padding: 2px;
+    cursor: pointer;
+}
+
+.tool-group select {
+    flex-grow: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-base);
+    background-color: white;
+    font-size: 1em;
+    cursor: pointer;
+    appearance: none; /* Remove seta padrão */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.2%203.2-15.4%208.1-3.1%204.9-3.1%2011.3%200%2016.2l128%20128c3.2%203.2%207.2%204.9%2011.2%204.9s8.1-1.6%2011.2-4.8l128-128c3.1-4.9%203.1-11.3%200-16.2z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px; /* Espaço para a seta customizada */
+}
+
+.tool-group select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.reset-slider-btn {
+    background-color: #ccc;
+    color: var(--text-color);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color var(--transition-speed);
+}
+
+.reset-slider-btn:hover {
+    background-color: #bbb;
+}
+
+.action-buttons {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end; /* Alinha à direita */
+}
+
+/* Canvas Area */
+.canvas-area {
+    flex: 1; /* Ocupa o restante do espaço */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-card);
+    padding: 25px;
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
+    min-height: 400px; /* Garante uma altura mínima */
+    position: relative; /* Para posicionar o spinner */
+}
+
+#iconCanvas {
+    border: 2px dashed var(--border-color); /* Borda tracejada para indicar a área */
+    max-width: 100%; /* Garante que o canvas seja responsivo */
+    height: auto;
+    display: block; /* Remove espaço extra abaixo */
+}
+
+.canvas-hint {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: var(--light-text-color);
+    text-align: center;
+    max-width: 400px;
+}
+
+#generateIconsBtn {
+    margin-top: 30px;
+}
+
+/* Download Section */
+.download-section {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.download-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.download-section p {
+    color: var(--light-text-color);
+    margin-bottom: 25px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Ícones em grade */
+    gap: 20px;
+    justify-content: center; /* Centraliza itens na grade */
+    margin-top: 20px;
+}
+
+.generated-icon-item, .example-item {
+    background-color: var(--background-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-base);
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.generated-icon-item:hover, .example-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+.generated-icon-item img, .example-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+.generated-icon-item p, .example-item p {
+    font-size: 0.9em;
+    color: var(--text-color);
+    font-weight: 500;
+    margin-bottom: 15px;
+    flex-grow: 1; /* Permite que o parágrafo ocupe espaço */
+}
+
+.generated-icon-item button, .example-item button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.generated-icon-item button:hover, .example-item button:hover {
+    background-color: #0056b3;
+}
+
+
+/* ===================================== */
+/* Página de Exemplos */
+/* ===================================== */
+.examples-grid {
+    text-align: center;
+}
+
+.examples-grid h2 {
+    margin-bottom: 30px;
+}
+
+.back-to-editor {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: var(--background-card);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
+}
+
+
+/* ===================================== */
+/* Media Queries para Responsividade */
+/* ===================================== */
+
+/* Para telas de até 768px (tablets e celulares grandes) */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
         text-align: center;
-        gap: 15px; /* Mais espaço entre o título e o botão de logout */
-        padding: 15px 20px;
+        padding: 15px;
     }
-    header h1 {
-        font-size: 1.8em;
-    }
-    main {
-        padding: 20px 15px;
-    }
-    section {
-        padding: 25px;
-        margin-bottom: 25px;
-    }
-    .image-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 15px;
-    }
-    .auth-container {
-        margin: 30px auto;
-        padding: 25px;
-    }
-    .tool-group {
-        flex-wrap: wrap; /* Permite que o grupo de ferramentas quebre linha */
-        justify-content: center;
-        text-align: center;
-        gap: 10px;
-    }
-    .tool-group label {
-        width: 100%; /* Label ocupa a largura total */
-        text-align: center;
-        margin-bottom: 5px;
-    }
-    .slider-value {
-        text-align: center;
-    }
-}
-
-@media (max-width: 480px) {
     header h1 {
         font-size: 1.6em;
+        margin-bottom: 10px;
+        flex-grow: unset; /* Remove flex-grow para centralizar melhor */
+    }
+    header nav {
+        margin-left: 0;
+        width: 100%; /* Ocupa a largura total para centralizar o botão */
+        display: flex;
+        justify-content: center; /* Centraliza o botão de logout */
+    }
+    header nav button {
+        margin-top: 10px; /* Adiciona espaçamento superior */
+    }
+
+    main {
+        padding: 15px;
+    }
+
+    section {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .hero {
+        padding: 40px 20px;
     }
     .hero h1 {
         font-size: 2em;
     }
-    .auth-container, .editor-controls, .canvas-area {
-        padding: 20px;
+    .hero p {
+        font-size: 1.1em;
     }
-    .action-btn, .google-btn {
-        padding: 10px 20px;
-        font-size: 1em;
-    }
-    .image-grid {
-        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
-        gap: 10px;
-    }
-    .features ul {
+    .hero .actions {
+        flex-direction: column; /* Botões empilhados */
         gap: 15px;
     }
+    .action-btn {
+        width: 100%; /* Botões ocupam a largura total */
+        box-sizing: border-box; /* Inclui padding na largura */
+    }
+
+    .features ul {
+        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+    }
     .features li {
+        font-size: 1em;
         padding: 15px;
     }
+    .features li i {
+        font-size: 1.3em;
+    }
+
+    .auth-container {
+        padding: 30px;
+        margin: 20px auto;
+    }
+    .auth-container h2 {
+        font-size: 1.8em;
+    }
+
+    .editor-container {
+        flex-direction: column; /* Empilha controles e canvas */
+        gap: 20px;
+    }
+    .editor-controls {
+        max-width: 100%; /* Ocupa a largura total */
+        min-width: unset;
+        padding: 20px;
+    }
     .tool-group {
-        flex-direction: column; /* Ferramentas empilham em telas muito pequenas */
-        align-items: stretch;
-        gap: 8px;
+        flex-wrap: wrap; /* Permite quebrar linha para label/slider/valor */
+        justify-content: space-between; /* Espaça os elementos */
     }
     .tool-group label {
-        text-align: left; /* Alinhar labels à esquerda */
-        margin-bottom: 0;
+        flex-basis: auto; /* Deixa a largura automática */
+        min-width: unset;
+        width: 100%; /* Ocupa a largura para o label */
+        margin-bottom: 5px; /* Espaço abaixo do label */
     }
-    .slider-value, .reset-slider-btn {
-        width: 100%;
-        text-align: left;
+    .tool-group input[type="range"] {
+        width: calc(100% - 100px); /* Ajuste para o valor e botão */
+        margin-right: 0; /* Remove margem extra */
+    }
+    .slider-value {
+        min-width: 45px;
     }
     .reset-slider-btn {
-        margin-left: 0;
-        margin-top: 5px;
+        padding: 6px 8px; /* Reduz padding */
+        font-size: 0.8em; /* Reduz fonte */
+    }
+    .action-buttons {
+        justify-content: center; /* Centraliza botões de ação */
+    }
+
+    .canvas-area {
+        min-height: 300px; /* Altura mínima para telas menores */
+        padding: 20px;
+    }
+    #iconCanvas {
+        max-width: 100%;
+        width: 300px; /* Tamanho fixo para o canvas em mobile, se necessário */
+        height: 300px;
+    }
+    .canvas-hint {
+        font-size: 0.85em;
+        max-width: 90%;
+    }
+    #generateIconsBtn {
+        width: 100%; /* Botão de geração ocupa a largura total */
+        box-sizing: border-box;
+    }
+
+    .image-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Colunas mais flexíveis, com tamanho mínimo menor */
+        gap: 15px;
+    }
+    .generated-icon-item, .example-item {
+        padding: 10px;
+    }
+    .generated-icon-item img, .example-item img {
+        max-width: 80px; /* Limita o tamanho da imagem na grade */
+        height: 80px;
+    }
+    .generated-icon-item p, .example-item p {
+        font-size: 0.8em;
+    }
+    .generated-icon-item button, .example-item button {
+        width: 100%;
+        padding: 6px 10px;
+        font-size: 0.85em;
     }
 }
 
-/* Helper para cálculo de cor em SCSS-like syntax. Se não usar pré-processador, remova ou substitua. */
-/* Exemplo de uso: background-color: darken(var(--primary-color), 10%); */
-/* Para uso em CSS puro, você precisaria calcular o HSL ou usar variáveis RGB com rgba() */
-/* Por exemplo, para darken:
-   background-color: hsl(hue(var(--primary-color)), saturation(var(--primary-color)), calc(lightness(var(--primary-color)) - 10%));
-   Ou simplesmente definir uma nova variável: --primary-color-darker: #3E8E41;
-*/
+/* Para telas de até 480px (smartphones menores) */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.4em;
+    }
+
+    .hero h1 {
+        font-size: 1.8em;
+    }
+    .hero p {
+        font-size: 1em;
+    }
+
+    .auth-container {
+        padding: 20px;
+        margin: 10px auto;
+    }
+    .auth-container h2 {
+        font-size: 1.6em;
+    }
+
+    .form-group label {
+        font-size: 0.9em;
+    }
+    .auth-container input[type="email"],
+    .auth-container input[type="password"] {
+        padding: 12px 8px;
+        font-size: 1em;
+    }
+    .auth-container button {
+        padding: 12px;
+        font-size: 1.1em;
+    }
+
+    .message {
+        font-size: 0.9em;
+        padding: 10px;
+    }
+    .spinner {
+        width: 16px;
+        height: 16px;
+    }
+
+    .editor-controls, .canvas-area {
+        padding: 15px;
+    }
+    .editor-controls h2, .editor-controls h3 {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+    }
+    .custom-file-upload {
+        padding: 10px 20px;
+        font-size: 1em;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .tool-group {
+        gap: 8px;
+    }
+    .tool-group label {
+        font-size: 0.9em;
+        margin-bottom: 2px;
+    }
+    .tool-group input[type="range"] {
+        height: 6px;
+    }
+    .tool-group input[type="range"]::-webkit-slider-thumb {
+        width: 18px;
+        height: 18px;
+    }
+    .tool-group input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+    }
+    .slider-value {
+        min-width: 40px;
+        font-size: 0.9em;
+    }
+    .reset-slider-btn {
+        padding: 4px 6px;
+        font-size: 0.75em;
+    }
+    .tool-group select {
+        padding: 6px 8px;
+        font-size: 0.9em;
+    }
+    #iconCanvas {
+        width: 280px; /* Ainda menor para se adequar a telas pequenas */
+        height: 280px;
+    }
+    .canvas-hint {
+        font-size: 0.8em;
+    }
+
+    .image-grid {
+        grid-template-columns: 1fr; /* Força uma única coluna em telas muito pequenas */
+        gap: 10px;
+    }
+    .generated-icon-item, .example-item {
+        padding: 8px;
+        flex-direction: row; /* Coloca imagem e texto lado a lado */
+        justify-content: flex-start;
+        gap: 10px;
+    }
+    .generated-icon-item img, .example-item img {
+        max-width: 60px; /* Reduz ainda mais o tamanho da imagem */
+        height: 60px;
+        margin-bottom: 0;
+    }
+    .generated-icon-item p, .example-item p {
+        font-size: 0.85em;
+        margin-bottom: 0;
+        text-align: left;
+    }
+    .generated-icon-item button, .example-item button {
+        width: auto; /* Volta para auto para não esticar */
+        padding: 5px 8px;
+        font-size: 0.8em;
+        margin-left: auto; /* Empurra o botão para a direita */
+    }
+
+    footer {
+        padding: 10px 15px;
+        font-size: 0.8em;
+    }
+}
