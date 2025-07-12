@@ -1,44 +1,683 @@
-/* ===================================== */
-/* Novas Regras para Controles de Qualidade e Sharpening */
-/* ===================================== */
+/* Importação de fonte do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-.control-group {
-    margin-bottom: 15px;
+/* ===================================== */
+/* Variáveis CSS (Melhora a manutenção e consistência) */
+/* ===================================== */
+:root {
+    /* Cores atualizadas para um visual mais moderno e profissional */
+    --primary-color: #4CAF50; /* Um verde um pouco mais vibrante e reconhecível (Material Design Green 500) */
+    --primary-color-dark: #388E3C; /* Green 700 para hover, 10% mais escuro */
+    --primary-color-rgb-values: 76, 175, 80; /* RGB para sombras dinâmicas */
+
+    --accent-color: #2196F3; /* Um azul mais calmo e profissional (Material Design Blue 500) */
+    --accent-color-dark: #1976D2; /* Blue 700 para hover, 10% mais escuro */
+    --accent-color-rgb-values: 33, 150, 243; /* RGB para sombras dinâmicas */
+    --secondary-accent-color: #FFC107; /* Um amarelo/laranja para destaques ou avisos */
+    
+    --text-color: #333333; /* Texto principal mais escuro para melhor contraste */
+    --light-text-color: #666666; /* Texto secundário, levemente mais escuro que o original para legibilidade */
+    
+    --background-light: #F2F5F8; /* Um cinza-azulado muito sutil para o fundo geral (macio e limpo) */
+    --background-card: #ffffff; /* Fundo de cards/seções brancos */
+    
+    --border-color: #E0E0E0; /* Cor de borda suave */
+    --input-border-color: #CCCCCC; /* Cor de borda para inputs */
+    
+    --shadow-light: 0 6px 20px rgba(0, 0, 0, 0.08); /* Sombra um pouco mais pronunciada, mas ainda suave */
+    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra para hover, mais evidente */
+    
+    --border-radius-base: 10px; /* Levemente mais arredondado para um toque moderno */
+    --transition-speed: 0.3s ease-in-out; /* Transição mais suave e responsiva */
+}
+
+/* Global Box-Sizing para layout consistente */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* ===================================== */
+/* Estilos Globais e Layout Base */
+/* ===================================== */
+html {
+    scroll-behavior: smooth; /* Rolagem suave para âncoras */
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6; /* Melhorar espaçamento entre linhas para legibilidade */
+    color: var(--text-color);
+    background-color: var(--background-light);
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Espaçamento entre label, input/select */
-    align-items: flex-start; /* Alinha labels à esquerda */
+    min-height: 100vh; /* Garante que o footer fique no final da página */
+    overflow-x: hidden; /* Previne rolagem horizontal indesejada */
 }
 
-.control-group label {
-    font-weight: 500;
-    color: var(--text-color);
-    margin-bottom: 0; /* Ajuste para o gap */
+/* Container principal para centralizar o conteúdo */
+main {
+    flex-grow: 1; /* Faz o main ocupar o espaço restante na coluna */
+    padding: 30px 20px; /* Padding geral para o conteúdo principal */
+    max-width: 1200px; /* Limita a largura em telas grandes para melhor legibilidade */
+    margin: 0 auto; /* Centraliza o conteúdo */
+    width: 100%; /* Garante que ocupe a largura disponível dentro do max-width */
 }
 
-.control-group .control-input,
-.control-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-small);
-    background-color: var(--background-color-light);
-    color: var(--text-color);
+/* Estilo para seções/cards */
+section {
+    background-color: var(--background-card);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-light);
+    padding: 30px; /* Aumentar o padding interno das seções para mais "ar" */
+    margin-bottom: 30px; /* Espaço consistente entre as seções */
+}
+
+h1, h2, h3, h4 {
+    color: var(--primary-color); /* Usar a cor primária para títulos para consistência */
+    margin-bottom: 0.8em;
+    font-weight: 700; /* Títulos mais fortes e impactantes */
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 2.5em; /* Ajustar tamanho para o header */
+}
+
+h2 {
+    font-size: 2em;
+}
+
+h3 {
+    font-size: 1.5em;
+    color: var(--text-color); /* Subtítulos podem ter a cor do texto principal */
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color var(--transition-speed);
+}
+
+a:hover {
+    color: var(--accent-color-dark); /* Usar a cor escura definida */
+    text-decoration: underline;
+}
+
+/* ===================================== */
+/* Header e Footer */
+/* ===================================== */
+header {
+    background-color: var(--background-card);
+    box-shadow: var(--shadow-light);
+    padding: 20px 30px; /* Mais padding nas laterais */
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+header h1 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 2.2em; /* Tamanho do título do header */
+}
+
+nav #logoutBtn {
+    background-color: #dc3545; /* Vermelho padrão para logout */
+    color: white;
+    padding: 10px 20px; /* Padding maior */
+    border-radius: var(--border-radius-base);
+    transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+    border: none;
+    cursor: pointer;
     font-size: 1em;
-    box-sizing: border-box; /* Garante que padding e border não aumentem a largura */
+    font-weight: 600;
+}
+nav #logoutBtn:hover {
+    background-color: #c82333; /* Um pouco mais escuro no hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+nav #logoutBtn:active {
+    transform: translateY(0);
+    box-shadow: none;
 }
 
-.control-group input[type="checkbox"] {
-    width: auto; /* Checkbox não ocupa 100% */
-    margin-right: 8px;
-    transform: scale(1.2); /* Aumenta um pouco o tamanho do checkbox */
-    accent-color: var(--primary-color); /* Mudar a cor do checkbox em navegadores que suportam */
+
+footer {
+    background-color: var(--text-color); /* Fundo escuro para o footer */
+    color: white;
+    text-align: center;
+    padding: 25px; /* Mais padding */
+    margin-top: auto; /* Empurra o footer para a parte inferior da tela */
+    font-size: 0.9em;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Estilo para o spinner de carregamento (se já não existir) */
+/* ===================================== */
+/* Botões Gerais */
+/* ===================================== */
+.action-btn {
+    display: inline-block;
+    padding: 12px 25px; /* Padding generoso para botões */
+    font-size: 1.1em;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    border: none; /* Remove borda padrão */
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    /* Usar valores RGB para sombra com cor do botão */
+    box-shadow: 0 4px 10px rgba(var(--primary-color-rgb-values), 0.2); 
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-color-dark); /* Usar a cor escura definida */
+    transform: translateY(-2px); /* Efeito sutil de levantar */
+    box-shadow: 0 8px 15px rgba(var(--primary-color-rgb-values), 0.3);
+}
+
+.primary-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(var(--primary-color-rgb-values), 0.2);
+}
+
+/* Botão Google */
+.google-btn {
+    background-color: #DB4437; /* Cor do Google red */
+    color: white;
+    box-shadow: 0 4px 10px rgba(219, 68, 55, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espaço entre ícone e texto */
+    width: 100%; /* Ocupa a largura total no container de login */
+    padding: 12px 20px;
+    font-size: 1.1em;
+    border-radius: var(--border-radius-base);
+    transition: all var(--transition-speed);
+    border: none;
+    cursor: pointer;
+}
+
+.google-btn:hover {
+    background-color: #c0392b; /* Mais escuro */
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(219, 68, 55, 0.3);
+}
+.google-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(219, 68, 55, 0.2);
+}
+
+.google-btn i { /* Estilo para o ícone do FontAwesome */
+    font-size: 1.2em;
+}
+
+
+/* ===================================== */
+/* Home Page (index.html) */
+/* ===================================== */
+.hero {
+    text-align: center;
+    padding: 50px 30px; /* Mais padding para destacar */
+    background: linear-gradient(135deg, var(--primary-color), #6BCB70); /* Gradiente suave, aproximando o lighten */
+    color: white;
+    box-shadow: var(--shadow-light);
+    border-radius: var(--border-radius-base);
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    color: white; /* Título branco no hero */
+    font-size: 3em;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.hero p {
+    font-size: 1.2em;
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+    color: rgba(255, 255, 255, 0.9); /* Alterado para texto branco com opacidade para melhor contraste */
+}
+
+.hero .actions {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    justify-content: center;
+    gap: 20px; /* Espaço entre os botões */
+}
+
+.hero .actions button {
+    background-color: white;
+    color: var(--primary-color);
+    padding: 15px 30px; /* Padding maior */
+    font-size: 1.1em;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hero .actions button:hover {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.features {
+    padding: 30px;
+}
+
+.features h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.features ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Layout responsivo */
+    gap: 25px; /* Espaço entre os itens */
+}
+
+.features li {
+    background-color: var(--background-light);
+    border-radius: var(--border-radius-base);
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 1.05em;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--light-text-color);
+}
+
+/* ===================================== */
+/* Login Page (login.html) */
+/* ===================================== */
+.auth-container {
+    max-width: 500px; /* Limita a largura do formulário de auth */
+    margin: 50px auto; /* Centraliza verticalmente e horizontalmente */
+    text-align: center;
+}
+
+.auth-container h2 {
+    margin-bottom: 25px;
+    color: var(--primary-color);
+}
+
+.form-group {
+    margin-bottom: 20px; /* Mais espaço entre grupos de formulário */
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--light-text-color);
+    font-size: 0.95em;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"],
+select { /* Adicionado select para consistência */
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius-base);
+    font-size: 1em;
+    color: var(--text-color);
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus,
+select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb-values), 0.2); /* Foco visual suave */
+}
+
+/* Esconder o input de arquivo padrão e estilizá-lo */
+input[type="file"] {
+    display: none; /* Esconde o input padrão */
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: var(--accent-color); /* Usar accent para upload */
+    color: white;
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.custom-file-upload:hover {
+    background-color: var(--accent-color-dark); /* Usar a cor escura definida */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--accent-color-rgb-values), 0.2);
+}
+
+.auth-container button[type="submit"] {
+    margin-top: 15px; /* Espaço para o botão de submit */
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-base);
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    box-shadow: 0 4px 10px rgba(var(--primary-color-rgb-values), 0.2);
+}
+.auth-container button[type="submit"]:hover {
+    background-color: var(--primary-color-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(var(--primary-color-rgb-values), 0.3);
+}
+
+.auth-container .message {
+    margin-top: 20px;
+    font-weight: 500;
+}
+
+.toggle-mode {
+    margin-top: 25px;
+    font-size: 0.95em;
+    color: var(--light-text-color);
+}
+.toggle-mode a {
+    font-weight: 600;
+}
+
+
+/* ===================================== */
+/* Editor Page (editor.html) */
+/* ===================================== */
+.editor-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite quebra de linha em telas menores */
+    gap: 30px; /* Espaço entre os controles e o canvas */
+    align-items: flex-start; /* Alinha o topo */
+}
+
+.editor-controls {
+    flex: 1; /* Ocupa o espaço disponível */
+    min-width: 300px; /* Largura mínima para os controles */
+    padding: 30px;
+}
+
+.canvas-area {
+    flex: 2; /* Ocupa mais espaço que os controles */
+    min-width: 300px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+}
+
+.editing-tools {
+    border-top: 1px solid var(--border-color);
+    padding-top: 25px;
+    margin-top: 25px;
+}
+.editing-tools h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--primary-color); /* Cor dos subtítulos das ferramentas */
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* Mais espaço entre grupos de ferramentas */
+    gap: 15px; /* Espaço entre label, input e valor */
+}
+.tool-group label {
+    flex-basis: 100px; /* Ajuste para o label para alinhamento */
+    min-width: 80px;
+    font-weight: 600;
+    color: var(--light-text-color);
+    font-size: 0.95em;
+}
+.tool-group input[type="range"] {
+    flex-grow: 1; /* Slider ocupa o espaço restante */
+}
+.slider-value {
+    min-width: 40px; /* Manter um tamanho mínimo para o valor */
+    text-align: right;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+.reset-slider-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    margin-left: 10px;
+    transition: color var(--transition-speed), text-decoration var(--transition-speed);
+    border-radius: var(--border-radius-base); /* Adiciona border-radius para consistência */
+}
+.reset-slider-btn:hover {
+    color: var(--accent-color-dark);
+    text-decoration: underline;
+    background-color: rgba(var(--accent-color-rgb-values), 0.05); /* Fundo sutil no hover */
+}
+
+/* Estilos para o Slider (range input) */
+input[type="range"] {
+    -webkit-appearance: none; /* Remove estilo padrão do Chrome/Safari */
+    appearance: none; /* Remove estilo padrão para outros navegadores */
+    width: 100%;
+    height: 8px; /* Altura da barra do slider */
+    background: var(--border-color); /* Cor da trilha */
+    border-radius: 5px;
+    outline: none;
+    transition: background var(--transition-speed);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: grab; /* Altera cursor para indicar que pode arrastar */
+    border: 2px solid var(--background-card); /* Borda branca para destacar o thumb */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    margin-top: -6px; /* Ajuste para centralizar o thumb na trilha */
+    transition: background var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: var(--accent-color-dark);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+    cursor: grabbing; /* Cursor para indicar que está arrastando */
+}
+
+/* Para Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: grab;
+    border: 2px solid var(--background-card);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background var(--transition-speed), box-shadow var(--transition-speed);
+}
+input[type="range"]::-moz-range-thumb:hover {
+    background: var(--accent-color-dark);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+input[type="range"]::-moz-range-track {
+    background: var(--border-color);
+    border-radius: 5px;
+    height: 8px;
+}
+
+
+/* Canvas area */
+#iconCanvas {
+    border: 2px dashed var(--border-color); /* Borda tracejada para indicar área de desenho */
+    border-radius: var(--border-radius-base);
+    background-color: var(--background-light); /* Fundo sutil */
+    margin-bottom: 20px;
+    max-width: 100%; /* Garante que o canvas não ultrapasse o container */
+    height: auto;
+    display: block; /* Remove espaço extra abaixo */
+    max-height: 500px; /* Limita a altura máxima do canvas em telas grandes */
+    object-fit: contain; /* Garante que o conteúdo do canvas se ajuste */
+}
+.canvas-hint {
+    font-size: 0.9em;
+    color: var(--light-text-color);
+    margin-bottom: 25px; /* Mais espaço antes do botão de gerar */
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Download Section */
+.download-section h2, .examples-grid h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.download-section p, .examples-grid p {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--light-text-color);
+}
+.download-section #downloadAllZip {
+    display: block; /* Ocupa a largura total */
+    margin: 30px auto 0 auto; /* Centraliza e adiciona espaço superior */
+    max-width: 300px; /* Limita a largura do botão ZIP */
+}
+
+/* ===================================== */
+/* Imagens e Grids (Exemplos e Ícones Gerados) */
+/* ===================================== */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Mais flexibilidade */
+    gap: 25px; /* Aumentar o espaçamento entre imagens */
+    padding: 20px 0;
+    justify-content: center; /* Centraliza os itens na grade */
+}
+
+.image-grid .example-item,
+.image-grid .generated-icon-item {
+    background-color: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-base);
+    padding: 15px;
+    text-align: center;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Para espaçar imagem e texto/botão */
+}
+
+.image-grid .example-item:hover,
+.image-grid .generated-icon-item:hover {
+    transform: translateY(-5px); /* Efeito de levantar */
+    box-shadow: var(--shadow-hover);
+}
+
+.image-grid img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-base); /* Bordas arredondadas também para as imagens */
+    margin-bottom: 10px;
+    display: block; /* Remove espaço extra abaixo da imagem */
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+    background-color: var(--background-light); /* Fundo para imagens transparentes */
+    padding: 5px; /* Pequeno padding dentro do card da imagem */
+}
+
+.image-grid .generated-icon-item button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    font-size: 0.9em;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+.image-grid .generated-icon-item button:hover {
+    background-color: var(--accent-color-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(var(--accent-color-rgb-values), 0.2);
+}
+
+
+/* ===================================== */
+/* Mensagens (Erro, Sucesso, Carregando) */
+/* ===================================== */
+.message {
+    padding: 12px 20px;
+    border-radius: var(--border-radius-base);
+    margin-top: 15px;
+    font-weight: 500;
+    text-align: center;
+    display: block; /* Garante que a mensagem ocupe a própria linha */
+}
+
+.message.error {
+    background-color: #ffebee; /* Light red */
+    color: #D32F2F; /* Dark red */
+    border: 1px solid #D32F2F;
+}
+
+.message.success {
+    background-color: #e8f5e9; /* Light green */
+    color: #388E3C; /* Dark green */
+    border: 1px solid #388E3C;
+}
+
+/* Spinner de Carregamento */
 .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-left: 4px solid var(--primary-color); /* Cor do spinner */
+    border-left-color: var(--accent-color);
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -53,71 +692,112 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Botões de estado (se você quiser usar a troca de cor para o botão de suavização) */
-.btn-secondary {
-    background-color: var(--accent-color); /* Azul para estado padrão */
-    color: white;
-}
-
-.btn-warning {
-    background-color: var(--secondary-accent-color); /* Amarelo para estado ativo/alerta */
-    color: var(--text-color);
-}
-
-/* Pequeno ajuste para o grid de ícones, para visualização */
-.icon-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Mais flexível para vários tamanhos */
-    gap: 15px;
-    padding: 20px;
-    background-color: var(--background-color-light);
-    border-radius: var(--border-radius-large);
-    box-shadow: var(--shadow-small);
-    margin-top: 20px;
-    justify-items: center; /* Centraliza os itens no grid */
-}
-
-.icon-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-small);
-    background-color: #fff;
-    box-shadow: var(--shadow-extra-small);
-}
-
-.icon-item img {
-    width: 64px; /* Tamanho fixo para exibição no grid */
-    height: 64px;
-    object-fit: contain;
-    margin-bottom: 5px;
-    border: 1px dashed var(--border-color); /* Borda para visualizar o limite */
-}
-
-.icon-item p {
-    font-size: 0.8em;
-    color: var(--text-color-light);
-    margin-bottom: 8px;
-    word-break: break-word; /* Quebra palavras longas */
-}
-
-.icon-item .btn-small {
-    padding: 5px 10px;
-    font-size: 0.75em;
-    border-radius: var(--border-radius-small);
-}
-
-/* Ajustes de responsividade para os novos controles */
-@media (max-width: 768px) {
-    .control-group {
-        flex-direction: column; /* Em telas menores, os itens podem empilhar */
-        align-items: stretch; /* Ocupam a largura total disponível */
+/* ===================================== */
+/* Media Queries para Responsividade */
+/* ===================================== */
+@media (max-width: 992px) {
+    .editor-container {
+        flex-direction: column;
     }
+    .editor-controls, .canvas-area {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+    .hero h1 {
+        font-size: 2.5em;
+    }
+    .hero .actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .hero .actions button {
+        width: 80%;
+        max-width: 300px;
+    }
+}
 
-    .control-group label {
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px; /* Mais espaço entre o título e o botão de logout */
+        padding: 15px 20px;
+    }
+    header h1 {
+        font-size: 1.8em;
+    }
+    main {
+        padding: 20px 15px;
+    }
+    section {
+        padding: 25px;
+        margin-bottom: 25px;
+    }
+    .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    .auth-container {
+        margin: 30px auto;
+        padding: 25px;
+    }
+    .tool-group {
+        flex-wrap: wrap; /* Permite que o grupo de ferramentas quebre linha */
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
+    }
+    .tool-group label {
+        width: 100%; /* Label ocupa a largura total */
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    .slider-value {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.6em;
+    }
+    .hero h1 {
+        font-size: 2em;
+    }
+    .auth-container, .editor-controls, .canvas-area {
+        padding: 20px;
+    }
+    .action-btn, .google-btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+    .image-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
+        gap: 10px;
+    }
+    .features ul {
+        gap: 15px;
+    }
+    .features li {
+        padding: 15px;
+    }
+    .tool-group {
+        flex-direction: column; /* Ferramentas empilham em telas muito pequenas */
+        align-items: stretch;
+        gap: 8px;
+    }
+    .tool-group label {
+        text-align: left; /* Alinhar labels à esquerda */
+        margin-bottom: 0;
+    }
+    .slider-value, .reset-slider-btn {
+        width: 100%;
         text-align: left;
+    }
+    .reset-slider-btn {
+        margin-left: 0;
+        margin-top: 5px;
     }
 }
