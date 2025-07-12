@@ -7,8 +7,11 @@
 :root {
     /* Cores atualizadas para um visual mais moderno e profissional */
     --primary-color: #4CAF50; /* Um verde um pouco mais vibrante e reconhecível (Material Design Green 500) */
+    --primary-color-dark: #388E3C; /* Green 700 para hover, 10% mais escuro */
     --primary-color-rgb-values: 76, 175, 80; /* RGB para sombras dinâmicas */
+
     --accent-color: #2196F3; /* Um azul mais calmo e profissional (Material Design Blue 500) */
+    --accent-color-dark: #1976D2; /* Blue 700 para hover, 10% mais escuro */
     --accent-color-rgb-values: 33, 150, 243; /* RGB para sombras dinâmicas */
     --secondary-accent-color: #FFC107; /* Um amarelo/laranja para destaques ou avisos */
     
@@ -26,6 +29,11 @@
     
     --border-radius-base: 10px; /* Levemente mais arredondado para um toque moderno */
     --transition-speed: 0.3s ease-in-out; /* Transição mais suave e responsiva */
+}
+
+/* Global Box-Sizing para layout consistente */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 /* ===================================== */
@@ -55,7 +63,6 @@ main {
     max-width: 1200px; /* Limita a largura em telas grandes para melhor legibilidade */
     margin: 0 auto; /* Centraliza o conteúdo */
     width: 100%; /* Garante que ocupe a largura disponível dentro do max-width */
-    box-sizing: border-box; /* Inclui padding na largura total */
 }
 
 /* Estilo para seções/cards */
@@ -65,7 +72,6 @@ section {
     box-shadow: var(--shadow-light);
     padding: 30px; /* Aumentar o padding interno das seções para mais "ar" */
     margin-bottom: 30px; /* Espaço consistente entre as seções */
-    box-sizing: border-box;
 }
 
 h1, h2, h3, h4 {
@@ -99,7 +105,7 @@ a {
 }
 
 a:hover {
-    color: darken(var(--accent-color), 15%); /* Escurece no hover (requer pré-processador ou HSL) */
+    color: var(--accent-color-dark); /* Usar a cor escura definida */
     text-decoration: underline;
 }
 
@@ -169,7 +175,6 @@ footer {
     cursor: pointer;
     transition: all var(--transition-speed);
     border: none; /* Remove borda padrão */
-    box-sizing: border-box;
 }
 
 .primary-btn {
@@ -180,7 +185,7 @@ footer {
 }
 
 .primary-btn:hover {
-    background-color: darken(var(--primary-color), 10%); /* Exemplo: um pouco mais escuro */
+    background-color: var(--primary-color-dark); /* Usar a cor escura definida */
     transform: translateY(-2px); /* Efeito sutil de levantar */
     box-shadow: 0 8px 15px rgba(var(--primary-color-rgb-values), 0.3);
 }
@@ -229,7 +234,7 @@ footer {
 .hero {
     text-align: center;
     padding: 50px 30px; /* Mais padding para destacar */
-    background: linear-gradient(135deg, var(--primary-color), lighten(var(--primary-color), 15%)); /* Gradiente suave */
+    background: linear-gradient(135deg, var(--primary-color), #6BCB70); /* Gradiente suave, aproximando o lighten */
     color: white;
     box-shadow: var(--shadow-light);
     border-radius: var(--border-radius-base);
@@ -247,7 +252,7 @@ footer {
     font-size: 1.2em;
     max-width: 800px;
     margin: 0 auto 30px auto;
-    color: rgba(0, 0, 0, 0.9);
+    color: rgba(255, 255, 255, 0.9); /* Alterado para texto branco com opacidade para melhor contraste */
 }
 
 .hero .actions {
@@ -306,16 +311,6 @@ footer {
     color: var(--light-text-color);
 }
 
-/* Adicionar ícones de Font Awesome para as features (exemplo) */
-/* .features li::before {
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    content: "\f00c"; /* check-circle icon * /
-    color: var(--primary-color);
-    font-size: 1.3em;
-} */
-
-
 /* ===================================== */
 /* Login Page (login.html) */
 /* ===================================== */
@@ -354,7 +349,6 @@ select { /* Adicionado select para consistência */
     font-size: 1em;
     color: var(--text-color);
     transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-    box-sizing: border-box; /* Garante que padding não aumente a largura */
 }
 
 input[type="email"]:focus,
@@ -384,7 +378,7 @@ input[type="file"] {
 }
 
 .custom-file-upload:hover {
-    background-color: darken(var(--accent-color), 10%);
+    background-color: var(--accent-color-dark); /* Usar a cor escura definida */
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(var(--accent-color-rgb-values), 0.2);
 }
@@ -404,7 +398,7 @@ input[type="file"] {
     box-shadow: 0 4px 10px rgba(var(--primary-color-rgb-values), 0.2);
 }
 .auth-container button[type="submit"]:hover {
-    background-color: darken(var(--primary-color), 10%);
+    background-color: var(--primary-color-dark);
     transform: translateY(-2px);
     box-shadow: 0 8px 15px rgba(var(--primary-color-rgb-values), 0.3);
 }
@@ -495,7 +489,7 @@ input[type="file"] {
     border-radius: var(--border-radius-base); /* Adiciona border-radius para consistência */
 }
 .reset-slider-btn:hover {
-    color: darken(var(--accent-color), 15%);
+    color: var(--accent-color-dark);
     text-decoration: underline;
     background-color: rgba(var(--accent-color-rgb-values), 0.05); /* Fundo sutil no hover */
 }
@@ -527,7 +521,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-    background: darken(var(--accent-color), 10%);
+    background: var(--accent-color-dark);
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
@@ -547,7 +541,7 @@ input[type="range"]::-moz-range-thumb {
     transition: background var(--transition-speed), box-shadow var(--transition-speed);
 }
 input[type="range"]::-moz-range-thumb:hover {
-    background: darken(var(--accent-color), 10%);
+    background: var(--accent-color-dark);
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 input[type="range"]::-moz-range-track {
@@ -566,6 +560,8 @@ input[type="range"]::-moz-range-track {
     max-width: 100%; /* Garante que o canvas não ultrapasse o container */
     height: auto;
     display: block; /* Remove espaço extra abaixo */
+    max-height: 500px; /* Limita a altura máxima do canvas em telas grandes */
+    object-fit: contain; /* Garante que o conteúdo do canvas se ajuste */
 }
 .canvas-hint {
     font-size: 0.9em;
@@ -648,7 +644,7 @@ input[type="range"]::-moz-range-track {
     transition: all var(--transition-speed);
 }
 .image-grid .generated-icon-item button:hover {
-    background-color: darken(var(--accent-color), 10%);
+    background-color: var(--accent-color-dark);
     transform: translateY(-2px);
     box-shadow: 0 2px 5px rgba(var(--accent-color-rgb-values), 0.2);
 }
@@ -805,11 +801,3 @@ input[type="range"]::-moz-range-track {
         margin-top: 5px;
     }
 }
-
-/* Helper para cálculo de cor em SCSS-like syntax. Se não usar pré-processador, remova ou substitua. */
-/* Exemplo de uso: background-color: darken(var(--primary-color), 10%); */
-/* Para uso em CSS puro, você precisaria calcular o HSL ou usar variáveis RGB com rgba() */
-/* Por exemplo, para darken:
-   background-color: hsl(hue(var(--primary-color)), saturation(var(--primary-color)), calc(lightness(var(--primary-color)) - 10%));
-   Ou simplesmente definir uma nova variável: --primary-color-darker: #3E8E41;
-*/
